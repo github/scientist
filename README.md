@@ -8,4 +8,4 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 
 ## Maintainers
 
-[@jbarnette](https://github.com/jbarnette) and [@rick](https://github.com/rick)
+[@jbarnette](https://github.com/jbarnette), [@rick](https://github.com/rick), and [@zerowidth](https://github.com/zerowidth)
