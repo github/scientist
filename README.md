@@ -64,7 +64,7 @@ class MyApp::Experiment
     super
   end
   
-  def publish(name, payload)
+  def publish(payload)
     # see "Ramping up experiments" below
     super
   end

@@ -1,4 +1,4 @@
-load "lib/scientist/version.rb"
+$: << "lib" and require "scientist/version"
 
 Gem::Specification.new do |gem|
   gem.name          = "scientist"
