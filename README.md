@@ -49,29 +49,6 @@ class MyApp::Widget
 end
 ```
 
-### Trying more than one thing
-
-It's not usually a good idea to try more than one alternative simultaneously. Behavior isn't guaranteed to be isolated and reporting + visualization get quite a bit harder. Still, it's sometimes useful.
-
-To try more than one alternative at once, add names to some `try` blocks:
-
-```ruby
-require "scientist"
-
-class MyApp::Widget
-  include Scientist
-  
-  def allows?(user)
-    science "widget-permissions" do |e|
-      e.use { model.check_user(user).valid? } # old way
-
-      e.try("api") { user.can?(:read, model) } # new service API
-      e.try("raw-sql") { user.can_sql?(:read, model) } # raw query
-    end
-  end
-end
-```
-
 ## Making science useful
 
 The examples above will run, but they're not really *doing* anything. The `try` blocks run every time and none of the results get published. Add an experiment class to control execution and reporting:
@@ -130,6 +107,29 @@ Now calls to the `science` helper will create instances of `MyApp::Experiment`.
 ## Breaking the rules
 
 Sometimes scientists just gotta do weird stuff. We understand.
+
+### Trying more than one thing
+
+It's not usually a good idea to try more than one alternative simultaneously. Behavior isn't guaranteed to be isolated and reporting + visualization get quite a bit harder. Still, it's sometimes useful.
+
+To try more than one alternative at once, add names to some `try` blocks:
+
+```ruby
+require "scientist"
+
+class MyApp::Widget
+  include Scientist
+  
+  def allows?(user)
+    science "widget-permissions" do |e|
+      e.use { model.check_user(user).valid? } # old way
+
+      e.try("api") { user.can?(:read, model) } # new service API
+      e.try("raw-sql") { user.can_sql?(:read, model) } # raw query
+    end
+  end
+end
+```
 
 ### No control, just candidates
 
