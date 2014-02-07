@@ -1,7 +1,5 @@
-require "minitest/autorun"
-
 describe Scientist do
-  it "exists" do
-    assert Scientist
+  it "has a version or whatever" do
+    assert Scientist::VERSION
   end
 end
