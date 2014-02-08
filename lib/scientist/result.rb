@@ -2,7 +2,7 @@
 class Scientist::Result
   attr_reader :observations
 
-  def initialize(observations)
+  def initialize(primary, observations)
     @observations = observations
   end
 end

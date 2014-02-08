@@ -31,7 +31,7 @@ module Scientist::Experiment
     end
 
     use = results[primary]
-    result = Scientist::Result.new(results)
+    result = Scientist::Result.new(primary, results)
 
     publish(result)
 
