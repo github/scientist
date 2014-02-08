@@ -1,11 +1,11 @@
-# Internal: What happens when a block gets called?
+# Internal: What happens when this block gets called?
 class Scientist::Observation
-  attr_reader :value
+  attr_reader :name
   attr_reader :exception
   attr_reader :duration
 
-  def initialize(&block)
-
+  def initialize(name = "observation", &block)
+    @name = name
     start = Time.now
 
     begin
@@ -21,5 +21,13 @@ class Scientist::Observation
 
   def raised?
     !exception.nil?
+  end
+
+  def value
+    if raised?
+      raise Scientist::NoValue.new(self)
+    end
+
+    @value
   end
 end
