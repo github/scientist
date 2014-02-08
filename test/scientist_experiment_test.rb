@@ -49,7 +49,7 @@ describe Scientist::Experiment do
       @ex.run
     end
 
-    assert_equal "control", e.behavior
+    assert_equal "control", e.name
   end
 
   it "is a straight pass-through with only a control behavior" do
@@ -64,7 +64,7 @@ describe Scientist::Experiment do
     assert_equal "control", @ex.run
   end
 
-  it "complains about duplicate behavior" do
+  it "complains about duplicate behavior names" do
     @ex.use { "control" }
 
     e = assert_raises Scientist::BehaviorNotUnique do
@@ -72,7 +72,7 @@ describe Scientist::Experiment do
     end
 
     assert_equal @ex, e.experiment
-    assert_equal "control", e.behavior
+    assert_equal "control", e.name
   end
 
   it "swallows exceptions raised by candidate behaviors" do

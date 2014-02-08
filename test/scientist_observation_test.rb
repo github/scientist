@@ -12,7 +12,7 @@ describe Scientist::Observation do
 
     assert_equal "ret", ob.value
     refute ob.raised?
-    assert_in_delta 0.1, ob.duration
+    assert_in_delta 0.1, ob.duration, 0.01
   end
 
   it "stashes exceptions" do

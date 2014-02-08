@@ -3,27 +3,27 @@ module Scientist
   # Smoking in the bathroom and/or sassing.
   class BadBehavior < StandardError
     attr_reader :experiment
-    attr_reader :behavior
+    attr_reader :name
 
-    def initialize(experiment, behavior, message)
+    def initialize(experiment, name, message)
       @experiment = experiment
-      @behavior = behavior
+      @name = name
 
       super message
     end
   end
 
   class BehaviorMissing < BadBehavior
-    def initialize(experiment, behavior)
-      super experiment, behavior,
-        "#{experiment.name} missing #{behavior} behavior"
+    def initialize(experiment, name)
+      super experiment, name,
+        "#{experiment.name} missing #{name} behavior"
     end
   end
 
   class BehaviorNotUnique < BadBehavior
-    def initialize(experiment, behavior)
-      super experiment, behavior,
-        "#{experiment.name} alread has #{behavior} behavior"
+    def initialize(experiment, name)
+      super experiment, name,
+        "#{experiment.name} alread has #{name} behavior"
     end
   end
 

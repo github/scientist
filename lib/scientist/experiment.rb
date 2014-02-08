@@ -11,12 +11,12 @@ module Scientist::Experiment
     yield self if !block.nil?
   end
 
-  def run(behavior = "control")
-    behavior = behavior.to_s
-    block = behaviors[behavior]
+  def run(primary = "control")
+    primary = primary.to_s
+    block = behaviors[primary]
 
     if block.nil?
-      raise Scientist::BehaviorMissing.new(self, behavior)
+      raise Scientist::BehaviorMissing.new(self, primary)
     end
 
     if behaviors.size == 1 || !enabled?
@@ -30,7 +30,7 @@ module Scientist::Experiment
       results[name] = Scientist::Observation.new(name, &block)
     end
 
-    use = results[behavior]
+    use = results[primary]
     result = Scientist::Result.new(results)
 
     publish(result)
@@ -42,14 +42,14 @@ module Scientist::Experiment
     use.value
   end
 
-  def try(behavior = "candidate", &block)
-    behavior = behavior.to_s
+  def try(name = "candidate", &block)
+    name = name.to_s
 
-    if behaviors.include?(behavior)
-      raise Scientist::BehaviorNotUnique.new(self, behavior)
+    if behaviors.include?(name)
+      raise Scientist::BehaviorNotUnique.new(self, name)
     end
 
-    behaviors[behavior] = block
+    behaviors[name] = block
   end
 
   def use(&block)
