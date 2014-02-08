@@ -14,7 +14,7 @@ describe Scientist::Experiment do
     @ex = Fake.new("test-experiment")
   end
 
-  it "requires a name" do
+  it "takes a name" do
     ex = Fake.new "name"
     assert_equal "name", ex.name
   end
