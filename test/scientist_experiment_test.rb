@@ -19,6 +19,10 @@ describe Scientist::Experiment do
     assert_equal "name", ex.name
   end
 
+  it "doesn't require a name" do
+    assert_equal "experiment", Fake.new.name
+  end
+
   it "yields itself to a block when initialized" do
     yielded = nil
     ex = Fake.new("name") { |e| yielded = e }

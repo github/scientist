@@ -4,7 +4,7 @@ module Scientist::Experiment
   attr_reader :name
   attr_reader :behaviors
 
-  def initialize(name, &block)
+  def initialize(name = "experiment", &block)
     @name = name
     @behaviors = {}
 
