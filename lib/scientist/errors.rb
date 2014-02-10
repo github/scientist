@@ -32,8 +32,7 @@ module Scientist
 
     def initialize(observation)
       @observation = observation
-
-      super "#{observation.name} doesn't have a value, it raised an exception"
+      super "#{observation.name} didn't return a value"
     end
   end
 end

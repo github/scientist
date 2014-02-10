@@ -11,7 +11,7 @@ describe Scientist::Experiment do
   end
 
   before do
-    @ex = Fake.new("test-experiment")
+    @ex = Fake.new
   end
 
   it "takes a name" do
