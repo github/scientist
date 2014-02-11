@@ -1,8 +1,5 @@
 # The result of running an experiment.
 class Scientist::Result
-  attr_reader :observations
-
-  def initialize(primary, observations)
-    @observations = observations
+  def initialize(experiment, observations, primary)
   end
 end
