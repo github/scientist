@@ -22,7 +22,6 @@ describe Scientist::Observation do
 
     assert ob.raised?
     assert_equal "exception", ob.exception.message
-
-    assert_raises(Scientist::NoValue) { ob.value }
+    assert_nil ob.value
   end
 end

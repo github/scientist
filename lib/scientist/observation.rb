@@ -1,6 +1,7 @@
 # Internal: What happens when this block gets called?
 class Scientist::Observation
   attr_reader :name
+  attr_reader :value
   attr_reader :exception
   attr_reader :duration
 
@@ -19,15 +20,27 @@ class Scientist::Observation
     freeze
   end
 
-  def raised?
-    !exception.nil?
+  def ==(other)
+    return false unless other.is_a?(Scientist::Observation)
+
+    values_are_equal = experiment.compare(other.value, value)
+    both_raised      = other.raised? && raised?
+    neither_raised   = !other.raised? && !raised?
+
+    exceptions_are_equivalent = # backtraces will differ, natch
+      both_raised &&
+        other.exception.class == exception.class &&
+          other.exception.message == exception.message
+
+    (values_are_equal && neither_raised) ||
+      (both_raised && exceptions_are_equivalent)
   end
 
-  def value
-    if raised?
-      raise Scientist::NoValue.new(self)
-    end
+  def hash
+    [value, exception, self.class].compact.map(&:hash).inject(:^)
+  end
 
-    @value
+  def raised?
+    !exception.nil?
   end
 end
