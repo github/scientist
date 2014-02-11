@@ -23,7 +23,7 @@ class Scientist::Observation
   def ==(other)
     return false unless other.is_a?(Scientist::Observation)
 
-    values_are_equal = experiment.compare(other.value, value)
+    values_are_equal = other.value == value
     both_raised      = other.raised? && raised?
     neither_raised   = !other.raised? && !raised?
 

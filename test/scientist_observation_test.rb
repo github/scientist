@@ -24,4 +24,36 @@ describe Scientist::Observation do
     assert_equal "exception", ob.exception.message
     assert_nil ob.value
   end
+
+  it "compares values" do
+    a = Scientist::Observation.new { 1 }
+    b = Scientist::Observation.new { 1 }
+
+    assert_equal a, b
+
+    x = Scientist::Observation.new { 1 }
+    y = Scientist::Observation.new { 2 }
+
+    refute_equal x, y
+  end
+
+  it "compares exception messages" do
+    a = Scientist::Observation.new { raise "error" }
+    b = Scientist::Observation.new { raise "error" }
+
+    assert_equal a, b
+
+    x = Scientist::Observation.new { raise "error" }
+    y = Scientist::Observation.new { raise "ERROR" }
+
+    refute_equal x, y
+  end
+
+  FirstErrror = Class.new(StandardError)
+  SecondError = Class.new(StandardError)
+
+  it "compares exception classes" do
+    x = Scientist::Observation.new { raise FirstError, "error" }
+    y = Scientist::Observation.new { raise SecondError, "error" }
+  end
 end
