@@ -1,8 +1,4 @@
 describe Scientist do
-  before do
-    Scientist.reset
-  end
-
   it "has a version or whatever" do
     assert Scientist::VERSION
   end

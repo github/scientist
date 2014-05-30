@@ -23,15 +23,15 @@ module Scientist::Experiment
       return block.call
     end
 
-    results = {}
+    observations = {}
 
     behaviors.keys.shuffle.each do |name|
       block = behaviors[name]
-      results[name] = Scientist::Observation.new(name, &block)
+      observations[name] = Scientist::Observation.new(name, &block)
     end
 
-    use = results[primary]
-    result = Scientist::Result.new(self, results, primary)
+    use = observations[primary]
+    result = Scientist::Result.new(self, observations, primary)
 
     publish(result)
 
