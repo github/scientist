@@ -6,15 +6,10 @@ require "scientist/result"
 require "scientist/version"
 
 module Scientist
-  def science(*args, &block)
-    Scientist.experiment.new(*args, &block).run
-  end
+  def science(*args)
+    experiment = Experiment.new(*args)
+    yield experiment if block_given?
 
-  def self.experiment
-    @experiment ||= Scientist::Default
-  end
-
-  def self.experiment=(klass)
-    @experiment = klass
+    experiment.run
   end
 end

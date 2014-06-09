@@ -3,10 +3,6 @@ describe Scientist do
     assert Scientist::VERSION
   end
 
-  it "uses a noop as the default experiment class" do
-    assert_equal Scientist::Default, Scientist.experiment
-  end
-
   it "provides a helper to instantiate and run experiments" do
     obj = Object.new
     obj.extend(Scientist)

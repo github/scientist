@@ -14,20 +14,18 @@ describe Scientist::Experiment do
     @ex = Fake.new
   end
 
-  it "takes a name" do
-    ex = Fake.new "name"
-    assert_equal "name", ex.name
+  it "uses Scientist::Default for its implementation" do
+    assert_equal Scientist::Default, Scientist::Experiment.implementation
   end
 
-  it "doesn't require a name" do
+  it "can be instantiated via its implementation" do
+    ex = Scientist::Experiment.new("hello")
+    assert_kind_of Scientist::Default, ex
+    assert_equal "hello", ex.name
+  end
+
+  it "provides a static default name" do
     assert_equal "experiment", Fake.new.name
-  end
-
-  it "yields itself to a block when initialized" do
-    yielded = nil
-    ex = Fake.new("name") { |e| yielded = e }
-
-    assert_same ex, yielded
   end
 
   it "requires includers to implement enabled?" do

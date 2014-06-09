@@ -1,14 +1,24 @@
 # This mixin provides shared behavior for experiments. Includers must
-# implement enabled? and publish(result).
+# implement `enabled?` and `publish(result)`.
 module Scientist::Experiment
-  attr_reader :name
-  attr_reader :behaviors
 
-  def initialize(name = "experiment", &block)
-    @name = name
-    @behaviors = {}
+  # Create a new instance of a class that implements the Scientist::Experiment
+  # interface. Override `Scientist::Experiment.implementation` to change.
+  def self.new(*args)
+    implementation.new(*args)
+  end
 
-    yield self if !block.nil?
+  # A class that includes + implements Scientist::Experiment.
+  def self.implementation
+    Scientist::Default
+  end
+
+  def behaviors
+    @behaviors ||= {}
+  end
+
+  def name
+    "experiment"
   end
 
   def run(primary = "control")
