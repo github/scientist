@@ -39,7 +39,7 @@ require "scientist"
 
 class MyApp::Widget
   include Scientist
-  
+
   def allows?(user)
     science "widget-permissions" do |e|
       e.use { model.check_user(user).valid? } # old way
@@ -51,7 +51,7 @@ end
 
 ## Making science useful
 
-The examples above will run, but they're not really *doing* anything. The `try` blocks run every time and none of the results get published. Add an experiment class to control execution and reporting:
+The examples above will run, but they're not really *doing* anything. The `try` blocks run every time and none of the results get published. Replace the default experiment implementation to control execution and reporting:
 
 ```ruby
 require "scientist"
@@ -63,7 +63,7 @@ class MyApp::Experiment
     # see "Ramping up experiments" below
     super
   end
-  
+
   def publish(payload)
     # see "Publishing results" below
     super
@@ -71,7 +71,9 @@ class MyApp::Experiment
 end
 
 # replace `Scientist::Default`
-Scientist.experiment = MyApp::Experiment
+def Scientist::Experiment.implementation
+  MyApp:Experiment
+end
 ```
 
 Now calls to the `science` helper will create instances of `MyApp::Experiment`.
@@ -119,7 +121,7 @@ require "scientist"
 
 class MyApp::Widget
   include Scientist
-  
+
   def allows?(user)
     science "widget-permissions" do |e|
       e.use { model.check_user(user).valid? } # old way
