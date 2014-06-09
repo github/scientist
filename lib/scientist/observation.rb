@@ -1,4 +1,4 @@
-# Internal: What happens when this block gets called?
+# Internal: What happened when this block was called?
 class Scientist::Observation
   attr_reader :name
   attr_reader :value
