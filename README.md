@@ -102,10 +102,6 @@ Now calls to the `science` helper will create instances of `MyApp::Experiment`.
 
 *TODO*
 
-## What do I do with all these results?
-
-*TODO*
-
 ## Breaking the rules
 
 Sometimes scientists just gotta do weird stuff. We understand.
