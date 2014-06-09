@@ -1,8 +1,16 @@
-# Internal: What happened when this block was called?
+# What happened when this named behavior was executed? Immutable.
 class Scientist::Observation
+
+  # The String name of the behavior.
   attr_reader :name
+
+  # The value returned, if any.
   attr_reader :value
+
+  # The raised exception, if any.
   attr_reader :exception
+
+  # The Float seconds elapsed.
   attr_reader :duration
 
   def initialize(name = "observation", &block)
