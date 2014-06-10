@@ -109,4 +109,43 @@ describe Scientist::Experiment do
 
     assert runs.uniq.size > 1
   end
+
+  it "re-raises exceptions raised during publish by default" do
+    def @ex.publish(result)
+      raise "boomtown"
+    end
+
+    @ex.use { "control" }
+    @ex.try { "candidate" }
+
+    exception = assert_raises RuntimeError do
+      @ex.run
+    end
+
+    assert_equal "boomtown", exception.message
+  end
+
+  it "can be overridden to report publish errors" do
+    def @ex.publish(result)
+      raise "boomtown"
+    end
+
+    def @ex.exceptions
+      @exceptions ||= []
+    end
+
+    def @ex.raised(op, exception)
+      exceptions << [op, exception]
+    end
+
+    @ex.use { "control" }
+    @ex.try { "candidate" }
+
+    assert_equal "control", @ex.run
+
+    op, exception = @ex.exceptions.pop
+
+    assert_equal :publish, op
+    assert_equal "boomtown", exception.message
+  end
 end
