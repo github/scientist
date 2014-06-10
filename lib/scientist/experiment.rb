@@ -28,6 +28,9 @@ module Scientist::Experiment
   end
 
   def run(primary = "control")
+    behaviors.freeze
+    context.freeze
+    
     primary = primary.to_s
     block = behaviors[primary]
 
