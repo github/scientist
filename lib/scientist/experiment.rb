@@ -19,8 +19,9 @@ module Scientist::Experiment
   end
 
   def context(context = nil)
-    @_scientist_context = context if !context.nil?
     @_scientist_context ||= {}
+    @_scientist_context.merge!(context) if !context.nil?
+    @_scientist_context
   end
 
   def name
