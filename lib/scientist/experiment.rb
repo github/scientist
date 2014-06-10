@@ -4,14 +4,8 @@ module Scientist::Experiment
 
   # Create a new instance of a class that implements the Scientist::Experiment
   # interface. Override `Scientist::Experiment.implementation` to change.
-  def self.new(*args)
-    implementation.new(*args)
-  end
-
-  # A class that includes and implements Scientist::Experiment. Override this
-  # method to use a custom class in the `Scientist#scientist` helper.
-  def self.implementation
-    Scientist::Default
+  def self.new(name, **options)
+    Scientist::Default.new(name)
   end
 
   # A Hash of behavior blocks, keyed by String name. Register behavior blocks

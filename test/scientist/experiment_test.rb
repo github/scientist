@@ -14,11 +14,7 @@ describe Scientist::Experiment do
     @ex = Fake.new
   end
 
-  it "uses Scientist::Default for its implementation" do
-    assert_equal Scientist::Default, Scientist::Experiment.implementation
-  end
-
-  it "can be instantiated via its implementation" do
+  it "has a default implementation" do
     ex = Scientist::Experiment.new("hello")
     assert_kind_of Scientist::Default, ex
     assert_equal "hello", ex.name

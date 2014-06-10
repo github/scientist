@@ -9,7 +9,7 @@ Let's pretend you're changing the way you handle permissions in a large web app.
 ```ruby
 require "scientist"
 
-class MyApp::Widget
+class MyWidget
   def allows?(user)
     experiment = Scientist::Default.new "widget-permissions" do |e|
       e.use { model.check_user?(user).valid? } # old way
@@ -37,7 +37,7 @@ Creating an experiment is wordy, so the `Scientist#science` helper instantiates 
 ```ruby
 require "scientist"
 
-class MyApp::Widget
+class MyWidget
   include Scientist
 
   def allows?(user)
@@ -56,7 +56,7 @@ The examples above will run, but they're not really *doing* anything. The `try` 
 ```ruby
 require "scientist"
 
-class MyApp::Experiment
+class MyExperiment < ActiveRecord::Base
   include Scientist::Experiment
 
   def enabled?
@@ -71,12 +71,12 @@ class MyApp::Experiment
 end
 
 # replace `Scientist::Default`
-def Scientist::Experiment.implementation
-  MyApp:Experiment
+def Scientist::Experiment.new(name)
+  MyExperiment.find_or_initialize_by(name: name)
 end
 ```
 
-Now calls to the `science` helper will create instances of `MyApp::Experiment`.
+Now calls to the `science` helper will load instances of `MyExperiment`.
 
 ### Ramping up experiments
 
@@ -106,7 +106,7 @@ end
 `context` takes a Symbol-keyed Hash of extra data. The data is available in `publish` via `result.experiment.context`. If you're using the `science` helper a lot in a class, you can provide a default context:
 
 ```ruby
-class MyApp::Widget
+class MyWidget
   include Scientist
 
   def allows?(user)
@@ -150,7 +150,7 @@ To try more than one alternative at once, add names to some `try` blocks:
 ```ruby
 require "scientist"
 
-class MyApp::Widget
+class MyWidget
   include Scientist
 
   def allows?(user)
@@ -169,7 +169,7 @@ end
 Define the candidates with named `try` blocks, omit a `use`, and pass a candidate name to `run`:
 
 ```ruby
-experiment = MyApp::Experiment.new("various-ways") do |e|
+experiment = MyExperiment.new("various-ways") do |e|
   e.try("first-way")  { ... }
   e.try("second-way") { ... }
 end
