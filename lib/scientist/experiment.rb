@@ -1,5 +1,5 @@
-# This mixin provides shared behavior for experiments. Includers must
-# implement `enabled?` and `publish(result)`.
+# This mixin provides shared behavior for experiments. Includers must implement
+# `enabled?` and `publish(result)`.
 module Scientist::Experiment
 
   # Create a new instance of a class that implements the Scientist::Experiment
@@ -8,33 +8,40 @@ module Scientist::Experiment
     implementation.new(*args)
   end
 
-  # A class that includes + implements Scientist::Experiment. Override this
+  # A class that includes and implements Scientist::Experiment. Override this
   # method to use a custom class in the `Scientist#scientist` helper.
   def self.implementation
     Scientist::Default
   end
 
+  # A Hash of behavior blocks, keyed by String name. Register behavior blocks
+  # with the `try` and `use` methods.
   def behaviors
     @_scientist_behaviors ||= {}
   end
 
+  # A Symbol-keyed Hash of extra experiment data.
   def context(context = nil)
     @_scientist_context ||= {}
     @_scientist_context.merge!(context) if !context.nil?
     @_scientist_context
   end
 
+  # The String name of this experiment. Default is "experiment". See
+  # Scientist::Default for an example of how to override this default.
   def name
     "experiment"
   end
 
   # Called when an exception is raised while running an internal operation,
-  # like `:publish`. Override this method to track these exceptions. The
+  # like :publish. Override this method to track these exceptions. The
   # default implementation re-raises the exception.
-  def raised(op, exception)
-    raise exception
+  def raised(op, ex)
+    raise ex
   end
 
+  # Run all the behaviors for this experiment, observing each and publishing
+  # the results. Return the result of the named behavior, default "control".
   def run(name = "control")
     behaviors.freeze
     context.freeze
@@ -75,6 +82,7 @@ module Scientist::Experiment
     primary.value
   end
 
+  # Register a named behavior for this experiment, default "candidate".
   def try(name = "candidate", &block)
     name = name.to_s
 
@@ -85,6 +93,7 @@ module Scientist::Experiment
     behaviors[name] = block
   end
 
+  # Register the control behavior for this experiment.
   def use(&block)
     try("control", &block)
   end
