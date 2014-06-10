@@ -27,10 +27,17 @@ module Scientist::Experiment
     "experiment"
   end
 
+  # Internal: Called when an exception is raised while running an internal
+  # operation, like `:publish`. Override this method to track these exceptions.
+  # The default implementation re-raises the exception.
+  def raised(op, exception)
+    raise exception
+  end
+
   def run(primary = "control")
     behaviors.freeze
     context.freeze
-    
+
     primary = primary.to_s
     block = behaviors[primary]
 
@@ -52,7 +59,11 @@ module Scientist::Experiment
     use = observations.detect { |o| o.name == primary }
     result = Scientist::Result.new(self, observations, primary)
 
-    publish(result)
+    begin
+      publish(result)
+    rescue StandardError => ex
+      raised(:publish, ex)
+    end
 
     if use.raised?
       raise use.exception
