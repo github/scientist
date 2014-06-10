@@ -90,10 +90,6 @@ Now calls to the `science` helper will create instances of `MyApp::Experiment`.
 
 *TODO*
 
-### Skipping outliers
-
-*TODO*
-
 ### Adding context
 
 Results aren't very useful without some way to identify them.
