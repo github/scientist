@@ -34,7 +34,7 @@ module Scientist::Experiment
     raise exception
   end
 
-  def run(primary = "control")
+  def run(primary: "control")
     behaviors.freeze
     context.freeze
 
