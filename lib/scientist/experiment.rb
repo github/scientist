@@ -58,7 +58,9 @@ module Scientist::Experiment
     end
 
     primary = observations.detect { |o| o.name == name }
-    result = Scientist::Result.new(self, observations: observations, primary: primary)
+
+    result = Scientist::Result.new self,
+      observations: observations, primary: primary
 
     begin
       publish(result)
