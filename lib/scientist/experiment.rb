@@ -8,13 +8,19 @@ module Scientist::Experiment
     implementation.new(*args)
   end
 
-  # A class that includes + implements Scientist::Experiment.
+  # A class that includes + implements Scientist::Experiment. Override this
+  # method to use a custom class in the `Scientist#scientist` helper.
   def self.implementation
     Scientist::Default
   end
 
   def behaviors
-    @behaviors ||= {}
+    @_scientist_behaviors ||= {}
+  end
+
+  def context(context = nil)
+    @_scientist_context = context if !context.nil?
+    @_scientist_context ||= {}
   end
 
   def name
