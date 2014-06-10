@@ -34,15 +34,15 @@ module Scientist::Experiment
     raise exception
   end
 
-  def run(primary: "control")
+  def run(name = "control")
     behaviors.freeze
     context.freeze
 
-    primary = primary.to_s
-    block = behaviors[primary]
+    name = name.to_s
+    block = behaviors[name]
 
     if block.nil?
-      raise Scientist::BehaviorMissing.new(self, primary)
+      raise Scientist::BehaviorMissing.new(self, name)
     end
 
     if behaviors.size == 1 || !enabled?
@@ -51,13 +51,13 @@ module Scientist::Experiment
 
     observations = []
 
-    behaviors.keys.shuffle.each do |name|
-      block = behaviors[name]
-      observations << Scientist::Observation.new(name, &block)
+    behaviors.keys.shuffle.each do |key|
+      block = behaviors[key]
+      observations << Scientist::Observation.new(key, &block)
     end
 
-    use = observations.detect { |o| o.name == primary }
-    result = Scientist::Result.new(self, observations, primary)
+    primary = observations.detect { |o| o.name == name }
+    result = Scientist::Result.new(self, observations: observations, primary: primary)
 
     begin
       publish(result)
@@ -65,11 +65,11 @@ module Scientist::Experiment
       raised(:publish, ex)
     end
 
-    if use.raised?
-      raise use.exception
+    if primary.raised?
+      raise primary.exception
     end
 
-    use.value
+    primary.value
   end
 
   def try(name = "candidate", &block)

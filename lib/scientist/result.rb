@@ -10,7 +10,8 @@ class Scientist::Result
   # The String name of the primary observed behavior.
   attr_reader :primary
 
-  def initialize(experiment, observations, primary)
+  # Internal: Create a new result.
+  def initialize(experiment, observations:, primary:)
     @experiment = experiment
     @observations = observations
     @primary = primary

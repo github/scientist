@@ -139,13 +139,13 @@ experiment = MyApp::Experiment.new("various-ways") do |e|
   e.try("second-way") { ... }
 end
 
-experiment.run(primary: "second-way")
+experiment.run("second-way")
 ```
 
 The `science` helper also knows this trick:
 
 ```ruby
-science "various-ways", primary: "first-way" do |e|
+science "various-ways", run: "first-way" do |e|
   e.try("first-way")  { ... }
   e.try("second-way") { ... }
 end
