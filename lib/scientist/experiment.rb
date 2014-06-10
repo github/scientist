@@ -36,11 +36,11 @@ module Scientist::Experiment
 
   # Run all the behaviors for this experiment, observing each and publishing
   # the results. Return the result of the named behavior, default "control".
-  def run(name = "control")
+  def run(name = nil)
     behaviors.freeze
     context.freeze
 
-    name = name.to_s
+    name = (name || "control").to_s
     block = behaviors[name]
 
     if block.nil?
@@ -77,8 +77,8 @@ module Scientist::Experiment
   end
 
   # Register a named behavior for this experiment, default "candidate".
-  def try(name = "candidate", &block)
-    name = name.to_s
+  def try(name = nil, &block)
+    name = (name || "candidate").to_s
 
     if behaviors.include?(name)
       raise Scientist::BehaviorNotUnique.new(self, name)

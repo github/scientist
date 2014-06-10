@@ -6,12 +6,12 @@ require "scientist/result"
 require "scientist/version"
 
 module Scientist
-  def science(*args)
-    experiment = Experiment.new(*args)
+  def science(name, run: nil, **options)
+    experiment = Experiment.new(name, **options)
     experiment.context(default_scientist_context)
 
     yield experiment if block_given?
-    experiment.run
+    experiment.run(run)
   end
 
   def default_scientist_context
