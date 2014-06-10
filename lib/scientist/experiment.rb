@@ -27,9 +27,9 @@ module Scientist::Experiment
     "experiment"
   end
 
-  # Internal: Called when an exception is raised while running an internal
-  # operation, like `:publish`. Override this method to track these exceptions.
-  # The default implementation re-raises the exception.
+  # Called when an exception is raised while running an internal operation,
+  # like `:publish`. Override this method to track these exceptions. The
+  # default implementation re-raises the exception.
   def raised(op, exception)
     raise exception
   end

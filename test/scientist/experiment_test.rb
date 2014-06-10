@@ -37,12 +37,12 @@ describe Scientist::Experiment do
     end
   end
 
-  it "requires includers to implement perform" do
+  it "requires includers to implement publish" do
     obj = Object.new
     obj.extend Scientist::Experiment
 
     assert_raises NoMethodError do
-      obj.perform("payload")
+      obj.publish("result")
     end
   end
 
