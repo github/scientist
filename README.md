@@ -96,7 +96,46 @@ Now calls to the `science` helper will create instances of `MyApp::Experiment`.
 
 ### Adding context
 
-*TODO*
+Results aren't very useful without some way to identify them.
+
+```ruby
+science "widget-permissions" do |e|
+  e.context :user => user
+
+  e.use { model.check_user(user).valid? }
+  e.try { user.can?(:read, model) }
+end
+```
+
+`context` takes a Symbol-keyed Hash of extra data. The data is available in `publish` via `result.experiment.context`. If you're using the `science` helper a lot in a class, you can provide a default context:
+
+```ruby
+class MyApp::Widget
+  include Scientist
+
+  def allows?(user)
+    science "widget-permissions" do |e|
+      e.context :user => user
+
+      e.use { model.check_user(user).valid? }
+      e.try { user.can?(:read, model) }
+    end
+  end
+
+  def destroy
+    science "widget-destruction" do |e|
+      e.use { old_scary_destroy }
+      e.try { new_safe_destroy }
+    end
+  end
+
+  def default_scientist_context
+    { :widget => self }
+  end
+end
+```
+
+The `widget-permissions` and `widget-destruction` experiments will both have a `:widget` key in their contexts.
 
 ### Keeping it clean
 
@@ -145,7 +184,7 @@ experiment.run("second-way")
 The `science` helper also knows this trick:
 
 ```ruby
-science "various-ways", :use => "first-way" do |e|
+science "various-ways", run: "first-way" do |e|
   e.try("first-way")  { ... }
   e.try("second-way") { ... }
 end

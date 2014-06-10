@@ -8,25 +8,42 @@ module Scientist::Experiment
     implementation.new(*args)
   end
 
-  # A class that includes + implements Scientist::Experiment.
+  # A class that includes + implements Scientist::Experiment. Override this
+  # method to use a custom class in the `Scientist#scientist` helper.
   def self.implementation
     Scientist::Default
   end
 
   def behaviors
-    @behaviors ||= {}
+    @_scientist_behaviors ||= {}
+  end
+
+  def context(context = nil)
+    @_scientist_context ||= {}
+    @_scientist_context.merge!(context) if !context.nil?
+    @_scientist_context
   end
 
   def name
     "experiment"
   end
 
-  def run(primary = "control")
-    primary = primary.to_s
-    block = behaviors[primary]
+  # Called when an exception is raised while running an internal operation,
+  # like `:publish`. Override this method to track these exceptions. The
+  # default implementation re-raises the exception.
+  def raised(op, exception)
+    raise exception
+  end
+
+  def run(name = "control")
+    behaviors.freeze
+    context.freeze
+
+    name = name.to_s
+    block = behaviors[name]
 
     if block.nil?
-      raise Scientist::BehaviorMissing.new(self, primary)
+      raise Scientist::BehaviorMissing.new(self, name)
     end
 
     if behaviors.size == 1 || !enabled?
@@ -35,21 +52,25 @@ module Scientist::Experiment
 
     observations = []
 
-    behaviors.keys.shuffle.each do |name|
-      block = behaviors[name]
-      observations << Scientist::Observation.new(name, &block)
+    behaviors.keys.shuffle.each do |key|
+      block = behaviors[key]
+      observations << Scientist::Observation.new(key, &block)
     end
 
-    use = observations.detect { |o| o.name == primary }
-    result = Scientist::Result.new(self, observations, primary)
+    primary = observations.detect { |o| o.name == name }
+    result = Scientist::Result.new(self, observations: observations, primary: primary)
 
-    publish(result)
-
-    if use.raised?
-      raise use.exception
+    begin
+      publish(result)
+    rescue StandardError => ex
+      raised(:publish, ex)
     end
 
-    use.value
+    if primary.raised?
+      raise primary.exception
+    end
+
+    primary.value
   end
 
   def try(name = "candidate", &block)
