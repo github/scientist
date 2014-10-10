@@ -13,6 +13,11 @@ class Scientist::Result
   # An Array of observations which didn't match the primary
   attr_reader :mismatched
 
+  # The experiment's context
+  def context
+    experiment.context
+  end
+
   # Internal: Create a new result.
   def initialize(experiment, observations:, primary:)
     @experiment   = experiment

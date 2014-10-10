@@ -155,6 +155,12 @@ describe Scientist::Experiment do
     assert @ex.published_result
   end
 
+  it "does not publish results when there is only a control value" do
+    @ex.use { 1 }
+    assert_equal 1, @ex.run
+    assert_nil @ex.published_result
+  end
+
   it "compares results with a comparator block if provided" do
     @ex.compare { |a, b| a == b.to_s }
     @ex.use { "1" }
@@ -177,5 +183,13 @@ describe Scientist::Experiment do
     b = Scientist::Observation.new { 1 }
     @ex.compare { |x, y| x == y.to_s }
     assert @ex.observations_are_equivalent?(a, b)
+  end
+
+  it "includes an experiment's context in a published result" do
+    @ex.context :foo => :bar
+    @ex.use { 1 }
+    @ex.try { 1 }
+    @ex.run
+    assert_equal({:foo => :bar}, @ex.published_result.context)
   end
 end
