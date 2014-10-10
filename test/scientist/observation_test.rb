@@ -29,24 +29,24 @@ describe Scientist::Observation do
     a = Scientist::Observation.new { 1 }
     b = Scientist::Observation.new { 1 }
 
-    assert_equal a, b
+    assert a.equivalent_to?(b)
 
     x = Scientist::Observation.new { 1 }
     y = Scientist::Observation.new { 2 }
 
-    refute_equal x, y
+    refute x.equivalent_to?(y)
   end
 
   it "compares exception messages" do
     a = Scientist::Observation.new { raise "error" }
     b = Scientist::Observation.new { raise "error" }
 
-    assert_equal a, b
+    assert a.equivalent_to?(b)
 
     x = Scientist::Observation.new { raise "error" }
     y = Scientist::Observation.new { raise "ERROR" }
 
-    refute_equal x, y
+    refute x.equivalent_to?(y)
   end
 
   FirstErrror = Class.new(StandardError)
@@ -55,5 +55,26 @@ describe Scientist::Observation do
   it "compares exception classes" do
     x = Scientist::Observation.new { raise FirstError, "error" }
     y = Scientist::Observation.new { raise SecondError, "error" }
+    z = Scientist::Observation.new { raise FirstError, "error" }
+
+    assert x.equivalent_to?(z)
+    refute x.equivalent_to?(y)
   end
+
+  it "compares values using a comparator block" do
+    a = Scientist::Observation.new { 1 }
+    b = Scientist::Observation.new { "1" }
+
+    refute a.equivalent_to?(b)
+    assert a.equivalent_to?(b) { |x, y| x.to_s == y.to_s }
+
+    yielded = []
+    a.equivalent_to?(b) do |x, y|
+      yielded << x
+      yielded << y
+      true
+    end
+    assert_equal [a.value, b.value], yielded
+  end
+
 end
