@@ -41,6 +41,15 @@ module Scientist::Experiment
     "experiment"
   end
 
+  # Internal: compare two observations, using the configured compare block if present.
+  def observations_are_equivalent?(a, b)
+    if @_scientist_comparator
+      a.equivalent_to?(b, &@_scientist_comparator)
+    else
+      a.equivalent_to? b
+    end
+  end
+
   # Called when an exception is raised while running an internal operation,
   # like :publish. Override this method to track these exceptions. The
   # default implementation re-raises the exception.
