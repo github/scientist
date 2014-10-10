@@ -35,4 +35,14 @@ describe Scientist::Result do
     result = Scientist::Result.new nil, observations: [a], primary: a
     assert result.match?
   end
+
+  it "evaluates observations using a comparator block if provided" do
+    a = Scientist::Observation.new("a") { "1" }
+    b = Scientist::Observation.new("b") { 1 }
+
+    result = Scientist::Result.new nil, observations: [a, b], primary: a,
+      comparator: lambda { |x, y| x = y.to_s }
+
+    assert result.match?, result.mismatched
+  end
 end
