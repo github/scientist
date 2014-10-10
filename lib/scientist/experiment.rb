@@ -14,6 +14,20 @@ module Scientist::Experiment
     @_scientist_behaviors ||= {}
   end
 
+  # A block which compares two experimental values.
+  #
+  # The block must take two arguments, the control value and a candidate value,
+  # and return true or false.
+  #
+  # Returns the block.
+  def compare(*args, &block)
+    if block
+      @_scientist_comparator = block
+    else
+      @_scientist_comparator
+    end
+  end
+
   # A Symbol-keyed Hash of extra experiment data.
   def context(context = nil)
     @_scientist_context ||= {}
@@ -30,8 +44,8 @@ module Scientist::Experiment
   # Called when an exception is raised while running an internal operation,
   # like :publish. Override this method to track these exceptions. The
   # default implementation re-raises the exception.
-  def raised(op, ex)
-    raise ex
+  def raised(operation, error)
+    raise error
   end
 
   # Run all the behaviors for this experiment, observing each and publishing
@@ -61,7 +75,9 @@ module Scientist::Experiment
     primary = observations.detect { |o| o.name == name }
 
     result = Scientist::Result.new self,
-      observations: observations, primary: primary
+      observations: observations,
+      primary: primary,
+      comparator: compare
 
     begin
       publish(result)
@@ -89,6 +105,6 @@ module Scientist::Experiment
 
   # Register the control behavior for this experiment.
   def use(&block)
-    try("control", &block)
+    try "control", &block
   end
 end

@@ -6,7 +6,10 @@ describe Scientist::Experiment do
       true
     end
 
+    attr_reader :published_result
+
     def publish(result)
+      @published_result = result
     end
   end
 
@@ -121,7 +124,7 @@ describe Scientist::Experiment do
     assert_equal "boomtown", exception.message
   end
 
-  it "can be overridden to report publish errors" do
+  it "can be overridden to report publishing errors" do
     def @ex.publish(result)
       raise "boomtown"
     end
@@ -143,5 +146,21 @@ describe Scientist::Experiment do
 
     assert_equal :publish, op
     assert_equal "boomtown", exception.message
+  end
+
+  it "publishes results" do
+    @ex.use { 1 }
+    @ex.try { 1 }
+    assert_equal 1, @ex.run
+    assert @ex.published_result
+  end
+
+  it "compares results with a comparator block if provided" do
+    @ex.compare { |a, b| a == b.to_s }
+    @ex.use { "1" }
+    @ex.try { 1 }
+
+    assert_equal "1", @ex.run
+    assert @ex.published_result.match?
   end
 end
