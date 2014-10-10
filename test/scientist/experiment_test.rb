@@ -192,4 +192,26 @@ describe Scientist::Experiment do
     @ex.run
     assert_equal({:foo => :bar}, @ex.published_result.context)
   end
+
+  it "reports errors in a compare block" do
+    def @ex.exceptions
+      @exceptions ||= []
+    end
+
+    def @ex.raised(op, exception)
+      exceptions << [op, exception]
+    end
+
+    @ex.compare { raise "boomtown" }
+
+    @ex.use { "control" }
+    @ex.try { "candidate" }
+
+    assert_equal "control", @ex.run
+
+    op, exception = @ex.exceptions.pop
+
+    assert_equal :compare, op
+    assert_equal "boomtown", exception.message
+  end
 end

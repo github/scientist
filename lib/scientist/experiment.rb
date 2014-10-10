@@ -48,6 +48,9 @@ module Scientist::Experiment
     else
       a.equivalent_to? b
     end
+  rescue StandardError => ex
+    raised(:compare, ex)
+    false
   end
 
   # Called when an exception is raised while running an internal operation,
