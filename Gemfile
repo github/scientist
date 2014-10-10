@@ -1,4 +1,4 @@
-ruby   "2.1.0"
+ruby   "2.1.2"
 source "https://rubygems.org"
 
 gemspec
