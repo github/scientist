@@ -1,9 +1,13 @@
 describe Scientist::Result do
+  before do
+    @experiment = Scientist::Experiment.new "experiment"
+  end
+
   it "is immutable" do
     control = Scientist::Observation.new("control")
     candidate = Scientist::Observation.new("candidate")
 
-    result = Scientist::Result.new nil,
+    result = Scientist::Result.new @experiment,
       observations: [control, candidate], primary: control
 
     assert result.frozen?
@@ -15,7 +19,7 @@ describe Scientist::Result do
 
     assert a.equivalent_to?(b)
 
-    result = Scientist::Result.new nil, observations: [a, b], primary: a
+    result = Scientist::Result.new @experiment, observations: [a, b], primary: a
     assert result.match?
     refute result.mismatch?
     assert_equal [], result.mismatched
@@ -24,7 +28,7 @@ describe Scientist::Result do
     y = Scientist::Observation.new("y") { 2 }
     z = Scientist::Observation.new("z") { 3 }
 
-    result = Scientist::Result.new nil, observations: [x, y, z], primary: x
+    result = Scientist::Result.new @experiment, observations: [x, y, z], primary: x
     refute result.match?
     assert result.mismatch?
     assert_equal [y, z], result.mismatched
@@ -32,16 +36,17 @@ describe Scientist::Result do
 
   it "has no mismatches if there is only a primary observation" do
     a = Scientist::Observation.new("a") { 1 }
-    result = Scientist::Result.new nil, observations: [a], primary: a
+    result = Scientist::Result.new @experiment, observations: [a], primary: a
     assert result.match?
   end
 
-  it "evaluates observations using a comparator block if provided" do
+  it "evaluates observations using the experiment's compare block" do
     a = Scientist::Observation.new("a") { "1" }
     b = Scientist::Observation.new("b") { 1 }
 
-    result = Scientist::Result.new nil, observations: [a, b], primary: a,
-      comparator: lambda { |x, y| x = y.to_s }
+    @experiment.compare { |x, y| x == y.to_s }
+
+    result = Scientist::Result.new @experiment, observations: [a, b], primary: a
 
     assert result.match?, result.mismatched
   end

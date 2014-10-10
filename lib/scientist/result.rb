@@ -14,11 +14,10 @@ class Scientist::Result
   attr_reader :mismatched
 
   # Internal: Create a new result.
-  def initialize(experiment, observations:, primary:, comparator: nil)
+  def initialize(experiment, observations:, primary:)
     @experiment   = experiment
     @observations = observations
     @primary      = primary
-    @comparator   = comparator
     @mismatched   = evaluate_observations_for_mismatches
 
     freeze
@@ -37,11 +36,8 @@ class Scientist::Result
   # Internal: evaluate the observations to determine if the observations match.
   def evaluate_observations_for_mismatches
     observations.reject do |observation|
-      if @comparator
-        observation == primary || primary.equivalent_to?(observation, &@comparator)
-      else
-        observation == primary || primary.equivalent_to?(observation)
-      end
+      observation == primary ||
+        experiment.observations_are_equivalent?(primary, observation)
     end
   end
 end

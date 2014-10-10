@@ -85,8 +85,7 @@ module Scientist::Experiment
 
     result = Scientist::Result.new self,
       observations: observations,
-      primary: primary,
-      comparator: compare
+      primary: primary
 
     begin
       publish(result)
