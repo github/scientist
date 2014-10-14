@@ -77,4 +77,17 @@ describe Scientist::Observation do
     assert_equal [a.value, b.value], yielded
   end
 
+  describe "#cleaned_value" do
+    it "returns the observation's value by default" do
+      a = Scientist::Observation.new("test", @experiment) { 1 }
+      assert_equal 1, a.cleaned_value
+    end
+
+    it "uses the experiment's clean block to clean a value when configured" do
+      @experiment.clean { |value| value.upcase }
+      a = Scientist::Observation.new("test", @experiment) { "test" }
+      assert_equal "TEST", a.cleaned_value
+    end
+  end
+
 end

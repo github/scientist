@@ -35,6 +35,14 @@ class Scientist::Observation
     freeze
   end
 
+  # Return a cleaned value suitable for publishing. Uses the experiment's
+  # defined cleaner block to clean the observed value.
+  def cleaned_value
+    if value
+      experiment.clean_value value
+    end
+  end
+
   # Is this observation equivalent to another?
   #
   # other      - the other Observation in question

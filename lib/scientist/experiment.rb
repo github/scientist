@@ -14,6 +14,25 @@ module Scientist::Experiment
     @_scientist_behaviors ||= {}
   end
 
+  # A block to clean an observed value for publishing or storing.
+  #
+  # The block takes one argument, the observed value which will be cleaned.
+  #
+  # Returns the configured block.
+  def clean(&block)
+    @_scientist_cleaner = block
+  end
+
+  # Internal: Clean a value with the configured clean block, or return the value
+  # if no clean block is configured.
+  def clean_value(value)
+    if @_scientist_cleaner
+      @_scientist_cleaner.call value
+    else
+      value
+    end
+  end
+
   # A block which compares two experimental values.
   #
   # The block must take two arguments, the control value and a candidate value,

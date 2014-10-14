@@ -214,4 +214,16 @@ describe Scientist::Experiment do
     assert_equal :compare, op
     assert_equal "boomtown", exception.message
   end
+
+  it "returns the given value when no clean block is configured" do
+    assert_equal 10, @ex.clean_value(10)
+  end
+
+  it "calls the configured clean block with a value when configured" do
+    @ex.clean do |value|
+      value.upcase
+    end
+
+    assert_equal "TEST", @ex.clean_value("test")
+  end
 end
