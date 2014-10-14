@@ -4,8 +4,8 @@ describe Scientist::Result do
   end
 
   it "is immutable" do
-    control = Scientist::Observation.new("control")
-    candidate = Scientist::Observation.new("candidate")
+    control = Scientist::Observation.new("control", @experiment)
+    candidate = Scientist::Observation.new("candidate", @experiment)
 
     result = Scientist::Result.new @experiment,
       observations: [control, candidate], primary: control
@@ -14,8 +14,8 @@ describe Scientist::Result do
   end
 
   it "evaluates its observations" do
-    a = Scientist::Observation.new("a") { 1 }
-    b = Scientist::Observation.new("b") { 1 }
+    a = Scientist::Observation.new("a", @experiment) { 1 }
+    b = Scientist::Observation.new("b", @experiment) { 1 }
 
     assert a.equivalent_to?(b)
 
@@ -24,9 +24,9 @@ describe Scientist::Result do
     refute result.mismatch?
     assert_equal [], result.mismatched
 
-    x = Scientist::Observation.new("x") { 1 }
-    y = Scientist::Observation.new("y") { 2 }
-    z = Scientist::Observation.new("z") { 3 }
+    x = Scientist::Observation.new("x", @experiment) { 1 }
+    y = Scientist::Observation.new("y", @experiment) { 2 }
+    z = Scientist::Observation.new("z", @experiment) { 3 }
 
     result = Scientist::Result.new @experiment, observations: [x, y, z], primary: x
     refute result.match?
@@ -35,14 +35,14 @@ describe Scientist::Result do
   end
 
   it "has no mismatches if there is only a primary observation" do
-    a = Scientist::Observation.new("a") { 1 }
+    a = Scientist::Observation.new("a", @experiment) { 1 }
     result = Scientist::Result.new @experiment, observations: [a], primary: a
     assert result.match?
   end
 
   it "evaluates observations using the experiment's compare block" do
-    a = Scientist::Observation.new("a") { "1" }
-    b = Scientist::Observation.new("b") { 1 }
+    a = Scientist::Observation.new("a", @experiment) { "1" }
+    b = Scientist::Observation.new("b", @experiment) { 1 }
 
     @experiment.compare { |x, y| x == y.to_s }
 

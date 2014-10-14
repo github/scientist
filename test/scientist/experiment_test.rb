@@ -171,16 +171,16 @@ describe Scientist::Experiment do
   end
 
   it "knows how to compare two experiments" do
-    a = Scientist::Observation.new { 1 }
-    b = Scientist::Observation.new { 2 }
+    a = Scientist::Observation.new(@ex, "a") { 1 }
+    b = Scientist::Observation.new(@ex, "b") { 2 }
 
     assert @ex.observations_are_equivalent?(a, a)
     refute @ex.observations_are_equivalent?(a, b)
   end
 
   it "uses a compare block to determine if observations are equivalent" do
-    a = Scientist::Observation.new { "1" }
-    b = Scientist::Observation.new { 1 }
+    a = Scientist::Observation.new(@ex, "a") { "1" }
+    b = Scientist::Observation.new(@ex, "b") { 1 }
     @ex.compare { |x, y| x == y.to_s }
     assert @ex.observations_are_equivalent?(a, b)
   end

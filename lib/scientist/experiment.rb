@@ -81,7 +81,7 @@ module Scientist::Experiment
 
     behaviors.keys.shuffle.each do |key|
       block = behaviors[key]
-      observations << Scientist::Observation.new(key, &block)
+      observations << Scientist::Observation.new(key, self, &block)
     end
 
     primary = observations.detect { |o| o.name == name }

@@ -1,6 +1,9 @@
 # What happened when this named behavior was executed? Immutable.
 class Scientist::Observation
 
+  # The experiment this observation is for
+  attr_reader :experiment
+
   # The instant observation began.
   attr_reader :now
 
@@ -16,9 +19,10 @@ class Scientist::Observation
   # The Float seconds elapsed.
   attr_reader :duration
 
-  def initialize(name = "observation", &block)
-    @name = name
-    @now = Time.now
+  def initialize(name, experiment, &block)
+    @name       = name
+    @experiment = experiment
+    @now        = Time.now
 
     begin
       @value = block.call

@@ -1,11 +1,11 @@
 describe Scientist::Observation do
-  it "takes an optional name" do
-    assert_equal "observation", Scientist::Observation.new{}.name
-    assert_equal "name", Scientist::Observation.new("name"){}.name
+
+  before do
+    @experiment = Scientist::Experiment.new "test"
   end
 
   it "observes and records the execution of a block" do
-    ob = Scientist::Observation.new do
+    ob = Scientist::Observation.new("test", @experiment) do
       sleep 0.1
       "ret"
     end
@@ -16,7 +16,7 @@ describe Scientist::Observation do
   end
 
   it "stashes exceptions" do
-    ob = Scientist::Observation.new do
+    ob = Scientist::Observation.new("test", @experiment) do
       raise "exception"
     end
 
@@ -26,25 +26,25 @@ describe Scientist::Observation do
   end
 
   it "compares values" do
-    a = Scientist::Observation.new { 1 }
-    b = Scientist::Observation.new { 1 }
+    a = Scientist::Observation.new("test", @experiment) { 1 }
+    b = Scientist::Observation.new("test", @experiment) { 1 }
 
     assert a.equivalent_to?(b)
 
-    x = Scientist::Observation.new { 1 }
-    y = Scientist::Observation.new { 2 }
+    x = Scientist::Observation.new("test", @experiment) { 1 }
+    y = Scientist::Observation.new("test", @experiment) { 2 }
 
     refute x.equivalent_to?(y)
   end
 
   it "compares exception messages" do
-    a = Scientist::Observation.new { raise "error" }
-    b = Scientist::Observation.new { raise "error" }
+    a = Scientist::Observation.new("test", @experiment) { raise "error" }
+    b = Scientist::Observation.new("test", @experiment) { raise "error" }
 
     assert a.equivalent_to?(b)
 
-    x = Scientist::Observation.new { raise "error" }
-    y = Scientist::Observation.new { raise "ERROR" }
+    x = Scientist::Observation.new("test", @experiment) { raise "error" }
+    y = Scientist::Observation.new("test", @experiment) { raise "ERROR" }
 
     refute x.equivalent_to?(y)
   end
@@ -53,17 +53,17 @@ describe Scientist::Observation do
   SecondError = Class.new(StandardError)
 
   it "compares exception classes" do
-    x = Scientist::Observation.new { raise FirstError, "error" }
-    y = Scientist::Observation.new { raise SecondError, "error" }
-    z = Scientist::Observation.new { raise FirstError, "error" }
+    x = Scientist::Observation.new("test", @experiment) { raise FirstError, "error" }
+    y = Scientist::Observation.new("test", @experiment) { raise SecondError, "error" }
+    z = Scientist::Observation.new("test", @experiment) { raise FirstError, "error" }
 
     assert x.equivalent_to?(z)
     refute x.equivalent_to?(y)
   end
 
   it "compares values using a comparator block" do
-    a = Scientist::Observation.new { 1 }
-    b = Scientist::Observation.new { "1" }
+    a = Scientist::Observation.new("test", @experiment) { 1 }
+    b = Scientist::Observation.new("test", @experiment) { "1" }
 
     refute a.equivalent_to?(b)
     assert a.equivalent_to?(b) { |x, y| x.to_s == y.to_s }
