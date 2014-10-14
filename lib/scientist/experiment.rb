@@ -40,11 +40,7 @@ module Scientist::Experiment
   #
   # Returns the block.
   def compare(*args, &block)
-    if block
-      @_scientist_comparator = block
-    else
-      @_scientist_comparator
-    end
+    @_scientist_comparator = block
   end
 
   # A Symbol-keyed Hash of extra experiment data.
