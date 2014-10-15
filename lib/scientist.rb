@@ -5,11 +5,14 @@ require "scientist/observation"
 require "scientist/result"
 require "scientist/version"
 
+# Include this module into any class which requires science experiments in its
+# methods. Provides the `science` and `default_scientist_context` methods for
+# defining and running experiments.
 module Scientist
   # Define and run a science experiment.
   #
-  # name - a string
-  # run: - optional argument for which named value to run instead of "control".
+  # name - a String name for this experiment.
+  # run: - optional argument for which named test to run instead of "control".
   #
   # Yields an instance of Scientist::Experiment.
   #
