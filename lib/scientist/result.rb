@@ -16,11 +16,6 @@ class Scientist::Result
   # The primary Observation
   attr_reader :primary
 
-  # The experiment's context
-  def context
-    experiment.context
-  end
-
   # Internal: Create a new result.
   def initialize(experiment, observations:, primary:)
     @experiment   = experiment

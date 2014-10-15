@@ -198,14 +198,6 @@ describe Scientist::Experiment do
     assert @ex.observations_are_equivalent?(a, b)
   end
 
-  it "includes an experiment's context in a published result" do
-    @ex.context :foo => :bar
-    @ex.use { 1 }
-    @ex.try { 1 }
-    @ex.run
-    assert_equal({:foo => :bar}, @ex.published_result.context)
-  end
-
   it "reports errors in a compare block" do
     def @ex.exceptions
       @exceptions ||= []

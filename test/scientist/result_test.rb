@@ -89,11 +89,4 @@ describe Scientist::Result do
     assert_equal [z], result.mismatched
   end
 
-  it "can retrieve its experiment's context" do
-    @experiment.context :foo => :bar
-    result = Scientist::Result.new @experiment,
-      observations: [], primary: nil
-
-    assert_equal({:foo => :bar}, result.context)
-  end
 end
