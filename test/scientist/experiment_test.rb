@@ -2,6 +2,9 @@ describe Scientist::Experiment do
   class Fake
     include Scientist::Experiment
 
+    def initialize(*args)
+    end
+
     def enabled?
       true
     end
@@ -17,10 +20,20 @@ describe Scientist::Experiment do
     @ex = Fake.new
   end
 
+  after do
+    Scientist::Experiment.implementation = Scientist::Default
+  end
+
   it "has a default implementation" do
     ex = Scientist::Experiment.new("hello")
     assert_kind_of Scientist::Default, ex
     assert_equal "hello", ex.name
+  end
+
+  it "can have the default implementation overridden" do
+    Scientist::Experiment.implementation = Fake
+    ex = Scientist::Experiment.implementation.new("hello")
+    assert_kind_of Fake, ex
   end
 
   it "provides a static default name" do

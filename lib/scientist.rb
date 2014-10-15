@@ -6,14 +6,29 @@ require "scientist/result"
 require "scientist/version"
 
 module Scientist
-  def science(name, run: nil, **options)
-    experiment = Experiment.new(name, **options)
+  # Define and run a science experiment.
+  #
+  # name - a string
+  # run: - optional argument for which named value to run instead of "control".
+  #
+  # Yields an instance of Scientist::Experiment.
+  #
+  # Returns the calculated value of the primary experiment, or raises if an
+  # exception was raised.
+  def science(name, run: nil)
+    experiment = Experiment.new(name)
     experiment.context(default_scientist_context)
 
-    yield experiment if block_given?
+    yield experiment
+
     experiment.run(run)
   end
 
+  # Public: the default context data for an experiment created and run via the
+  # `science` helper method. Override this in any class that includes Scientist
+  # to define your own behavior.
+  #
+  # Returns a Hash.
   def default_scientist_context
     {}
   end
