@@ -51,6 +51,44 @@ describe Scientist::Result do
     assert result.match?, result.mismatched
   end
 
+  it "does not ignore any mismatches when nothing's ignored" do
+    x = Scientist::Observation.new("x", @experiment) { 1 }
+    y = Scientist::Observation.new("y", @experiment) { 2 }
+
+    result = Scientist::Result.new @experiment, observations: [x, y], primary: x
+
+    assert result.mismatch?
+    refute result.ignored?
+  end
+
+  it "uses the experiment's ignore block to ignore mismatched observations" do
+    x = Scientist::Observation.new("x", @experiment) { 1 }
+    y = Scientist::Observation.new("y", @experiment) { 2 }
+    called = false
+    @experiment.ignore { called = true }
+
+    result = Scientist::Result.new @experiment, observations: [x, y], primary: x
+
+    refute result.mismatch?
+    assert result.ignored?
+    assert called
+  end
+
+  it "partitions observations into mismatched and ignored when applicable" do
+    x = Scientist::Observation.new("x", @experiment) { :x }
+    y = Scientist::Observation.new("y", @experiment) { :y }
+    z = Scientist::Observation.new("z", @experiment) { :z }
+
+    @experiment.ignore { |control, candidate| candidate.value == :y }
+
+    result = Scientist::Result.new @experiment, observations: [x, y, z], primary: x
+
+    assert result.mismatch?
+    assert result.ignored?
+    assert_equal [y], result.ignored
+    assert_equal [z], result.mismatched
+  end
+
   it "can retrieve its experiment's context" do
     @experiment.context :foo => :bar
     result = Scientist::Result.new @experiment,
