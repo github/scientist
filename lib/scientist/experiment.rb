@@ -1,23 +1,14 @@
 # This mixin provides shared behavior for experiments. Includers must implement
-# `initialize(name)`, `enabled?` and `publish(result)`.
+# `enabled?` and `publish(result)`.
+#
+# Override Scientist::Experiment.new to set your own class which includes and
+# implements Scientist::Experiment's interface.
 module Scientist::Experiment
-
-  # Internal: the configured implementation for science experiments.
-  # Defaults to Scientist::Default
-  def self.implementation
-    @implementation_class ||= Scientist::Default
-  end
-
-  # Set the implementation class for experiments. This class must implement the
-  # Scientist::Experiment interface.
-  def self.implementation=(implementation_class)
-    @implementation_class = implementation_class
-  end
 
   # Create a new instance of a class that implements the Scientist::Experiment
   # interface. Set `Scientist::Experiment.implementation` to change.
   def self.new(name)
-    implementation.new(name)
+    Scientist::Default.new(name)
   end
 
   # A Hash of behavior blocks, keyed by String name. Register behavior blocks
