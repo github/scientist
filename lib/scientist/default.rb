@@ -16,6 +16,6 @@ class Scientist::Default
   end
 
   # Don't publish anything.
-  def publish(payload)
+  def publish(result)
   end
 end

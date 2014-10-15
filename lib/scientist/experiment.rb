@@ -1,5 +1,5 @@
 # This mixin provides shared behavior for experiments. Includers must implement
-# `enabled?` and `publish(result)`.
+# `initialize(name)`, `enabled?` and `publish(result)`.
 module Scientist::Experiment
 
   # Internal: the configured implementation for science experiments.
@@ -117,8 +117,9 @@ module Scientist::Experiment
     raise error
   end
 
-  # Run all the behaviors for this experiment, observing each and publishing
-  # the results. Return the result of the named behavior, default "control".
+  # Internal: Run all the behaviors for this experiment, observing each and
+  # publishing the results. Return the result of the named behavior, default
+  # "control".
   def run(name = nil)
     behaviors.freeze
     context.freeze
