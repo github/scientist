@@ -226,4 +226,85 @@ describe Scientist::Experiment do
 
     assert_equal "TEST", @ex.clean_value("test")
   end
+
+  describe "#ignore_mismatched_observation?" do
+    before do
+      @a = Scientist::Observation.new(@ex, "a") { 1 }
+      @b = Scientist::Observation.new(@ex, "b") { 2 }
+    end
+
+    it "does not ignore an observation if no ignores are configured" do
+      refute @ex.ignore_mismatched_observation?(@a, @b)
+    end
+
+    it "calls a configured ignore block with the given observations" do
+      called = false
+      @ex.ignore do |a, b|
+        called = true
+        assert_equal @a, a
+        assert_equal @b, b
+        true
+      end
+
+      assert @ex.ignore_mismatched_observation?(@a, @b)
+      assert called
+    end
+
+    it "calls multiple ignore blocks to see if any match" do
+      called_one = called_two = called_three = false
+      @ex.ignore { |a, b| called_one   = true; false }
+      @ex.ignore { |a, b| called_two   = true; false }
+      @ex.ignore { |a, b| called_three = true; false }
+      refute @ex.ignore_mismatched_observation?(@a, @b)
+      assert called_one
+      assert called_two
+      assert called_three
+    end
+
+    it "only calls ignore blocks until one matches" do
+      called_one = called_two = called_three = false
+      @ex.ignore { |a, b| called_one   = true; false }
+      @ex.ignore { |a, b| called_two   = true; true  }
+      @ex.ignore { |a, b| called_three = true; false }
+      assert @ex.ignore_mismatched_observation?(@a, @b)
+      assert called_one
+      assert called_two
+      refute called_three
+    end
+
+    it "reports exceptions raised in an ignore block and returns false" do
+      def @ex.exceptions
+        @exceptions ||= []
+      end
+
+      def @ex.raised(op, exception)
+        exceptions << [op, exception]
+      end
+
+      @ex.ignore { raise "kaboom" }
+
+      refute @ex.ignore_mismatched_observation?(@a, @b)
+
+      op, exception = @ex.exceptions.pop
+      assert_equal :ignore, op
+      assert_equal "kaboom", exception.message
+    end
+
+    it "skips ignore blocks that raise and tests any remaining blocks if an exception is swallowed" do
+      def @ex.exceptions
+        @exceptions ||= []
+      end
+
+      # this swallows the exception rather than re-raising
+      def @ex.raised(op, exception)
+        exceptions << [op, exception]
+      end
+
+      @ex.ignore { raise "kaboom" }
+      @ex.ignore { true }
+
+      assert @ex.ignore_mismatched_observation?(@a, @b)
+      assert_equal 1, @ex.exceptions.size
+    end
+  end
 end

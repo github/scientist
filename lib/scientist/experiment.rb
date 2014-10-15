@@ -50,6 +50,36 @@ module Scientist::Experiment
     @_scientist_context
   end
 
+  # Configure this experiment to ignore an observation with the given block.
+  #
+  # The block takes two arguments, the control and the candidate observation
+  # which didn't match the control. If the block returns true, the mismatch is
+  # disregarded.
+  #
+  # This can be called more than once with different blocks to use.
+  def ignore(&block)
+    @_scientist_ignores ||= []
+    @_scientist_ignores << block
+  end
+
+  # Internal: ignore a mismatched observation?
+  #
+  # Iterates through the configured ignore blocks and calls each of them with
+  # the given primary and mismatched candidate observations.
+  #
+  # Returns true or false.
+  def ignore_mismatched_observation?(primary, candidate)
+    return false unless @_scientist_ignores
+    @_scientist_ignores.any? do |ignore|
+      begin
+        ignore.call primary, candidate
+      rescue StandardError => ex
+        raised(:ignore, ex)
+        false
+      end
+    end
+  end
+
   # The String name of this experiment. Default is "experiment". See
   # Scientist::Default for an example of how to override this default.
   def name
