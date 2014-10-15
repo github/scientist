@@ -14,4 +14,10 @@ describe Scientist::Default do
   it "is an experiment" do
     assert Scientist::Default < Scientist::Experiment
   end
+
+  it "reraises when an internal action raises" do
+     assert_raises RuntimeError do
+       @ex.raised :publish, RuntimeError.new("kaboom")
+     end
+  end
 end
