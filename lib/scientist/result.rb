@@ -27,12 +27,12 @@ class Scientist::Result
   end
 
   # Public: was the result a match between all behaviors?
-  def match?
+  def matched?
     mismatched.empty?
   end
 
   # Public: were there mismatches in the behaviors?
-  def mismatch?
+  def mismatched?
     mismatched.any?
   end
 

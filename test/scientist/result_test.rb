@@ -20,8 +20,8 @@ describe Scientist::Result do
     assert a.equivalent_to?(b)
 
     result = Scientist::Result.new @experiment, observations: [a, b], primary: a
-    assert result.match?
-    refute result.mismatch?
+    assert result.matched?
+    refute result.mismatched?
     assert_equal [], result.mismatched
 
     x = Scientist::Observation.new("x", @experiment) { 1 }
@@ -29,15 +29,15 @@ describe Scientist::Result do
     z = Scientist::Observation.new("z", @experiment) { 3 }
 
     result = Scientist::Result.new @experiment, observations: [x, y, z], primary: x
-    refute result.match?
-    assert result.mismatch?
+    refute result.matched?
+    assert result.mismatched?
     assert_equal [y, z], result.mismatched
   end
 
   it "has no mismatches if there is only a primary observation" do
     a = Scientist::Observation.new("a", @experiment) { 1 }
     result = Scientist::Result.new @experiment, observations: [a], primary: a
-    assert result.match?
+    assert result.matched?
   end
 
   it "evaluates observations using the experiment's compare block" do
@@ -48,7 +48,7 @@ describe Scientist::Result do
 
     result = Scientist::Result.new @experiment, observations: [a, b], primary: a
 
-    assert result.match?, result.mismatched
+    assert result.matched?, result.mismatched
   end
 
   it "does not ignore any mismatches when nothing's ignored" do
@@ -57,7 +57,7 @@ describe Scientist::Result do
 
     result = Scientist::Result.new @experiment, observations: [x, y], primary: x
 
-    assert result.mismatch?
+    assert result.mismatched?
     refute result.ignored?
   end
 
@@ -69,8 +69,10 @@ describe Scientist::Result do
 
     result = Scientist::Result.new @experiment, observations: [x, y], primary: x
 
-    refute result.mismatch?
+    refute result.mismatched?
     assert result.ignored?
+    assert_equal [], result.mismatched
+    assert_equal [y], result.ignored
     assert called
   end
 
@@ -83,7 +85,7 @@ describe Scientist::Result do
 
     result = Scientist::Result.new @experiment, observations: [x, y, z], primary: x
 
-    assert result.mismatch?
+    assert result.mismatched?
     assert result.ignored?
     assert_equal [y], result.ignored
     assert_equal [z], result.mismatched

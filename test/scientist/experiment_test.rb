@@ -170,7 +170,7 @@ describe Scientist::Experiment do
     @ex.try { 1 }
 
     assert_equal "1", @ex.run
-    assert @ex.published_result.match?
+    assert @ex.published_result.matched?
   end
 
   it "knows how to compare two experiments" do
