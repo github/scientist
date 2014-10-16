@@ -55,9 +55,9 @@ module Scientist::Experiment
 
   # Configure this experiment to ignore an observation with the given block.
   #
-  # The block takes two arguments, the control and the candidate observation
-  # which didn't match the control. If the block returns true, the mismatch is
-  # disregarded.
+  # The block takes two arguments, the control observation and the candidate
+  # observation which didn't match the control. If the block returns true, the
+  # mismatch is disregarded.
   #
   # This can be called more than once with different blocks to use.
   def ignore(&block)
@@ -68,14 +68,14 @@ module Scientist::Experiment
   # Internal: ignore a mismatched observation?
   #
   # Iterates through the configured ignore blocks and calls each of them with
-  # the given primary and mismatched candidate observations.
+  # the given control and mismatched candidate observations.
   #
   # Returns true or false.
-  def ignore_mismatched_observation?(primary, candidate)
+  def ignore_mismatched_observation?(control, candidate)
     return false unless @_scientist_ignores
     @_scientist_ignores.any? do |ignore|
       begin
-        ignore.call primary, candidate
+        ignore.call control, candidate
       rescue StandardError => ex
         raised(:ignore, ex)
         false
@@ -133,11 +133,11 @@ module Scientist::Experiment
       observations << Scientist::Observation.new(key, self, &block)
     end
 
-    primary = observations.detect { |o| o.name == name }
+    control = observations.detect { |o| o.name == name }
 
     result = Scientist::Result.new self,
       observations: observations,
-      primary: primary
+      control: control
 
     begin
       publish(result)
@@ -145,11 +145,11 @@ module Scientist::Experiment
       raised(:publish, ex)
     end
 
-    if primary.raised?
-      raise primary.exception
+    if control.raised?
+      raise control.exception
     end
 
-    primary.value
+    control.value
   end
 
   # Register a named behavior for this experiment, default "candidate".

@@ -8,7 +8,7 @@ describe Scientist::Result do
     candidate = Scientist::Observation.new("candidate", @experiment)
 
     result = Scientist::Result.new @experiment,
-      observations: [control, candidate], primary: control
+      observations: [control, candidate], control: control
 
     assert result.frozen?
   end
@@ -19,7 +19,7 @@ describe Scientist::Result do
 
     assert a.equivalent_to?(b)
 
-    result = Scientist::Result.new @experiment, observations: [a, b], primary: a
+    result = Scientist::Result.new @experiment, observations: [a, b], control: a
     assert result.matched?
     refute result.mismatched?
     assert_equal [], result.mismatched
@@ -28,7 +28,7 @@ describe Scientist::Result do
     y = Scientist::Observation.new("y", @experiment) { 2 }
     z = Scientist::Observation.new("z", @experiment) { 3 }
 
-    result = Scientist::Result.new @experiment, observations: [x, y, z], primary: x
+    result = Scientist::Result.new @experiment, observations: [x, y, z], control: x
     refute result.matched?
     assert result.mismatched?
     assert_equal [y, z], result.mismatched
@@ -36,7 +36,7 @@ describe Scientist::Result do
 
   it "has no mismatches if there is only a primary observation" do
     a = Scientist::Observation.new("a", @experiment) { 1 }
-    result = Scientist::Result.new @experiment, observations: [a], primary: a
+    result = Scientist::Result.new @experiment, observations: [a], control: a
     assert result.matched?
   end
 
@@ -46,7 +46,7 @@ describe Scientist::Result do
 
     @experiment.compare { |x, y| x == y.to_s }
 
-    result = Scientist::Result.new @experiment, observations: [a, b], primary: a
+    result = Scientist::Result.new @experiment, observations: [a, b], control: a
 
     assert result.matched?, result.mismatched
   end
@@ -55,7 +55,7 @@ describe Scientist::Result do
     x = Scientist::Observation.new("x", @experiment) { 1 }
     y = Scientist::Observation.new("y", @experiment) { 2 }
 
-    result = Scientist::Result.new @experiment, observations: [x, y], primary: x
+    result = Scientist::Result.new @experiment, observations: [x, y], control: x
 
     assert result.mismatched?
     refute result.ignored?
@@ -67,7 +67,7 @@ describe Scientist::Result do
     called = false
     @experiment.ignore { called = true }
 
-    result = Scientist::Result.new @experiment, observations: [x, y], primary: x
+    result = Scientist::Result.new @experiment, observations: [x, y], control: x
 
     refute result.mismatched?
     assert result.ignored?
@@ -83,7 +83,7 @@ describe Scientist::Result do
 
     @experiment.ignore { |control, candidate| candidate.value == :y }
 
-    result = Scientist::Result.new @experiment, observations: [x, y, z], primary: x
+    result = Scientist::Result.new @experiment, observations: [x, y, z], control: x
 
     assert result.mismatched?
     assert result.ignored?

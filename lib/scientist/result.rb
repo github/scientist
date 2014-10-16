@@ -1,27 +1,36 @@
 # The immutable result of running an experiment.
 class Scientist::Result
 
+  # An Array of candidate Observations.
+  attr_reader :candidates
+
+  # The control Observation to which the rest are compared.
+  attr_reader :control
+
   # An Experiment.
   attr_reader :experiment
 
-  # An Array of observations which didn't match the primary, but were ignored
+  # An Array of observations which didn't match the primary, but were ignored.
   attr_reader :ignored
 
-  # An Array of observations which didn't match the primary
+  # An Array of observations which didn't match the primary.
   attr_reader :mismatched
 
   # An Array of Observations in execution order.
   attr_reader :observations
 
-  # The primary Observation
-  attr_reader :primary
-
   # Internal: Create a new result.
-  def initialize(experiment, observations:, primary:)
+  #
+  # experiment    - the Experiment this result is for
+  # observations: - an Array of Observations, in execution order
+  # control:      - the control Observation
+  #
+  def initialize(experiment, observations:, control:)
     @experiment   = experiment
     @observations = observations
-    @primary      = primary
-    evaluate_observations
+    @control      = control
+    @candidates   = observations - [control]
+    evaluate_candidates
 
     freeze
   end
@@ -41,17 +50,16 @@ class Scientist::Result
     ignored.any?
   end
 
-  # Internal: evaluate the observations to find mismatched and ignored results
+  # Internal: evaluate the candidates to find mismatched and ignored results
   #
-  # Sets @ignored and @mismatched with the ignored and mismatched observations.
-  def evaluate_observations
-    mismatched = observations.reject do |observation|
-      observation == primary ||
-        experiment.observations_are_equivalent?(primary, observation)
+  # Sets @ignored and @mismatched with the ignored and mismatched candidates.
+  def evaluate_candidates
+    mismatched = candidates.reject do |candidate|
+      experiment.observations_are_equivalent?(control, candidate)
     end
 
-    @ignored = mismatched.select do |observation|
-      experiment.ignore_mismatched_observation? primary, observation
+    @ignored = mismatched.select do |candidate|
+      experiment.ignore_mismatched_observation? control, candidate
     end
 
     @mismatched = mismatched - @ignored
