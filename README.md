@@ -78,11 +78,6 @@ end
 
 Now calls to the `science` helper will load instances of `MyExperiment`.
 
-### Ramping up experiments
-
-*TODO*
-
-
 ### Controlling comparison
 
 Scientist compares control and candidate values using `==`. To override this behavior, use `compare` to define how to compare observed values instead:
