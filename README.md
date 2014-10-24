@@ -181,6 +181,27 @@ class MyExperiment < ActiveRecord::Base
 end
 ```
 
+### Ignoring mismatches
+
+During the early stages of an experiment, it's possible that some of your code will always generate a mismatch for reasons you know and understand but haven't yet fixed. Instead of these known cases always showing up as mismatches in your metrics or analysis, you can tell an experiment whether or not to ignore a mismatch using the `ignore` method. You may include more than one block if needed:
+
+```ruby
+def admin?(user)
+  science "widget-permissions" do |e|
+    e.use { model.check_user(user).admin? }
+    e.try { user.can?(:admin, model) }
+
+    e.ignore { user.staff? } # user is staff, always an admin in the new system
+    e.ignore do |control, candidate|
+      # new system doesn't handle unconfirmed users yet:
+      control && !candidate && !user.confirmed_email?
+    end
+  end
+end
+```
+
+The ignore blocks are only called if the *values* don't match. If one observation raises an exception and the other doesn't, it's always considered a mismatch.
+
 ### Publishing results
 
 What good is science if you can't publish your results?
