@@ -101,7 +101,7 @@ end
 
 ### Adding context
 
-Results aren't very useful without some way to identify them. Use the `context` method to add or retrieve the context for an experiment:
+Results aren't very useful without some way to identify them. Use the `context` method to add to or retrieve the context for an experiment:
 
 ```ruby
 science "widget-permissions" do |e|
