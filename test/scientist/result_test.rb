@@ -81,7 +81,7 @@ describe Scientist::Result do
     y = Scientist::Observation.new("y", @experiment) { :y }
     z = Scientist::Observation.new("z", @experiment) { :z }
 
-    @experiment.ignore { |control, candidate| candidate.value == :y }
+    @experiment.ignore { |control, candidate| candidate == :y }
 
     result = Scientist::Result.new @experiment, observations: [x, y, z], control: x
 

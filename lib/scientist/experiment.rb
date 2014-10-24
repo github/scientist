@@ -75,7 +75,7 @@ module Scientist::Experiment
     return false unless @_scientist_ignores
     @_scientist_ignores.any? do |ignore|
       begin
-        ignore.call control, candidate
+        ignore.call control.value, candidate.value
       rescue StandardError => ex
         raised(:ignore, ex)
         false

@@ -264,12 +264,12 @@ describe Scientist::Experiment do
       refute @ex.ignore_mismatched_observation?(@a, @b)
     end
 
-    it "calls a configured ignore block with the given observations" do
+    it "calls a configured ignore block with the given observed values" do
       called = false
       @ex.ignore do |a, b|
         called = true
-        assert_equal @a, a
-        assert_equal @b, b
+        assert_equal @a.value, a
+        assert_equal @b.value, b
         true
       end
 
