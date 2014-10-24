@@ -34,7 +34,7 @@ describe Scientist::Result do
     assert_equal [y, z], result.mismatched
   end
 
-  it "has no mismatches if there is only a primary observation" do
+  it "has no mismatches if there is only a control observation" do
     a = Scientist::Observation.new("a", @experiment) { 1 }
     result = Scientist::Result.new @experiment, observations: [a], control: a
     assert result.matched?

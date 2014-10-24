@@ -246,7 +246,7 @@ class MyExperiment
   def publish(result)
 
     # Store the timing for the control value,
-    $statsd.timing "science.#{name}.control", result.primary.duration
+    $statsd.timing "science.#{name}.control", result.control.duration
     # for the candidate (only the first, see "Breaking the rules" below,
     $statsd.timing "science.#{name}.candidate", result.candidates.first.duration
 

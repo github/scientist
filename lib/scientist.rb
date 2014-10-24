@@ -17,7 +17,7 @@ module Scientist
   # Yields an object which implements the Scientist::Experiment interface.
   # See `Scientist::Experiment.new` for how this is defined.
   #
-  # Returns the calculated value of the primary experiment, or raises if an
+  # Returns the calculated value of the control experiment, or raises if an
   # exception was raised.
   def science(name, run: nil)
     experiment = Experiment.new(name)

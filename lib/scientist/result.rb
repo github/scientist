@@ -10,10 +10,10 @@ class Scientist::Result
   # An Experiment.
   attr_reader :experiment
 
-  # An Array of observations which didn't match the primary, but were ignored.
+  # An Array of observations which didn't match the control, but were ignored.
   attr_reader :ignored
 
-  # An Array of observations which didn't match the primary.
+  # An Array of observations which didn't match the control.
   attr_reader :mismatched
 
   # An Array of Observations in execution order.
