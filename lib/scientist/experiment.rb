@@ -122,9 +122,7 @@ module Scientist::Experiment
       raise Scientist::BehaviorMissing.new(self, name)
     end
 
-    if behaviors.size == 1 || !enabled?
-      return block.call
-    end
+    return block.call unless should_experiment_run?
 
     observations = []
 
@@ -150,6 +148,17 @@ module Scientist::Experiment
     end
 
     control.value
+  end
+
+  # Define a block that determines whether or not the experiment should run.
+  def run_if(&block)
+    @_scientest_run_if_block = block
+  end
+
+  # Internal: determine whether or not an experiment should run.
+  def should_experiment_run?
+    behaviors.size > 1 && enabled? &&
+      (@_scientest_run_if_block ? @_scientest_run_if_block.call : true)
   end
 
   # Register a named behavior for this experiment, default "candidate".

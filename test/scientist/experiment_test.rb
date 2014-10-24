@@ -222,6 +222,38 @@ describe Scientist::Experiment do
     assert_equal "TEST", @ex.clean_value("test")
   end
 
+  describe "#run_if" do
+    it "does not run the experiment if the given block returns false" do
+      candidate_ran = false
+      run_check_ran = false
+
+      @ex.use { 1 }
+      @ex.try { candidate_ran = true; 1 }
+
+      @ex.run_if { run_check_ran = true; false }
+
+      @ex.run
+
+      assert run_check_ran
+      refute candidate_ran
+    end
+
+    it "runs the experiment if the given block returns true" do
+      candidate_ran = false
+      run_check_ran = false
+
+      @ex.use { true }
+      @ex.try { candidate_ran = true }
+
+      @ex.run_if { run_check_ran = true }
+
+      @ex.run
+
+      assert run_check_ran
+      assert candidate_ran
+    end
+  end
+
   describe "#ignore_mismatched_observation?" do
     before do
       @a = Scientist::Observation.new(@ex, "a") { 1 }
