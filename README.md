@@ -149,7 +149,38 @@ The `widget-permissions` and `widget-destruction` experiments will both have a `
 
 ### Keeping it clean
 
-*TODO*
+Sometimes you don't want to store the full value for later analysis. For example, an experiment may return `User` instances, but when researching a mismatch, all you care about is the logins. You can define how to clean these values in an experiment:
+
+```ruby
+class MyWidget
+  include Scientist
+
+  def users
+    science "users" do |e|
+      e.use { User.all }
+      e.try { UserService.list }
+
+      e.clean do |value|
+        value.map(&:login).sort
+      end
+    end
+  end
+end
+```
+
+And this cleaned value is available in observations in the final published result:
+
+```ruby
+class MyExperiment < ActiveRecord::Base
+  include Scientist::Experiment
+
+  def publish(result)
+    result.control.value         # [<User alice>, <User bob>, <User carol>]
+    result.control.cleaned_value # ["alice", "bob", "carol"]
+  end
+end
+```
+
 ### Publishing results
 
 What good is science if you can't publish your results?
