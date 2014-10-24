@@ -85,7 +85,24 @@ Now calls to the `science` helper will load instances of `MyExperiment`.
 
 ### Controlling comparison
 
-*TODO*
+Scientist compares control and candidate values using `==`. To override this behavior, use `compare` to define how to compare observed values instead:
+
+```ruby
+class MyWidget
+  include Scientist
+
+  def users
+    science "users" do |e|
+      e.use { User.all }         # returns User instances
+      e.try { UserService.list } # returns UserService::User instances
+
+      e.compare do |control, candidate|
+        control.map(&:login) == candidate.map(&:login)
+      end
+    end
+  end
+end
+```
 
 ### Adding context
 
