@@ -6,7 +6,9 @@
 module Scientist::Experiment
 
   # Create a new instance of a class that implements the Scientist::Experiment
-  # interface. Set `Scientist::Experiment.implementation` to change.
+  # interface.
+  #
+  # Override this method directly to change the default implementation.
   def self.new(name)
     Scientist::Default.new(name)
   end

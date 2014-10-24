@@ -14,7 +14,8 @@ module Scientist
   # name - a String name for this experiment.
   # run: - optional argument for which named test to run instead of "control".
   #
-  # Yields an instance of Scientist::Experiment.
+  # Yields an object which implements the Scientist::Experiment interface.
+  # See `Scientist::Experiment.new` for how this is defined.
   #
   # Returns the calculated value of the primary experiment, or raises if an
   # exception was raised.
