@@ -320,6 +320,12 @@ end
 
 Sometimes scientists just gotta do weird stuff. We understand.
 
+### Ignoring results entirely
+
+Science is useful even when all you care about is the timing data or even whether or not a new code path blew up. If you have the ability to incrementally control how often an experiment runs via your `enabled?` method, you can use it to silently and carefully test new code paths and ignore the results altogether. You can do this by setting `ignore { true }`, or for greater efficiency, `compare { true }`.
+
+This will still log mismatches if any exceptions are raised, but will disregard the values entirely.
+
 ### Trying more than one thing
 
 It's not usually a good idea to try more than one alternative simultaneously. Behavior isn't guaranteed to be isolated and reporting + visualization get quite a bit harder. Still, it's sometimes useful.
