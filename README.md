@@ -82,9 +82,6 @@ Now calls to the `science` helper will load instances of `MyExperiment`.
 
 *TODO*
 
-### Publishing results
-
-*TODO*
 
 ### Controlling comparison
 
@@ -136,6 +133,71 @@ The `widget-permissions` and `widget-destruction` experiments will both have a `
 ### Keeping it clean
 
 *TODO*
+### Publishing results
+
+What good is science if you can't publish your results?
+
+You must implement the `publish(result)` method, and can publish data however you like. For example, timing data can be sent to graphite, and mismatches can be placed in a capped collection in redis for debugging later.
+
+The `publish` method is given a `Scientist::Result` instance with its associated `Scientist::Observation`s:
+
+```ruby
+class MyExperiment
+  include Scientist::Experiment
+
+  # ...
+
+  def publish(result)
+
+    # Store the timing for the control value,
+    $statsd.timing "science.#{name}.control", result.primary.duration
+    # for the candidate (only the first, see "Breaking the rules" below,
+    $statsd.timing "science.#{name}.candidate", result.candidates.first.duration
+
+    # and counts for match/ignore/mismatch:
+    if result.matched?
+      $statsd.increment "science.#{name}.matched"
+    elsif result.ignored?
+      $statsd.increment "science.#{name}.ignored"
+    else
+      $statsd.increment "science.#{name}.mismatched"
+      # Finally, store mismatches in redis so they can be retrieved and examined
+      # later on, for debugging and research.
+      store_mismatch_data(result)
+    end
+  end
+
+  def store_mismatch_data(result)
+    payload = {
+      :name            => name,
+      :context         => context,
+      :control         => observation_payload(result.control),
+      :candidate       => observation_payload(result.candidates.first)
+      :execution_order => result.observations.map(&:name),
+    }
+
+    key = "science.#{name}.mismatch"
+    $redis.lpush key, payload
+    $redis.ltrim key, 0, 1000
+  end
+
+  def observation_payload(observation)
+    if observation.raised?
+      {
+        :exception => observation.exeception.class,
+        :message   => observation.exeception.message,
+        :backtrace => observation.exception.backtrace
+      }
+    else
+      {
+        # see "Keeping it clean" below
+        :value => observation.cleaned_value
+      }
+    end
+  end
+end
+```
+
 
 ## Breaking the rules
 
