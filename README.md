@@ -299,6 +299,22 @@ class MyExperiment
 end
 ```
 
+### Handling errors
+
+If an exception is raised within any of scientist's internal helpers, like `publish`, `compare`, or `clean`, the `raised` method is called with the symbol name of the internal operation that failed and the exception that was raised. The default behavior of `Scientist::Default` is to simply re-raise the exception. Since this halts the experiment entirely, it's often a better idea to handle this error and continue so the experiment as a whole isn't canceled entirely:
+
+```ruby
+class MyExperiment
+  include Scientist::Experiment
+
+  # ...
+
+  def raised(operation, error)
+    InternalErrorTracker.track! "science failure in #{name}: #{operation}", error
+  end
+end
+```
+
 
 ## Breaking the rules
 
