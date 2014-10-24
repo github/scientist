@@ -202,6 +202,38 @@ end
 
 The ignore blocks are only called if the *values* don't match. If one observation raises an exception and the other doesn't, it's always considered a mismatch.
 
+### Enabling/disabling experiments
+
+Sometimes you don't want an experiment to run. Say, disabling a new codepath for anyone who isn't staff. You can disable an experiment by setting a `run_if` block. If this returns `false`, the experiment will merely return the control value. Otherwise, it defers to the experiment's configured `enabled?` method.
+
+```ruby
+class DashboardController
+  include Scientist
+
+  def dashboard_items
+    science "dashboard-items" do |e|
+      # only run this experiment for staff members
+      e.run_if { current_user.staff? }
+      # ...
+  end
+end
+```
+
+### Ramping up experiments
+
+As a scientist, you know it's always important to be able to turn your experiment off, lest it run amok and result in villagers with pitchforks on your doorstep. In order to control whether or not an experiment is enabled, you must include the `enabled?` method in your `Scientist::Experiment` implementation.
+
+```ruby
+class MyExperiment < ActiveRecord::Base
+  include Scientist::Experiment
+  def enabled?
+    percent_enabled > 0 && rand(100) < percent_enabled
+  end
+end
+```
+
+This code will be invoked for every method with an experiment every time, so be sensitive about its performance. You can, for example, store an experiment in the database but wrap it in various levels of caching such as memcache or per-request thread-locals.
+
 ### Publishing results
 
 What good is science if you can't publish your results?
