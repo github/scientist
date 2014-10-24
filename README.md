@@ -30,7 +30,7 @@ Wrap a `use` block around the code's original behavior, and wrap `try` around th
 * Swallows (but records) any exceptions raise in the `try` block, and
 * Publishes all this information.
 
-The `try` block is called the **candidate**. The `use` block is called the **control**.
+The `use` block is called the **control**. The `try` block is called the **candidate**.
 
 Creating an experiment is wordy, so the `Scientist#science` helper instantiates an experiment and calls `run`:
 
@@ -64,13 +64,13 @@ class MyExperiment < ActiveRecord::Base
     super
   end
 
-  def publish(payload)
+  def publish(result)
     # see "Publishing results" below
     super
   end
 end
 
-# replace `Scientist::Default`
+# replace `Scientist::Default` as the default implementation
 def Scientist::Experiment.new(name)
   MyExperiment.find_or_initialize_by(name: name)
 end
@@ -106,7 +106,7 @@ end
 
 ### Adding context
 
-Results aren't very useful without some way to identify them.
+Results aren't very useful without some way to identify them. Use the `context` method to add or retrieve the context for an experiment:
 
 ```ruby
 science "widget-permissions" do |e|
@@ -117,7 +117,7 @@ science "widget-permissions" do |e|
 end
 ```
 
-`context` takes a Symbol-keyed Hash of extra data. The data is available in `publish` via `result.experiment.context`. If you're using the `science` helper a lot in a class, you can provide a default context:
+`context` takes a Symbol-keyed Hash of extra data. The data is available in `Experiment#publish` via the `context` method. If you're using the `science` helper a lot in a class, you can provide a default context:
 
 ```ruby
 class MyWidget
