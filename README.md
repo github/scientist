@@ -195,7 +195,7 @@ def admin?(user)
 end
 ```
 
-The ignore blocks are only called if the *values* don't match. If one observation raises an exception and the other doesn't, it's always considered a mismatch.
+The ignore blocks are only called if the *values* don't match. If one observation raises an exception and the other doesn't, it's always considered a mismatch. If both observations raise different exceptions, that is also considered a mismatch.
 
 ### Enabling/disabling experiments
 
