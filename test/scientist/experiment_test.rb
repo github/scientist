@@ -334,4 +334,30 @@ describe Scientist::Experiment do
       assert_equal 1, @ex.exceptions.size
     end
   end
+
+  describe "raising on mismatches" do
+    before do
+      @old_raise_on_mismatches = Fake.raise_on_mismatches?
+    end
+
+    after do
+      Fake.raise_on_mismatches = @old_raise_on_mismatches
+    end
+
+    it "raises when there is a mismatch if raise on mismatches is enabled" do
+      Fake.raise_on_mismatches = true
+      @ex.use { "fine" }
+      @ex.try { "not fine" }
+
+      assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
+    end
+
+    it "doesn't raise when there is a mismatch if raise on mismatches is disabled" do
+      Fake.raise_on_mismatches = false
+      @ex.use { "fine" }
+      @ex.try { "not fine" }
+
+      @ex.run
+    end
+  end
 end
