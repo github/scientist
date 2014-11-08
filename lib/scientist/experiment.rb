@@ -13,6 +13,34 @@ module Scientist::Experiment
     Scientist::Default.new(name)
   end
 
+  # A mismatch, raised when raise_on_mismatches is enabled.
+  class MismatchError < StandardError
+    def initialize(name, result)
+      super "#{name}: control #{result.control.inspect}, candidates #{result.candidates.map &:inspect}"
+    end
+  end
+
+  module RaiseOnMismatch
+    # Set the flag to raise on mismatches. This will cause all science mismatches
+    # to raise a MismatchError. This is useful for test environments and should
+    # not be enabled in a production environment.
+    #
+    # bool - true/false - whether to raise when the control and candidate mismatch.
+    def raise_on_mismatches=(bool)
+      @raise_on_mismatches = bool
+    end
+
+    # Whether or not to raise a mismatch error when a mismatch occurs.
+    def raise_on_mismatches?
+      @raise_on_mismatches
+    end
+  end
+
+  extend RaiseOnMismatch
+  def self.included(base)
+    base.extend RaiseOnMismatch
+  end
+
   # A Hash of behavior blocks, keyed by String name. Register behavior blocks
   # with the `try` and `use` methods.
   def behaviors
@@ -147,6 +175,10 @@ module Scientist::Experiment
 
     if control.raised?
       raise control.exception
+    end
+
+    if self.class.raise_on_mismatches? && result.mismatched?
+      raise MismatchError.new(name, result)
     end
 
     control.value
