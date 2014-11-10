@@ -8,6 +8,8 @@ require "scientist/version"
 # Include this module into any class which requires science experiments in its
 # methods. Provides the `science` and `default_scientist_context` methods for
 # defining and running experiments.
+#
+# If you need to run science on class methods, extend this module instead.
 module Scientist
   # Define and run a science experiment.
   #
