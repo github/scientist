@@ -16,7 +16,7 @@ module Scientist::Experiment
   # A mismatch, raised when raise_on_mismatches is enabled.
   class MismatchError < StandardError
     def initialize(name, result)
-      super "#{name}: control #{result.control.inspect}, candidates #{result.candidates.map &:inspect}"
+      super "#{name}: control #{result.control.inspect}, candidates #{result.candidates.map(&:inspect)}"
     end
   end
 
