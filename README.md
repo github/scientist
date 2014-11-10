@@ -294,6 +294,23 @@ class MyExperiment
 end
 ```
 
+### Testing
+
+When running your test suite, it's helpful to know that the experimental results always match. To help with testing, Scientist defines a `raise_on_mismatches` class attribute when you include `Scientist::Experiment`. Only do this in your test suite!
+
+To raise on mismatches:
+
+```ruby
+class MyExperiment
+  include Scientist::Experiment
+  # ... implementation
+end
+
+MyExperiment.raise_on_mismatches = true
+```
+
+Scientist will raise a `Scientist::Experiment::MismatchError` exception if any observations don't match.
+
 ### Handling errors
 
 If an exception is raised within any of scientist's internal helpers, like `publish`, `compare`, or `clean`, the `raised` method is called with the symbol name of the internal operation that failed and the exception that was raised. The default behavior of `Scientist::Default` is to simply re-raise the exception. Since this halts the experiment entirely, it's often a better idea to handle this error and continue so the experiment as a whole isn't canceled entirely:
