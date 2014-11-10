@@ -1,8 +1,8 @@
 # What happened when this named behavior was executed? Immutable.
 class Scientist::Observation
 
-  # The experiment this observation is for
-  attr_reader :experiment
+  # A value cleaner block, if configured.
+  attr_reader :cleaner
 
   # The instant observation began.
   attr_reader :now
@@ -19,10 +19,10 @@ class Scientist::Observation
   # The Float seconds elapsed.
   attr_reader :duration
 
-  def initialize(name, experiment, &block)
-    @name       = name
-    @experiment = experiment
-    @now        = Time.now
+  def initialize(name, cleaner=nil, &block)
+    @name    = name
+    @cleaner = cleaner
+    @now     = Time.now
 
     begin
       @value = block.call
@@ -35,11 +35,15 @@ class Scientist::Observation
     freeze
   end
 
-  # Return a cleaned value suitable for publishing. Uses the experiment's
-  # defined cleaner block to clean the observed value.
+  # Return a cleaned value suitable for publishing. Uses the configured cleaner
+  # block to clean the observed value.
   def cleaned_value
     if value
-      experiment.clean_value value
+      if cleaner
+        cleaner.call value
+      else
+        value
+      end
     end
   end
 

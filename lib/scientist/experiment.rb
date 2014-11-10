@@ -57,16 +57,6 @@ module Scientist::Experiment
     @_scientist_cleaner = block
   end
 
-  # Internal: Clean a value with the configured clean block, or return the value
-  # if no clean block is configured.
-  def clean_value(value)
-    if @_scientist_cleaner
-      @_scientist_cleaner.call value
-    else
-      value
-    end
-  end
-
   # A block which compares two experimental values.
   #
   # The block must take two arguments, the control value and a candidate value,
@@ -159,7 +149,7 @@ module Scientist::Experiment
 
     behaviors.keys.shuffle.each do |key|
       block = behaviors[key]
-      observations << Scientist::Observation.new(key, self, &block)
+      observations << Scientist::Observation.new(key, @_scientist_cleaner, &block)
     end
 
     control = observations.detect { |o| o.name == name }

@@ -210,16 +210,14 @@ describe Scientist::Experiment do
     assert_equal "boomtown", exception.message
   end
 
-  it "returns the given value when no clean block is configured" do
-    assert_equal 10, @ex.clean_value(10)
-  end
+  it "configures observations with cleaner blocks when provided" do
+    @ex.clean { |value| value.upcase }
+    @ex.use { "foo" }
+    @ex.try { "foo" }
 
-  it "calls the configured clean block with a value when configured" do
-    @ex.clean do |value|
-      value.upcase
-    end
-
-    assert_equal "TEST", @ex.clean_value("test")
+    @ex.run
+    assert_equal "foo", @ex.published_result.control.value
+    assert_equal "FOO", @ex.published_result.control.cleaned_value
   end
 
   describe "#run_if" do
