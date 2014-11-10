@@ -15,5 +15,4 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_development_dependency "minitest", "~> 5.2.2"
-  gem.add_development_dependency "mocha",    "~> 1.0.0"
 end
