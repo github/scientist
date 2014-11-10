@@ -21,9 +21,11 @@ module Scientist::Experiment
   end
 
   module RaiseOnMismatch
-    # Set the flag to raise on mismatches. This will cause all science mismatches
-    # to raise a MismatchError. This is useful for test environments and should
-    # not be enabled in a production environment.
+    # Set this flag to raise on experiment mismatches.
+    #
+    # This causes all science mismatches to raise a MismatchError. This is
+    # intended for test environments and should not be enabled in a production
+    # environment.
     #
     # bool - true/false - whether to raise when the control and candidate mismatch.
     def raise_on_mismatches=(bool)
@@ -36,7 +38,6 @@ module Scientist::Experiment
     end
   end
 
-  extend RaiseOnMismatch
   def self.included(base)
     base.extend RaiseOnMismatch
   end
