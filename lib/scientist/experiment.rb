@@ -59,12 +59,17 @@ module Scientist::Experiment
 
   # Internal: Clean a value with the configured clean block, or return the value
   # if no clean block is configured.
+  #
+  # Rescues and reports exceptions in the clean block if they occur.
   def clean_value(value)
     if @_scientist_cleaner
       @_scientist_cleaner.call value
     else
       value
     end
+  rescue StandardError => ex
+    raised :clean, ex
+    value
   end
 
   # A block which compares two experimental values.

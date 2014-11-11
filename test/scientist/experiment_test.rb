@@ -11,6 +11,14 @@ describe Scientist::Experiment do
 
     attr_reader :published_result
 
+    def exceptions
+      @exceptions ||= []
+    end
+
+    def raised(op, exception)
+      exceptions << [op, exception]
+    end
+
     def publish(result)
       @published_result = result
     end
@@ -113,31 +121,25 @@ describe Scientist::Experiment do
   end
 
   it "re-raises exceptions raised during publish by default" do
-    def @ex.publish(result)
+    ex = Scientist::Experiment.new("hello")
+    assert_kind_of Scientist::Default, ex
+    def ex.publish(result)
       raise "boomtown"
     end
 
-    @ex.use { "control" }
-    @ex.try { "candidate" }
+    ex.use { "control" }
+    ex.try { "candidate" }
 
     exception = assert_raises RuntimeError do
-      @ex.run
+      ex.run
     end
 
     assert_equal "boomtown", exception.message
   end
 
-  it "can be overridden to report publishing errors" do
+  it "reports publishing errors" do
     def @ex.publish(result)
       raise "boomtown"
-    end
-
-    def @ex.exceptions
-      @exceptions ||= []
-    end
-
-    def @ex.raised(op, exception)
-      exceptions << [op, exception]
     end
 
     @ex.use { "control" }
@@ -189,16 +191,7 @@ describe Scientist::Experiment do
   end
 
   it "reports errors in a compare block" do
-    def @ex.exceptions
-      @exceptions ||= []
-    end
-
-    def @ex.raised(op, exception)
-      exceptions << [op, exception]
-    end
-
     @ex.compare { raise "boomtown" }
-
     @ex.use { "control" }
     @ex.try { "candidate" }
 
@@ -220,6 +213,21 @@ describe Scientist::Experiment do
     end
 
     assert_equal "TEST", @ex.clean_value("test")
+  end
+
+  it "reports an error and returns the original value when an error is raised in a clean block" do
+    @ex.clean { |value| raise "kaboom" }
+
+    @ex.use { "control" }
+    @ex.try { "candidate" }
+    assert_equal "control", @ex.run
+
+    assert_equal "control", @ex.published_result.control.cleaned_value
+
+    op, exception = @ex.exceptions.pop
+
+    assert_equal :clean, op
+    assert_equal "kaboom", exception.message
   end
 
   describe "#run_if" do
