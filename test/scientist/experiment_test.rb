@@ -203,6 +203,33 @@ describe Scientist::Experiment do
     assert_equal "boomtown", exception.message
   end
 
+  it "reports errors in the enabled? method" do
+    def @ex.enabled?
+      raise "kaboom"
+    end
+
+    @ex.use { "control" }
+    @ex.try { "candidate" }
+    assert_equal "control", @ex.run
+
+    op, exception = @ex.exceptions.pop
+
+    assert_equal :enabled, op
+    assert_equal "kaboom", exception.message
+  end
+
+  it "reports errors in a run_if block" do
+    @ex.run_if { raise "kaboom" }
+    @ex.use { "control" }
+    @ex.try { "candidate" }
+    assert_equal "control", @ex.run
+
+    op, exception = @ex.exceptions.pop
+
+    assert_equal :run_if, op
+    assert_equal "kaboom", exception.message
+  end
+
   it "returns the given value when no clean block is configured" do
     assert_equal 10, @ex.clean_value(10)
   end

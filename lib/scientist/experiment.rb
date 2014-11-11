@@ -192,13 +192,27 @@ module Scientist::Experiment
 
   # Define a block that determines whether or not the experiment should run.
   def run_if(&block)
-    @_scientest_run_if_block = block
+    @_scientist_run_if_block = block
+  end
+
+  # Internal: does a run_if block allow the experiment to run?
+  #
+  # Rescues and reports exceptions in a run_if block if they occur.
+  def run_if_block_allows?
+    (@_scientist_run_if_block ? @_scientist_run_if_block.call : true)
+  rescue StandardError => ex
+    raised :run_if, ex
+    return false
   end
 
   # Internal: determine whether or not an experiment should run.
+  #
+  # Rescues and reports exceptions in the enabled method if they occur.
   def should_experiment_run?
-    behaviors.size > 1 && enabled? &&
-      (@_scientest_run_if_block ? @_scientest_run_if_block.call : true)
+    behaviors.size > 1 && enabled? && run_if_block_allows?
+  rescue StandardError => ex
+    raised :enabled, ex
+    return false
   end
 
   # Register a named behavior for this experiment, default "candidate".
