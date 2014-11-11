@@ -5,7 +5,7 @@ describe Scientist::Observation do
   end
 
   it "observes and records the execution of a block" do
-    ob = Scientist::Observation.new("test") do
+    ob = Scientist::Observation.new("test", @experiment) do
       sleep 0.1
       "ret"
     end
@@ -16,7 +16,7 @@ describe Scientist::Observation do
   end
 
   it "stashes exceptions" do
-    ob = Scientist::Observation.new("test") do
+    ob = Scientist::Observation.new("test", @experiment) do
       raise "exception"
     end
 
@@ -26,25 +26,25 @@ describe Scientist::Observation do
   end
 
   it "compares values" do
-    a = Scientist::Observation.new("test") { 1 }
-    b = Scientist::Observation.new("test") { 1 }
+    a = Scientist::Observation.new("test", @experiment) { 1 }
+    b = Scientist::Observation.new("test", @experiment) { 1 }
 
     assert a.equivalent_to?(b)
 
-    x = Scientist::Observation.new("test") { 1 }
-    y = Scientist::Observation.new("test") { 2 }
+    x = Scientist::Observation.new("test", @experiment) { 1 }
+    y = Scientist::Observation.new("test", @experiment) { 2 }
 
     refute x.equivalent_to?(y)
   end
 
   it "compares exception messages" do
-    a = Scientist::Observation.new("test") { raise "error" }
-    b = Scientist::Observation.new("test") { raise "error" }
+    a = Scientist::Observation.new("test", @experiment) { raise "error" }
+    b = Scientist::Observation.new("test", @experiment) { raise "error" }
 
     assert a.equivalent_to?(b)
 
-    x = Scientist::Observation.new("test") { raise "error" }
-    y = Scientist::Observation.new("test") { raise "ERROR" }
+    x = Scientist::Observation.new("test", @experiment) { raise "error" }
+    y = Scientist::Observation.new("test", @experiment) { raise "ERROR" }
 
     refute x.equivalent_to?(y)
   end
@@ -53,17 +53,17 @@ describe Scientist::Observation do
   SecondError = Class.new(StandardError)
 
   it "compares exception classes" do
-    x = Scientist::Observation.new("test") { raise FirstError, "error" }
-    y = Scientist::Observation.new("test") { raise SecondError, "error" }
-    z = Scientist::Observation.new("test") { raise FirstError, "error" }
+    x = Scientist::Observation.new("test", @experiment) { raise FirstError, "error" }
+    y = Scientist::Observation.new("test", @experiment) { raise SecondError, "error" }
+    z = Scientist::Observation.new("test", @experiment) { raise FirstError, "error" }
 
     assert x.equivalent_to?(z)
     refute x.equivalent_to?(y)
   end
 
   it "compares values using a comparator block" do
-    a = Scientist::Observation.new("test") { 1 }
-    b = Scientist::Observation.new("test") { "1" }
+    a = Scientist::Observation.new("test", @experiment) { 1 }
+    b = Scientist::Observation.new("test", @experiment) { "1" }
 
     refute a.equivalent_to?(b)
     assert a.equivalent_to?(b) { |x, y| x.to_s == y.to_s }
@@ -79,13 +79,13 @@ describe Scientist::Observation do
 
   describe "#cleaned_value" do
     it "returns the observation's value by default" do
-      a = Scientist::Observation.new("test") { 1 }
+      a = Scientist::Observation.new("test", @experiment) { 1 }
       assert_equal 1, a.cleaned_value
     end
 
-    it "uses the a cleaner block to clean a value when configured" do
-      cleaner = lambda { |value| value.upcase }
-      a = Scientist::Observation.new("test", cleaner) { "test" }
+    it "uses the experiment's clean block to clean a value when configured" do
+      @experiment.clean { |value| value.upcase }
+      a = Scientist::Observation.new("test", @experiment) { "test" }
       assert_equal "TEST", a.cleaned_value
     end
   end
