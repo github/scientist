@@ -32,7 +32,7 @@ Wrap a `use` block around the code's original behavior, and wrap `try` around th
 
 The `use` block is called the **control**. The `try` block is called the **candidate**.
 
-Creating an experiment is wordy, so the `Scientist#science` helper instantiates an experiment and calls `run`:
+Creating an experiment is wordy, but when you include the `Scientist` module, the `science` helper will instantiate an experiment and call `run` for you:
 
 ```ruby
 require "scientist"
@@ -44,10 +44,12 @@ class MyWidget
     science "widget-permissions" do |e|
       e.use { model.check_user(user).valid? } # old way
       e.try { user.can?(:read, model) } # new way
-    end
+    end # returns the control value
   end
 end
 ```
+
+If you don't declare any `try` blocks, none of the Scientist machinery is invoked and the control value is always returned.
 
 ## Making science useful
 
@@ -227,7 +229,7 @@ class MyExperiment < ActiveRecord::Base
 end
 ```
 
-This code will be invoked for every method with an experiment every time, so be sensitive about its performance. You can, for example, store an experiment in the database but wrap it in various levels of caching such as memcache or per-request thread-locals.
+This code will be invoked for every method with an experiment every time, so be sensitive about its performance. For example, you can store an experiment in the database but wrap it in various levels of caching such as memcache or per-request thread-locals.
 
 ### Publishing results
 
@@ -327,6 +329,18 @@ class MyExperiment
 end
 ```
 
+### Designing an experiment
+
+Because `enabled?` and `run_if` determine when a candidate runs, it's impossible to guarantee that it will run every time. For this reason, Scientist is only safe for wrapping methods that aren't changing data.
+
+When using Scientist, we've found it most useful to modify both the existing and new systems simultaneously anywhere writes happen, and verify the results at read time with `science`. `raise_on_mismatches` has also been useful to ensure that the correct data was written during tests, and reviewing published mismatches has helped us find any situations we overlooked with our production data at runtime. When writing to and reading from two systems, it's also useful to write some data reconciliation scripts to verify and clean up production data alongside any running experiments.
+
+### Finishing an experiment
+
+As your candidate behavior converges on the controls, you'll start thinking about removing an experiment and using the new behavior.
+
+* If there are any ignore blocks, the candidate behavior is *guaranteed* to be different. If this is unacceptable, you'll need to remove the ignore blocks and resolve any ongoing mismatches in behavior until the observations match perfectly every time.
+* When removing a read-behavior experiment, it's a good idea to keep any write-side duplication between an old and new system in place until well after the new behavior has been in production, in case you need to roll back.
 
 ## Breaking the rules
 
@@ -360,6 +374,8 @@ class MyWidget
   end
 end
 ```
+
+When the experiment runs, all candidate behaviors are tested and each candidate observation is compared with the control in turn.
 
 ### No control, just candidates
 
