@@ -113,7 +113,7 @@ module Scientist::Experiment
       begin
         ignore.call control.value, candidate.value
       rescue StandardError => ex
-        raised(:ignore, ex)
+        raised :ignore, ex
         false
       end
     end
@@ -133,7 +133,7 @@ module Scientist::Experiment
       a.equivalent_to? b
     end
   rescue StandardError => ex
-    raised(:compare, ex)
+    raised :compare, ex
     false
   end
 
@@ -176,7 +176,7 @@ module Scientist::Experiment
     begin
       publish(result)
     rescue StandardError => ex
-      raised(:publish, ex)
+      raised :publish, ex
     end
 
     if control.raised?

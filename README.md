@@ -329,6 +329,15 @@ class MyExperiment
 end
 ```
 
+The operations that may be handled here are:
+
+* `:clean` - an exception is raised in a `clean` block
+* `:compare` - an exception is raised in a `compare` block
+* `:enabled` - an exception is raised in the `enabled?` method
+* `:ignore` - an exception is raised in an `ignore` block
+* `:publish` - an exception is raised in the `publish` method
+* `:run_if` - an exception is raised in a `run_if` block
+
 ### Designing an experiment
 
 Because `enabled?` and `run_if` determine when a candidate runs, it's impossible to guarantee that it will run every time. For this reason, Scientist is only safe for wrapping methods that aren't changing data.
