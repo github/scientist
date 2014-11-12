@@ -35,6 +35,16 @@ class Scientist::Result
     freeze
   end
 
+  # Public: the experiment's context
+  def context
+    experiment.context
+  end
+
+  # Public: the name of the experiment
+  def experiment_name
+    experiment.name
+  end
+
   # Public: was the result a match between all behaviors?
   def matched?
     mismatched.empty?

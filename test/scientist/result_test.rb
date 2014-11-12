@@ -91,4 +91,21 @@ describe Scientist::Result do
     assert_equal [z], result.mismatched
   end
 
+  it "knows the experiment's name" do
+    a = Scientist::Observation.new("a", @experiment) { 1 }
+    b = Scientist::Observation.new("b", @experiment) { 1 }
+    result = Scientist::Result.new @experiment, observations: [a, b], control: a
+
+    assert_equal @experiment.name, result.experiment_name
+  end
+
+  it "has the context from an experiment" do
+    @experiment.context :foo => :bar
+    a = Scientist::Observation.new("a", @experiment) { 1 }
+    b = Scientist::Observation.new("b", @experiment) { 1 }
+    result = Scientist::Result.new @experiment, observations: [a, b], control: a
+
+    assert_equal({:foo => :bar}, result.context)
+  end
+
 end
