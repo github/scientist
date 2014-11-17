@@ -1,0 +1,9 @@
+#!/bin/sh
+# Ensure local dependencies are available.
+
+set -e
+
+cd $(dirname "$0")/..
+rm -f .bundle/config
+
+bundle install --path .bundle --quiet "$@"

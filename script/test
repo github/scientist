@@ -1,0 +1,11 @@
+#!/bin/sh
+# Run the unit tests.
+
+set -e
+
+cd $(dirname "$0")/..
+  script/bootstrap && ruby -I lib \
+    -e 'require "bundler/setup"' \
+    -e 'require "minitest/autorun"' \
+    -e 'require "scientist"' \
+    -e '(ARGV.empty? ? Dir["test/**/*_test.rb"] : ARGV).each { |f| load f }' -- "$@"
