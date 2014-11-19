@@ -7,7 +7,7 @@ We welcome you to follow, fork, and work on, our open source projects. If you wa
 
 ## What is this?
 
-This is GitHub Inc.â€™s Contributor License Agreement. If youâ€™ve worked in the technology space before, contributed or maintained an open source project, thereâ€™s a good chance that youâ€™ve run across one or more of these in the past. What CLAs aim to do is make sure the project is able to merge contributions from multiple contributors without getting itself into different types of trouble. This one is no different in that sense.
+This is GitHub Inc.'s Contributor License Agreement. If you've worked in the technology space before, contributed or maintained an open source project, there's a good chance that you've run across one or more of these in the past. What CLAs aim to do is make sure the project is able to merge contributions from multiple contributors without getting itself into different types of trouble. This one is no different in that sense.
 
 ## Why is this?
 
