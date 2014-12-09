@@ -27,7 +27,7 @@ Wrap a `use` block around the code's original behavior, and wrap `try` around th
 * Randomizes the order in which `use` and `try` blocks are run,
 * Measures the durations of all behaviors,
 * Compares the result of `try` to the result of `use`,
-* Swallows (but records) any exceptions raise in the `try` block, and
+* Swallows (but records) any exceptions raised in the `try` block, and
 * Publishes all this information.
 
 The `use` block is called the **control**. The `try` block is called the **candidate**.
