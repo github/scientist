@@ -70,6 +70,7 @@ describe Scientist::Result do
     result = Scientist::Result.new @experiment, observations: [x, y], control: x
 
     refute result.mismatched?
+    refute result.matched?
     assert result.ignored?
     assert_equal [], result.mismatched
     assert_equal [y], result.ignored
