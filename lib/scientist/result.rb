@@ -25,7 +25,7 @@ class Scientist::Result
   # observations: - an Array of Observations, in execution order
   # control:      - the control Observation
   #
-  def initialize(experiment, observations:, control:)
+  def initialize(experiment, observations = [], control = nil)
     @experiment   = experiment
     @observations = observations
     @control      = control

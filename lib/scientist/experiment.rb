@@ -169,9 +169,7 @@ module Scientist::Experiment
 
     control = observations.detect { |o| o.name == name }
 
-    result = Scientist::Result.new self,
-      observations: observations,
-      control: control
+    result = Scientist::Result.new self, observations, control
 
     begin
       publish(result)

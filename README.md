@@ -402,7 +402,7 @@ experiment.run("second-way")
 The `science` helper also knows this trick:
 
 ```ruby
-science "various-ways", run: "first-way" do |e|
+science "various-ways", "first-way" do |e|
   e.try("first-way")  { ... }
   e.try("second-way") { ... }
 end

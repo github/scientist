@@ -14,7 +14,7 @@ module Scientist
   #
   # Returns the calculated value of the control experiment, or raises if an
   # exception was raised.
-  def science(name, run: nil)
+  def science(name, run = nil)
     experiment = Experiment.new(name)
     experiment.context(default_scientist_context)
 
