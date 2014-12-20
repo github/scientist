@@ -47,7 +47,7 @@ class Scientist::Result
 
   # Public: was the result a match between all behaviors?
   def matched?
-    mismatched.empty?
+    mismatched.empty? && !ignored?
   end
 
   # Public: were there mismatches in the behaviors?
