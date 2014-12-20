@@ -42,4 +42,18 @@ describe Scientist do
     assert_equal true, experiment.context[:default]
     assert_equal true, experiment.context[:inline]
   end
+
+  it "runs the named test instead of the control" do
+    obj = Object.new
+    obj.extend(Scientist)
+
+    result = obj.science "test", run: "first-way" do |e|
+      experiment = e
+
+      e.try("first-way") { true }
+      e.try("second-way") { true }
+    end
+
+    assert_equal true, result
+  end
 end
