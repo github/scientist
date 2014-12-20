@@ -7,20 +7,22 @@ module Scientist
   # Define and run a science experiment.
   #
   # name - a String name for this experiment.
-  # run: - optional argument for which named test to run instead of "control".
+  # opts - optional hash with the the named test to run instead of "control",
+  #        :run is the only valid key.
   #
   # Yields an object which implements the Scientist::Experiment interface.
   # See `Scientist::Experiment.new` for how this is defined.
   #
   # Returns the calculated value of the control experiment, or raises if an
   # exception was raised.
-  def science(name, run: nil)
+  def science(name, opts = {})
     experiment = Experiment.new(name)
     experiment.context(default_scientist_context)
 
     yield experiment
 
-    experiment.run(run)
+    test = Hash(opts)[:run]
+    experiment.run(test)
   end
 
   # Public: the default context data for an experiment created and run via the

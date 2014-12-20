@@ -7,9 +7,7 @@ describe Scientist::Result do
     control = Scientist::Observation.new("control", @experiment)
     candidate = Scientist::Observation.new("candidate", @experiment)
 
-    result = Scientist::Result.new @experiment,
-      observations: [control, candidate], control: control
-
+    result = Scientist::Result.new @experiment, [control, candidate], control
     assert result.frozen?
   end
 
@@ -19,7 +17,7 @@ describe Scientist::Result do
 
     assert a.equivalent_to?(b)
 
-    result = Scientist::Result.new @experiment, observations: [a, b], control: a
+    result = Scientist::Result.new @experiment, [a, b], a
     assert result.matched?
     refute result.mismatched?
     assert_equal [], result.mismatched
@@ -28,7 +26,7 @@ describe Scientist::Result do
     y = Scientist::Observation.new("y", @experiment) { 2 }
     z = Scientist::Observation.new("z", @experiment) { 3 }
 
-    result = Scientist::Result.new @experiment, observations: [x, y, z], control: x
+    result = Scientist::Result.new @experiment, [x, y, z], x
     refute result.matched?
     assert result.mismatched?
     assert_equal [y, z], result.mismatched
@@ -36,7 +34,7 @@ describe Scientist::Result do
 
   it "has no mismatches if there is only a control observation" do
     a = Scientist::Observation.new("a", @experiment) { 1 }
-    result = Scientist::Result.new @experiment, observations: [a], control: a
+    result = Scientist::Result.new @experiment, [a], a
     assert result.matched?
   end
 
@@ -46,7 +44,7 @@ describe Scientist::Result do
 
     @experiment.compare { |x, y| x == y.to_s }
 
-    result = Scientist::Result.new @experiment, observations: [a, b], control: a
+    result = Scientist::Result.new @experiment, [a, b], a
 
     assert result.matched?, result.mismatched
   end
@@ -55,7 +53,7 @@ describe Scientist::Result do
     x = Scientist::Observation.new("x", @experiment) { 1 }
     y = Scientist::Observation.new("y", @experiment) { 2 }
 
-    result = Scientist::Result.new @experiment, observations: [x, y], control: x
+    result = Scientist::Result.new @experiment, [x, y], x
 
     assert result.mismatched?
     refute result.ignored?
@@ -67,7 +65,7 @@ describe Scientist::Result do
     called = false
     @experiment.ignore { called = true }
 
-    result = Scientist::Result.new @experiment, observations: [x, y], control: x
+    result = Scientist::Result.new @experiment, [x, y], x
 
     refute result.mismatched?
     refute result.matched?
@@ -84,7 +82,7 @@ describe Scientist::Result do
 
     @experiment.ignore { |control, candidate| candidate == :y }
 
-    result = Scientist::Result.new @experiment, observations: [x, y, z], control: x
+    result = Scientist::Result.new @experiment, [x, y, z], x
 
     assert result.mismatched?
     assert result.ignored?
@@ -95,7 +93,7 @@ describe Scientist::Result do
   it "knows the experiment's name" do
     a = Scientist::Observation.new("a", @experiment) { 1 }
     b = Scientist::Observation.new("b", @experiment) { 1 }
-    result = Scientist::Result.new @experiment, observations: [a, b], control: a
+    result = Scientist::Result.new @experiment, [a, b], a
 
     assert_equal @experiment.name, result.experiment_name
   end
@@ -104,7 +102,7 @@ describe Scientist::Result do
     @experiment.context :foo => :bar
     a = Scientist::Observation.new("a", @experiment) { 1 }
     b = Scientist::Observation.new("b", @experiment) { 1 }
-    result = Scientist::Result.new @experiment, observations: [a, b], control: a
+    result = Scientist::Result.new @experiment, [a, b], a
 
     assert_equal({:foo => :bar}, result.context)
   end
