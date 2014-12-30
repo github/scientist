@@ -21,7 +21,7 @@ module Scientist
 
     yield experiment
 
-    test = Hash(opts)[:run]
+    test = opts[:run] if opts
     experiment.run(test)
   end
 

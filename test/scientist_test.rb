@@ -56,4 +56,18 @@ describe Scientist do
 
     assert_equal true, result
   end
+
+  it "runs control when there is a nil named test" do
+    obj = Object.new
+    obj.extend(Scientist)
+
+    result = obj.science "test", nil do |e|
+      experiment = e
+
+      e.use { true }
+      e.try("second-way") { true }
+    end
+
+    assert_equal true, result
+  end
 end
