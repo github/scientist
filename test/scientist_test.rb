@@ -57,7 +57,7 @@ describe Scientist do
     assert_equal true, result
   end
 
-  it "runs control when there is no named test" do
+  it "runs control when there is a nil named test" do
     obj = Object.new
     obj.extend(Scientist)
 
