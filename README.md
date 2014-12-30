@@ -1,6 +1,6 @@
 # Scientist!
 
-A Ruby library for carefully refactoring critical paths.
+A Ruby library for carefully refactoring critical paths. [![Build Status](https://travis-ci.org/github/scientist.svg?branch=master)](https://travis-ci.org/github/scientist)
 
 ## How do I do science?
 
