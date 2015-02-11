@@ -287,8 +287,8 @@ class MyExperiment
   def observation_payload(observation)
     if observation.raised?
       {
-        :exception => observation.exeception.class,
-        :message   => observation.exeception.message,
+        :exception => observation.exception.class,
+        :message   => observation.exception.message,
         :backtrace => observation.exception.backtrace
       }
     else
