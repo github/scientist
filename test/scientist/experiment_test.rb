@@ -408,6 +408,66 @@ describe Scientist::Experiment do
       @ex.try { raise "candidate" }
       assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
     end
+
+    describe "MismatchError" do
+      before do
+        Fake.raise_on_mismatches = true
+        @ex.use { :foo }
+        @ex.try { :bar }
+        begin
+          @ex.run
+        rescue Scientist::Experiment::MismatchError => e
+          @mismatch = e
+        end
+        assert @mismatch
+      end
+
+      it "has the name of the experiment" do
+        assert_equal @ex.name, @mismatch.name
+      end
+
+      it "includes the experiments' results" do
+        assert_equal @ex.published_result, @mismatch.result
+      end
+
+      it "formats nicely as a string" do
+        assert_equal <<-STR, @mismatch.to_s
+experiment 'experiment' observations mismatched:
+control:
+  :foo
+candidate:
+  :bar
+        STR
+      end
+
+      it "includes the backtrace when an observation raises" do
+        mismatch = nil
+        ex = Fake.new
+        ex.use { "value" }
+        ex.try { raise "error" }
+
+        begin
+          ex.run
+        rescue Scientist::Experiment::MismatchError => e
+          mismatch = e
+        end
+
+        # Should look like this:
+        # experiment 'experiment' observations mismatched:
+        # control:
+        #   "value"
+        # candidate:
+        #   #<RuntimeError: error>
+        #     test/scientist/experiment_test.rb:447:in `block (5 levels) in <top (required)>'
+        # ... (more backtrace)
+        lines = mismatch.to_s.split("\n")
+        assert_equal "control:", lines[1]
+        assert_equal "  \"value\"", lines[2]
+        assert_equal "candidate:", lines[3]
+        assert_equal "  #<RuntimeError: error>", lines[4]
+        assert_match %r(    test/scientist/experiment_test.rb:\d+:in `block), lines[5]
+      end
+    end
   end
 
   describe "before run block" do
