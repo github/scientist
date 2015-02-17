@@ -144,6 +144,26 @@ end
 
 The `widget-permissions` and `widget-destruction` experiments will both have a `:widget` key in their contexts.
 
+### Expensive setup
+
+If an experiment requires expensive setup that should only run when the experiment is going to be run, use the `before_run` method.
+
+```ruby
+
+# Code under test modifies this in-place. We want to copy it for the
+# candidate code, but only when needed:
+value_for_original_code = big_object
+value_for_new_code      = nil
+
+science "expensive-but-worthwhile" do |e|
+  e.before_run do
+    value_for_new_code = big_object.deep_copy
+  end
+  e.use { original_code(value_for_original_code) }
+  e.try { new_code(value_for_new_code) }
+end
+```
+
 ### Keeping it clean
 
 Sometimes you don't want to store the full value for later analysis. For example, an experiment may return `User` instances, but when researching a mismatch, all you care about is the logins. You can define how to clean these values in an experiment:
