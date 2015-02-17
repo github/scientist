@@ -146,10 +146,9 @@ The `widget-permissions` and `widget-destruction` experiments will both have a `
 
 ### Expensive setup
 
-If an experiment requires expensive setup that should only run when the experiment is going to be run, use the `before_run` method.
+If an experiment requires expensive setup that should only occur when the experiment is going to be run, define it with the `before_run` method:
 
 ```ruby
-
 # Code under test modifies this in-place. We want to copy it for the
 # candidate code, but only when needed:
 value_for_original_code = big_object
