@@ -395,4 +395,34 @@ describe Scientist::Experiment do
       @ex.run
     end
   end
+
+  describe "before run block" do
+    it "runs when an experiment is enabled" do
+      control_ok = candidate_ok = false
+      before = false
+      @ex.before_run { before = true }
+      @ex.use { control_ok = before }
+      @ex.try { candidate_ok = before }
+
+      @ex.run
+
+      assert before, "before_run should have run"
+      assert control_ok, "control should have run after before_run"
+      assert candidate_ok, "candidate should have run after before_run"
+    end
+
+    it "does not run when an experiment is disabled" do
+      before = false
+
+      def @ex.enabled?
+        false
+      end
+      @ex.before_run { before = true }
+      @ex.use { "value" }
+      @ex.try { "value" }
+      @ex.run
+
+      refute before, "before_run should not have run"
+    end
+  end
 end

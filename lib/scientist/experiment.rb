@@ -42,6 +42,16 @@ module Scientist::Experiment
     base.extend RaiseOnMismatch
   end
 
+  # Define a block of code to run before an experiment begins, if the experiment
+  # is enabled.
+  #
+  # The block takes no arguments.
+  #
+  # Returns the configured block.
+  def before_run(&block)
+    @_scientist_before_run = block
+  end
+
   # A Hash of behavior blocks, keyed by String name. Register behavior blocks
   # with the `try` and `use` methods.
   def behaviors
@@ -158,7 +168,13 @@ module Scientist::Experiment
       raise Scientist::BehaviorMissing.new(self, name)
     end
 
-    return block.call unless should_experiment_run?
+    unless should_experiment_run?
+      return block.call
+    end
+
+    if @_scientist_before_run
+      @_scientist_before_run.call
+    end
 
     observations = []
 
