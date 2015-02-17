@@ -394,6 +394,14 @@ describe Scientist::Experiment do
 
       @ex.run
     end
+
+    it "reraises candidate exceptions if raise on mismatches is enabled" do
+      Fake.raise_on_mismatches = true
+      @ex.use { "fine" }
+      @ex.try { raise "not fine" }
+
+      assert_raises(RuntimeError, "not fine") { @ex.run }
+    end
   end
 
   describe "before run block" do
