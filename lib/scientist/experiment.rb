@@ -181,8 +181,12 @@ module Scientist::Experiment
       raise control.exception
     end
 
-    if self.class.raise_on_mismatches? && result.mismatched?
-      raise MismatchError.new(name, result)
+    if self.class.raise_on_mismatches?
+      if raised = observations.detect { |o| o.raised? }
+        raise raised.exception
+      elsif result.mismatched?
+        raise MismatchError.new(name, result)
+      end
     end
 
     control.value
