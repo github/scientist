@@ -429,7 +429,7 @@ end
 
 ## Hacking
 
-Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs the unit tests. All development dependencies are  installed automatically. Science requires Ruby 2.1.
+Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs the unit tests. All development dependencies are installed automatically. Science requires Ruby 1.9 or newer.
 
 ## Maintainers
 
