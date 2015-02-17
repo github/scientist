@@ -193,15 +193,15 @@ module Scientist::Experiment
       raised :publish, ex
     end
 
-    if control.raised?
-      raise control.exception
-    end
-
     if self.class.raise_on_mismatches? && result.mismatched?
       raise MismatchError.new(name, result)
     end
 
-    control.value
+    if control.raised?
+      raise control.exception
+    else
+      control.value
+    end
   end
 
   # Define a block that determines whether or not the experiment should run.

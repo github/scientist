@@ -392,7 +392,21 @@ describe Scientist::Experiment do
       @ex.use { "fine" }
       @ex.try { "not fine" }
 
-      @ex.run
+      assert_equal "fine", @ex.run
+    end
+
+    it "raises a mismatch error if the control raises and candidate doesn't" do
+      Fake.raise_on_mismatches = true
+      @ex.use { raise "control" }
+      @ex.try { "candidate" }
+      assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
+    end
+
+    it "raises a mismatch error if the candidate raises and the control doesn't" do
+      Fake.raise_on_mismatches = true
+      @ex.use { "control" }
+      @ex.try { raise "candidate" }
+      assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
     end
   end
 
