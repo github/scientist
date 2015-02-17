@@ -15,8 +15,33 @@ module Scientist::Experiment
 
   # A mismatch, raised when raise_on_mismatches is enabled.
   class MismatchError < StandardError
+    attr_reader :name, :result
+
     def initialize(name, result)
-      super "#{name}: control #{result.control.inspect}, candidates #{result.candidates.map(&:inspect)}"
+      @name   = name
+      @result = result
+      super "experiment '#{name}' observations mismatched"
+    end
+
+    # The default formatting is nearly unreadable, so make it useful.
+    #
+    # The assumption here is that errors raised in a test environment are
+    # printed out as strings, rather than using #inspect.
+    def to_s
+      super + ":\n" +
+      format_observation(result.control) + "\n" +
+      result.candidates.map { |candidate| format_observation(candidate) }.join("\n") +
+      "\n"
+    end
+
+    def format_observation(observation)
+      observation.name + ":\n" +
+      if observation.raised?
+        observation.exception.inspect.prepend("  ") + "\n" +
+          observation.exception.backtrace.map { |line| line.prepend("    ") }.join("\n")
+      else
+        observation.value.inspect.prepend("  ")
+      end
     end
   end
 
@@ -193,15 +218,15 @@ module Scientist::Experiment
       raised :publish, ex
     end
 
+    if self.class.raise_on_mismatches? && result.mismatched?
+      raise MismatchError.new(self.name, result)
+    end
+
     if control.raised?
       raise control.exception
+    else
+      control.value
     end
-
-    if self.class.raise_on_mismatches? && result.mismatched?
-      raise MismatchError.new(name, result)
-    end
-
-    control.value
   end
 
   # Define a block that determines whether or not the experiment should run.
