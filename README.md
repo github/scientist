@@ -58,8 +58,11 @@ The examples above will run, but they're not really *doing* anything. The `try` 
 ```ruby
 require "scientist"
 
-class MyExperiment < ActiveRecord::Base
+class MyExperiment
+  include ActiveModel::Model
   include Scientist::Experiment
+
+  attr_accessor :name
 
   def enabled?
     # see "Ramping up experiments" below
@@ -73,8 +76,10 @@ class MyExperiment < ActiveRecord::Base
 end
 
 # replace `Scientist::Default` as the default implementation
-def Scientist::Experiment.new(name)
-  MyExperiment.find_or_initialize_by(name: name)
+module Scientist::Experiment
+  def self.new(name)
+    MyExperiment.new(name: name)
+  end
 end
 ```
 
@@ -289,8 +294,8 @@ class MyExperiment
       :name            => name,
       :context         => context,
       :control         => observation_payload(result.control),
-      :candidate       => observation_payload(result.candidates.first)
-      :execution_order => result.observations.map(&:name),
+      :candidate       => observation_payload(result.candidates.first),
+      :execution_order => result.observations.map(&:name)
     }
 
     key = "science.#{name}.mismatch"
@@ -301,8 +306,8 @@ class MyExperiment
   def observation_payload(observation)
     if observation.raised?
       {
-        :exception => observation.exeception.class,
-        :message   => observation.exeception.message,
+        :exception => observation.exception.class,
+        :message   => observation.exception.message,
         :backtrace => observation.exception.backtrace
       }
     else
