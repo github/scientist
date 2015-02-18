@@ -11,10 +11,9 @@ require "scientist"
 
 class MyWidget
   def allows?(user)
-    experiment = Scientist::Default.new "widget-permissions" do |e|
-      e.use { model.check_user?(user).valid? } # old way
-      e.try { user.can?(:read, model) } # new way
-    end
+    experiment = Scientist::Default.new "widget-permissions"
+    experiment.use { model.check_user?(user).valid? } # old way
+    experiment.try { user.can?(:read, model) } # new way
 
     experiment.run
   end
