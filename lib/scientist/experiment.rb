@@ -5,6 +5,9 @@
 # implements Scientist::Experiment's interface.
 module Scientist::Experiment
 
+  # Whether to raise when the control and candidate mismatch.
+  attr_accessor :raise_on_mismatches
+
   # Create a new instance of a class that implements the Scientist::Experiment
   # interface.
   #
@@ -270,15 +273,12 @@ module Scientist::Experiment
     try "control", &block
   end
 
-  def raise_on_mismatches=(bool)
-    @raise_on_mismatches = bool
-  end
-
+  # Whether or not to raise a mismatch error when a mismatch occurs.
   def raise_on_mismatches?
     if @raise_on_mismatches.nil?
       self.class.raise_on_mismatches?
     else
-      @raise_on_mismatches
+      !!raise_on_mismatches
     end
   end
 end
