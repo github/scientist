@@ -427,6 +427,18 @@ describe Scientist::Experiment do
 
         assert_equal "fine", @ex.run
       end
+
+      it "respects the raise_on_mismatches class attribute by default" do
+        Fake.raise_on_mismatches = false
+        @ex.use { "fine" }
+        @ex.try { "not fine" }
+
+        assert_equal "fine", @ex.run
+
+        Fake.raise_on_mismatches = true
+
+        assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
+      end
     end
 
     describe "MismatchError" do
