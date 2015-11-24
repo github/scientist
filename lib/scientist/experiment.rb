@@ -275,7 +275,7 @@ module Scientist::Experiment
 
   # Whether or not to raise a mismatch error when a mismatch occurs.
   def raise_on_mismatches?
-    if @raise_on_mismatches.nil?
+    if raise_on_mismatches.nil?
       self.class.raise_on_mismatches?
     else
       !!raise_on_mismatches
