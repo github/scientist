@@ -218,7 +218,7 @@ module Scientist::Experiment
       raised :publish, ex
     end
 
-    if self.class.raise_on_mismatches? && result.mismatched?
+    if raise_on_mismatches? && result.mismatched?
       raise MismatchError.new(self.name, result)
     end
 
@@ -268,5 +268,17 @@ module Scientist::Experiment
   # Register the control behavior for this experiment.
   def use(&block)
     try "control", &block
+  end
+
+  def raise_on_mismatches=(bool)
+    @raise_on_mismatches = bool
+  end
+
+  def raise_on_mismatches?
+    if @raise_on_mismatches.nil?
+      self.class.raise_on_mismatches?
+    else
+      @raise_on_mismatches
+    end
   end
 end
