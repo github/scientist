@@ -6,6 +6,7 @@
 module Scientist::Experiment
 
   # Whether to raise when the control and candidate mismatch.
+  # If this is nil, raise_on_mismatches class attribute is used instead.
   attr_accessor :raise_on_mismatches
 
   # Create a new instance of a class that implements the Scientist::Experiment
