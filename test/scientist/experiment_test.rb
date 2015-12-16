@@ -409,6 +409,38 @@ describe Scientist::Experiment do
       assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
     end
 
+    describe "#raise_on_mismatches?" do
+      it "raises when there is a mismatch if the experiment instance's raise on mismatches is enabled" do
+        Fake.raise_on_mismatches = false
+        @ex.raise_on_mismatches = true
+        @ex.use { "fine" }
+        @ex.try { "not fine" }
+
+        assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
+      end
+
+      it "doesn't raise when there is a mismatch if the experiment instance's raise on mismatches is disabled" do
+        Fake.raise_on_mismatches = true
+        @ex.raise_on_mismatches = false
+        @ex.use { "fine" }
+        @ex.try { "not fine" }
+
+        assert_equal "fine", @ex.run
+      end
+
+      it "respects the raise_on_mismatches class attribute by default" do
+        Fake.raise_on_mismatches = false
+        @ex.use { "fine" }
+        @ex.try { "not fine" }
+
+        assert_equal "fine", @ex.run
+
+        Fake.raise_on_mismatches = true
+
+        assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
+      end
+    end
+
     describe "MismatchError" do
       before do
         Fake.raise_on_mismatches = true
