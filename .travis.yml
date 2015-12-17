@@ -5,3 +5,4 @@ script: script/test
 rvm:
   - 1.9.3
   - 2.1.5
+before_install: gem install bundler
