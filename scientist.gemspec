@@ -15,5 +15,5 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(/^test/)
   gem.require_paths = ["lib"]
 
-  gem.add_development_dependency "minitest", "~> 5.2"
+  gem.add_development_dependency "minitest", "~> 5.8"
 end
