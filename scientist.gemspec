@@ -4,8 +4,8 @@ Gem::Specification.new do |gem|
   gem.name          = "scientist"
   gem.description   = "A Ruby library for carefully refactoring critical paths"
   gem.version       = Scientist::VERSION
-  gem.authors       = ["John Barnette", "Rick Bradley"]
-  gem.email         = ["jbarnette@github.com", "rick@github.com"]
+  gem.authors       = ["GitHub Open Source", "John Barnette", "Rick Bradley", "Jesse Toth", "Nathan Witmer"]
+  gem.email         = ["opensource+scientist@github.com", "jbarnette@github.com", "rick@rickbradley.com", "jesseplusplus@github.com","zerowidth@github.com"]
   gem.summary       = "Carefully test, measure, and track refactored code."
   gem.homepage      = "https://github.com/github/scientist"
   gem.license       = "MIT"
