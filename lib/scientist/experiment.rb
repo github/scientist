@@ -190,14 +190,20 @@ module Scientist::Experiment
     behaviors.freeze
     context.freeze
 
-    name = (name || :control).to_s
+    name = (name || "control").to_s
     block = behaviors[name]
 
-    missing_behaviour(name) if block.nil?
+    if block.nil?
+      raise Scientist::BehaviorMissing.new(self, name)
+    end
 
-    return block.call unless should_experiment_run?
+    unless should_experiment_run?
+      return block.call
+    end
 
-    @_scientist_before_run.call if @_scientist_before_run
+    if @_scientist_before_run
+      @_scientist_before_run.call
+    end
 
     observer = Scientist::Observer.new behaviors, self
     observations = observer.observe
@@ -215,7 +221,11 @@ module Scientist::Experiment
       raise MismatchError.new(self.name, result)
     end
 
-    control.raised? ? raise(control.exception) : control.value
+    if control.raised?
+      raise control.exception
+    else
+      control.value
+    end
   end
 
   # Define a block that determines whether or not the experiment should run.
@@ -266,10 +276,5 @@ module Scientist::Experiment
     else
       !!raise_on_mismatches
     end
-  end
-
-  private
-  def missing_behaviour(behaviour)
-    raise Scientist::BehaviorMissing.new(self, behaviour)
   end
 end
