@@ -23,7 +23,7 @@ module Scientist
   class BehaviorNotUnique < BadBehavior
     def initialize(experiment, name)
       super experiment, name,
-        "#{experiment.name} alread has #{name} behavior"
+        "#{experiment.name} already has #{name} behavior"
     end
   end
 
