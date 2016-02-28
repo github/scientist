@@ -124,7 +124,7 @@ module Scientist::Experiment
   # A Symbol-keyed Hash of extra experiment data.
   def context(context = nil)
     @_scientist_context ||= {}
-    @_scientist_context.merge!(context) if !context.nil?
+    @_scientist_context.merge!(context) unless context.nil?
     @_scientist_context
   end
 
