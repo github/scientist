@@ -441,3 +441,9 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 [@jesseplusplus](https://github.com/jesseplusplus),
 [@rick](https://github.com/rick),
 and [@zerowidth](https://github.com/zerowidth)
+
+## Alternatives
+
+Here are other implementations of Scientist available in different languages.
+
+- [daylerees/scientist](https://github.com/daylerees/scientist) for [PHP](http://php.net/) by [Dayle Rees](https://github.com/daylerees).
