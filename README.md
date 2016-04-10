@@ -447,3 +447,4 @@ and [@zerowidth](https://github.com/zerowidth)
 Here are other implementations of Scientist available in different languages.
 
 - [daylerees/scientist](https://github.com/daylerees/scientist) for [PHP](http://php.net/) by [Dayle Rees](https://github.com/daylerees).
+- [joealcorn/laboratory](https://github.com/joealcorn/laboratory) for [Python](https://www.python.org/) by [Joe Alcorn](https://github.com/joealcorn).
