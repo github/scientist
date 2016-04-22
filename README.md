@@ -446,4 +446,18 @@ and [@zerowidth](https://github.com/zerowidth)
 
 Here are other implementations of Scientist available in different languages.
 
-- [daylerees/scientist](https://github.com/daylerees/scientist) for [PHP](http://php.net/) by [Dayle Rees](https://github.com/daylerees).
+- For [ASP.NET](http://www.asp.net/)
+	- [Haacked/Scientist.net](https://github.com/Haacked/Scientist.net) by [Phil Haack](https://github.com/Haacked)
+- For [Go](https://golang.org/) 
+	- [lmas/labassistant](https://github.com/lmas/labassistant) by [A. Svensson](https://github.com/lmas)
+- For Javascript
+	- [jirwin/labrat](https://github.com/jirwin/labrat) by [Justin Gallardo](https://github.com/jirwin)
+	- [Runnable/scientist](https://github.com/Runnable/scientist) by [Runnable](https://github.com/Runnable)
+	- [trello/scientist](https://github.com/trello/scientist) by [Trello](https://github.com/trello)
+	- [ziyasal/scientist.js](https://github.com/ziyasal/scientist.js) by [Ziya SARIKAYA](https://github.com/ziyasal)
+- For [PHP](http://php.net/)
+	- [daylerees/scientist](https://github.com/daylerees/scientist) by [Dayle Rees](https://github.com/daylerees).
+	- [LartTyler/Analyst](https://github.com/LartTyler/Analyst) by [Tyler Lartonoix](https://github.com/LartTyler).
+- For [Python](https://www.python.org/)
+	- [joealcorn/laboratory](https://github.com/joealcorn/laboratory) by [Joe Alcorn](https://github.com/joealcorn)
+	- [staticshock/scientist.py](https://github.com/staticshock/scientist.py) by [Anton Backer](https://github.com/staticshock)
