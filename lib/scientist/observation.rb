@@ -61,25 +61,16 @@ class Scientist::Observation
   def equivalent_to?(other, &comparator)
     return false unless other.is_a?(Scientist::Observation)
 
-    values_are_equal = false
-    both_raised      = other.raised? && raised?
-    neither_raised   = !other.raised? && !raised?
-
-    if neither_raised
-      if block_given?
-        values_are_equal = yield value, other.value
-      else
-        values_are_equal = value == other.value
-      end
+    if raised? || other.raised?
+      return other.exception.class == exception.class &&
+        other.exception.message == exception.message
     end
 
-    exceptions_are_equivalent = # backtraces will differ, natch
-      both_raised &&
-        other.exception.class == exception.class &&
-          other.exception.message == exception.message
-
-    (neither_raised && values_are_equal) ||
-      (both_raised && exceptions_are_equivalent)
+    if comparator
+      comparator.call(value, other.value)
+    else
+      value == other.value
+    end
   end
 
   def hash
