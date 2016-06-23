@@ -40,9 +40,9 @@ class MyWidget
   include Scientist
 
   def allows?(user)
-    science "widget-permissions" do |e|
-      e.use { model.check_user(user).valid? } # old way
-      e.try { user.can?(:read, model) } # new way
+    science "widget-permissions" do |experiment|
+      experiment.use { model.check_user(user).valid? } # old way
+      experiment.try { user.can?(:read, model) } # new way
     end # returns the control value
   end
 end
@@ -55,22 +55,25 @@ If you don't declare any `try` blocks, none of the Scientist machinery is invoke
 The examples above will run, but they're not really *doing* anything. The `try` blocks run every time and none of the results get published. Replace the default experiment implementation to control execution and reporting:
 
 ```ruby
-require "scientist"
+require "scientist/experiment"
 
 class MyExperiment
-  include ActiveModel::Model
   include Scientist::Experiment
 
   attr_accessor :name
 
+  def initialize(name: name)
+    @name = name
+  end
+
   def enabled?
     # see "Ramping up experiments" below
-    super
+    true
   end
 
   def publish(result)
     # see "Publishing results" below
-    super
+    Rails.logger.info result
   end
 end
 
@@ -191,8 +194,10 @@ end
 And this cleaned value is available in observations in the final published result:
 
 ```ruby
-class MyExperiment < ActiveRecord::Base
+class MyExperiment
   include Scientist::Experiment
+
+  # ...
 
   def publish(result)
     result.control.value         # [<User alice>, <User bob>, <User carol>]
@@ -244,11 +249,22 @@ end
 As a scientist, you know it's always important to be able to turn your experiment off, lest it run amok and result in villagers with pitchforks on your doorstep. In order to control whether or not an experiment is enabled, you must include the `enabled?` method in your `Scientist::Experiment` implementation.
 
 ```ruby
-class MyExperiment < ActiveRecord::Base
+class MyExperiment
   include Scientist::Experiment
+
+  attr_accessor :name, :percent_enabled
+
+  def initialize(name: name)
+    @name = name
+    @percent_enabled = 100
+  end
+
   def enabled?
     percent_enabled > 0 && rand(100) < percent_enabled
   end
+
+  # ...
+
 end
 ```
 
