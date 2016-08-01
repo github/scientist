@@ -435,15 +435,24 @@ end
 
 Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs the unit tests. All development dependencies are installed automatically. Science requires Ruby 1.9 or newer.
 
+## Alternatives
+
+- [daylerees/scientist](https://github.com/daylerees/scientist) (PHP)
+- [haacked/scientist.net](https://github.com/haacked/scientist.net) (.NET)
+- [joealcorn/laboratory](https://github.com/joealcorn/laboratory) (Python)
+- [rawls238/Scientist4J](https://github.com/rawls238/Scientist4J) (Java)
+- [tomiaijo/scientist](https://github.com/tomiaijo/scientist) (C++)
+- [trello/scientist](https://github.com/trello/scientist) (node.js)
+- [ziyasal/scientist.js](https://github.com/ziyasal/scientist.js) (node.js, ES6)
+- [yeller/laboratory](https://github.com/yeller/laboratory) (Clojure)
+- [lancew/Scientist](https://github.com/lancew/Scientist) (Perl 5)
+- [lancew/ScientistP6](https://github.com/lancew/ScientistP6) (Perl 6)
+- [MadcapJake/Test-Lab](https://github.com/MadcapJake/Test-Lab) (Perl 6)
+
+
 ## Maintainers
 
 [@jbarnette](https://github.com/jbarnette),
 [@jesseplusplus](https://github.com/jesseplusplus),
 [@rick](https://github.com/rick),
 and [@zerowidth](https://github.com/zerowidth)
-
-## Alternatives
-
-Here are other implementations of Scientist available in different languages.
-
-- [daylerees/scientist](https://github.com/daylerees/scientist) for [PHP](http://php.net/) by [Dayle Rees](https://github.com/daylerees).
