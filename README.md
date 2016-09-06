@@ -448,6 +448,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [lancew/Scientist](https://github.com/lancew/Scientist) (Perl 5)
 - [lancew/ScientistP6](https://github.com/lancew/ScientistP6) (Perl 6)
 - [MadcapJake/Test-Lab](https://github.com/MadcapJake/Test-Lab) (Perl 6)
+- [cwbriones/scientist](https://github.com/cwbriones/scientist) (Elixir)
 
 
 ## Maintainers
