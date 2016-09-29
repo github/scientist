@@ -438,7 +438,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 ## Alternatives
 
 - [daylerees/scientist](https://github.com/daylerees/scientist) (PHP)
-- [haacked/scientist.net](https://github.com/haacked/scientist.net) (.NET)
+- [github/scientist.net](https://github.com/github/scientist.net) (.NET)
 - [joealcorn/laboratory](https://github.com/joealcorn/laboratory) (Python)
 - [rawls238/Scientist4J](https://github.com/rawls238/Scientist4J) (Java)
 - [tomiaijo/scientist](https://github.com/tomiaijo/scientist) (C++)
