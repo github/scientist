@@ -38,9 +38,7 @@ class Scientist::Observation
   # Return a cleaned value suitable for publishing. Uses the experiment's
   # defined cleaner block to clean the observed value.
   def cleaned_value
-    if value
-      experiment.clean_value value
-    end
+    experiment.clean_value value unless value.nil?
   end
 
   # Is this observation equivalent to another?

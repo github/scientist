@@ -88,6 +88,18 @@ describe Scientist::Observation do
       a = Scientist::Observation.new("test", @experiment) { "test" }
       assert_equal "TEST", a.cleaned_value
     end
+
+    it "doesn't clean nil values" do
+      @experiment.clean { |value| "foo" }
+      a = Scientist::Observation.new("test", @experiment) { nil }
+      assert_nil a.cleaned_value
+    end
+
+    it "cleans false values" do
+      @experiment.clean { |value| value.to_s.upcase }
+      a = Scientist::Observation.new("test", @experiment) { false }
+      assert_equal "FALSE", a.cleaned_value
+    end
   end
 
 end
