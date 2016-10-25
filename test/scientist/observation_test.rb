@@ -95,6 +95,11 @@ describe Scientist::Observation do
       assert_nil a.cleaned_value
     end
 
+    it "returns false boolean values" do
+      a = Scientist::Observation.new("test", @experiment) { false }
+      assert_equal false, a.cleaned_value
+    end
+
     it "cleans false values" do
       @experiment.clean { |value| value.to_s.upcase }
       a = Scientist::Observation.new("test", @experiment) { false }
