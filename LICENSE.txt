@@ -1,4 +1,4 @@
-Copyright 2013, 2014 GitHub, Inc.
+Copyright 2016 GitHub, Inc.
 
 MIT License
 
