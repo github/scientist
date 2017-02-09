@@ -2,6 +2,8 @@
 
 A Ruby library for carefully refactoring critical paths. [![Build Status](https://travis-ci.org/github/scientist.svg?branch=master)](https://travis-ci.org/github/scientist)
 
+Based on the [Verify Branch By Abstraction](https://dzone.com/articles/application-pattern-verify) pattern.
+
 ## How do I science?
 
 Let's pretend you're changing the way you handle permissions in a large web app. Tests can help guide your refactoring, but you really want to compare the current and refactored behaviors under load.
