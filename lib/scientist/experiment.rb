@@ -205,14 +205,9 @@ module Scientist::Experiment
       @_scientist_before_run.call
     end
 
-    observations = []
-
-    behaviors.keys.shuffle.each do |key|
-      block = behaviors[key]
-      observations << Scientist::Observation.new(key, self, &block)
-    end
-
-    control = observations.detect { |o| o.name == name }
+    observer = Scientist::Observer.new behaviors, self
+    observations = observer.observe
+    control = observer.observation(name)
 
     result = Scientist::Result.new self, observations, control
 
