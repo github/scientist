@@ -73,7 +73,7 @@ class MyExperiment
 
   def publish(result)
     # see "Publishing results" below
-    Rails.logger.info result
+    puts result
   end
 end
 
