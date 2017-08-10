@@ -73,7 +73,7 @@ class MyExperiment
 
   def publish(result)
     # see "Publishing results" below
-    puts result
+    p result
   end
 end
 
