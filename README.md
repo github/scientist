@@ -62,7 +62,7 @@ class MyExperiment
 
   attr_accessor :name
 
-  def initialize(name: name)
+  def initialize(name:)
     @name = name
   end
 
@@ -254,7 +254,7 @@ class MyExperiment
 
   attr_accessor :name, :percent_enabled
 
-  def initialize(name: name)
+  def initialize(name:)
     @name = name
     @percent_enabled = 100
   end
