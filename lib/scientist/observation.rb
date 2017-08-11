@@ -26,7 +26,7 @@ class Scientist::Observation
 
     begin
       @value = block.call
-    rescue Object => e
+    rescue StandardError => e
       @exception = e
     end
 
