@@ -10,3 +10,7 @@ rvm:
   - 2.3.0
   - 2.4.0
 before_install: gem install bundler
+addons:
+ apt:
+   packages:
+     - libgmp-dev
