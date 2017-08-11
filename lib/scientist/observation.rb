@@ -1,6 +1,10 @@
 # What happened when this named behavior was executed? Immutable.
 class Scientist::Observation
 
+  # An Array of Exception types to rescue when initializing an observation.
+  # NOTE: This Array will change to `[StandardError]` in the next major release.
+  RESCUES = [Exception]
+
   # The experiment this observation is for
   attr_reader :experiment
 
@@ -26,7 +30,7 @@ class Scientist::Observation
 
     begin
       @value = block.call
-    rescue Object => e
+    rescue *RESCUES => e
       @exception = e
     end
 
