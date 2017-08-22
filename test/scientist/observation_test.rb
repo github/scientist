@@ -25,6 +25,37 @@ describe Scientist::Observation do
     assert_nil ob.value
   end
 
+  describe "::RESCUES" do
+    before do
+      @original = Scientist::Observation::RESCUES.dup
+    end
+
+    after do
+      Scientist::Observation::RESCUES.replace(@original)
+    end
+
+    it "includes all exception types by default" do
+      ob = Scientist::Observation.new("test", @experiment) do
+        raise Exception.new("not a StandardError")
+      end
+
+      assert ob.raised?
+      assert_instance_of Exception, ob.exception
+    end
+
+    it "can customize rescued types" do
+      Scientist::Observation::RESCUES.replace [StandardError]
+
+      ex = assert_raises Exception do
+        Scientist::Observation.new("test", @experiment) do
+          raise Exception.new("not a StandardError")
+        end
+      end
+
+      assert_equal "not a StandardError", ex.message
+    end
+  end
+
   it "compares values" do
     a = Scientist::Observation.new("test", @experiment) { 1 }
     b = Scientist::Observation.new("test", @experiment) { 1 }

@@ -354,7 +354,18 @@ Scientist will raise a `Scientist::Experiment::MismatchError` exception if any o
 
 ### Handling errors
 
-If an exception is raised within any of scientist's internal helpers, like `publish`, `compare`, or `clean`, the `raised` method is called with the symbol name of the internal operation that failed and the exception that was raised. The default behavior of `Scientist::Default` is to simply re-raise the exception. Since this halts the experiment entirely, it's often a better idea to handle this error and continue so the experiment as a whole isn't canceled entirely:
+#### In candidate code
+
+Scientist rescues and tracks _all_ exceptions raised in a `try` or `use` block, including some where rescuing may cause unexpected behavior (like `SystemExit` or `ScriptError`). To rescue a more restrictive set of exceptions, modify the `RESCUES` list:
+
+```ruby
+# default is [Exception]
+Scientist::Observation::RESCUES.replace [StandardError]
+```
+
+#### In a Scientist callback
+
+If an exception is raised within any of Scientist's internal helpers, like `publish`, `compare`, or `clean`, the `raised` method is called with the symbol name of the internal operation that failed and the exception that was raised. The default behavior of `Scientist::Default` is to simply re-raise the exception. Since this halts the experiment entirely, it's often a better idea to handle this error and continue so the experiment as a whole isn't canceled entirely:
 
 ```ruby
 class MyExperiment
