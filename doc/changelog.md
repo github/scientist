@@ -1,6 +1,6 @@
 # Changes
 
-## v1.1.0 (23 August 2017)
+## v1.1.0 (29 August 2017)
 
 - New: [Specify which exception types to rescue](https://github.com/github/scientist#in-candidate-code)
 - New: List [alternative implementations](https://github.com/github/scientist#alternatives) in `README.md`
