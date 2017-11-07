@@ -123,6 +123,11 @@ describe Scientist::Experiment do
   it "re-raises exceptions raised during publish by default" do
     ex = Scientist::Experiment.new("hello")
     assert_kind_of Scientist::Default, ex
+
+    def ex.enabled?
+      true
+    end
+
     def ex.publish(result)
       raise "boomtown"
     end

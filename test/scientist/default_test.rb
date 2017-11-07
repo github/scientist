@@ -3,8 +3,8 @@ describe Scientist::Default do
     @ex = Scientist::Default.new "default"
   end
 
-  it "is always enabled" do
-    assert @ex.enabled?
+  it "is always disabled" do
+    refute @ex.enabled?
   end
 
   it "noops publish" do
