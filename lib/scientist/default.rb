@@ -10,9 +10,9 @@ class Scientist::Default
     @name = name
   end
 
-  # Run everything every time.
+  # Don't run experiments.
   def enabled?
-    true
+    false
   end
 
   # Don't publish anything.
