@@ -477,6 +477,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [MadcapJake/Test-Lab](https://github.com/MadcapJake/Test-Lab) (Perl 6)
 - [cwbriones/scientist](https://github.com/cwbriones/scientist) (Elixir)
 - [calavera/go-scientist](https://github.com/calavera/go-scientist) (Go)
+- [jelmersnoeck/experiment](https://github.com/jelmersnoeck/experiment) (Go)
 
 
 ## Maintainers
