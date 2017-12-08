@@ -80,7 +80,7 @@ describe Scientist::Observation do
     refute x.equivalent_to?(y)
   end
 
-  FirstErrror = Class.new(StandardError)
+  FirstError = Class.new(StandardError)
   SecondError = Class.new(StandardError)
 
   it "compares exception classes" do
