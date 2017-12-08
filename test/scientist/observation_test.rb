@@ -92,7 +92,7 @@ describe Scientist::Observation do
     refute x.equivalent_to?(y)
   end
 
-  it "compares values using a comparator block" do
+  it "compares values using a comparator proc" do
     a = Scientist::Observation.new("test", @experiment) { 1 }
     b = Scientist::Observation.new("test", @experiment) { "1" }
 
@@ -106,6 +106,25 @@ describe Scientist::Observation do
       true
     end
     assert_equal [a.value, b.value], yielded
+  end
+
+  it "compares exceptions using an error comparator proc" do
+    x = Scientist::Observation.new("test", @experiment) { raise FirstError, "error" }
+    y = Scientist::Observation.new("test", @experiment) { raise SecondError, "error" }
+    z = Scientist::Observation.new("test", @experiment) { raise FirstError, "ERROR" }
+
+    refute x.equivalent_to?(z)
+    refute x.equivalent_to?(y)
+
+    compare_on_class = -> (error, other_error) {
+      error.class == other_error.class
+    }
+    compare_on_message = -> (error, other_error) {
+      error.message == other_error.message
+    }
+
+    assert x.equivalent_to?(z, nil, compare_on_class)
+    assert x.equivalent_to?(y, nil, compare_on_message)
   end
 
   describe "#cleaned_value" do

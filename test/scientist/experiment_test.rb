@@ -180,6 +180,18 @@ describe Scientist::Experiment do
     assert @ex.published_result.matched?
   end
 
+  it "compares errors with an error comparator block if provided" do
+    @ex.error_compare { |a, b| a.class == b.class }
+    @ex.use { raise "foo" }
+    @ex.try { raise "bar" }
+
+    resulting_error = assert_raises RuntimeError do
+      @ex.run
+    end
+    assert_equal "foo", resulting_error.message
+    assert @ex.published_result.matched?
+  end
+
   it "knows how to compare two experiments" do
     a = Scientist::Observation.new(@ex, "a") { 1 }
     b = Scientist::Observation.new(@ex, "b") { 2 }
