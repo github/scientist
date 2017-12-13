@@ -394,6 +394,10 @@ Because `enabled?` and `run_if` determine when a candidate runs, it's impossible
 
 When using Scientist, we've found it most useful to modify both the existing and new systems simultaneously anywhere writes happen, and verify the results at read time with `science`. `raise_on_mismatches` has also been useful to ensure that the correct data was written during tests, and reviewing published mismatches has helped us find any situations we overlooked with our production data at runtime. When writing to and reading from two systems, it's also useful to write some data reconciliation scripts to verify and clean up production data alongside any running experiments.
 
+#### Noise and error rates
+
+Keep in mind that Scientist's `try` and `use` blocks run sequentially in random order. As such, any data upon which your code depends may change before the second block is invoked, potentially yielding a mismatch between the candidate and control return values. To calibrate your expectations with respect to [false negatives](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors) arising from systemic conditions external to your proposed changes, consider starting with an experiment in which both the `try` and `use` blocks invoke the control method. Then proceed with introducing a candidate.
+
 ### Finishing an experiment
 
 As your candidate behavior converges on the controls, you'll start thinking about removing an experiment and using the new behavior.
