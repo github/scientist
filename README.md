@@ -458,6 +458,17 @@ science "various-ways", run: "first-way" do |e|
 end
 ```
 
+### Without including Scientist
+
+If you need to use Scientist in a place where you aren't able to include the Scientist module, you can call `Scientist.run`:
+
+```ruby
+Scientist.run "widget-permissions" do |e|
+  e.use { model.check_user(user).valid? }
+  e.try { user.can?(:read, model) }
+end
+```
+
 ## Hacking
 
 Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs the unit tests. All development dependencies are installed automatically. Science requires Ruby 1.9 or newer.

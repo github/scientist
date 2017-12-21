@@ -15,6 +15,15 @@ describe Scientist do
     assert_equal :control, r
   end
 
+  it "provides a module method to instantiate and run experiments" do
+    r = Scientist.run "test" do |e|
+      e.use { :control }
+      e.try { :candidate }
+    end
+
+    assert_equal :control, r
+  end
+
   it "provides an empty default_scientist_context" do
     obj = Object.new
     obj.extend(Scientist)
