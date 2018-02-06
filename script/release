@@ -14,7 +14,7 @@ gem build -q scientist.gemspec
 
 # Make sure we're on the master branch.
 
-(git branch | grep -q '* master') || {
+(git branch --no-color | grep -q '* master') || {
   echo "Only release from the master branch."
   exit 1
 }
