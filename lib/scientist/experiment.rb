@@ -44,7 +44,7 @@ module Scientist::Experiment
         observation.exception.inspect.prepend("  ") + "\n" +
           observation.exception.backtrace.map { |line| line.prepend("    ") }.join("\n")
       else
-        observation.value.inspect.prepend("  ")
+        observation.cleaned_value.inspect.prepend("  ")
       end
     end
   end
