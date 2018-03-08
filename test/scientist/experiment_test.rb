@@ -392,6 +392,16 @@ describe Scientist::Experiment do
       assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
     end
 
+    it "cleans values when raising on observation mismatch" do
+      Fake.raise_on_mismatches = true
+      @ex.use { "fine" }
+      @ex.try { "not fine" }
+      @ex.clean { "So Clean" }
+
+      err = assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
+      assert_match /So Clean/, err.message
+    end
+
     it "doesn't raise when there is a mismatch if raise on mismatches is disabled" do
       Fake.raise_on_mismatches = false
       @ex.use { "fine" }
