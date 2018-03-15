@@ -327,7 +327,7 @@ class MyExperiment
       }
     else
       {
-        # see "Keeping it clean" below
+        # see "Keeping it clean" above
         :value => observation.cleaned_value
       }
     end
