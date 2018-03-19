@@ -357,14 +357,23 @@ Scientist will raise a `Scientist::Experiment::MismatchError` exception if any o
 To instruct Scientist to raise a custom error instead of the default `Scientist::Experiment::MismatchError`:
 
 ```ruby
-Class CustomError < Scientist::Experiment::MismatchError
+class CustomMismatchError < Scientist::Experiment::MismatchError
   def to_s
-    ...
+    result.candidates.map do |candidate|
+      puts "There was a mismatch! Here's the diff:"
+      Diff.new(result.control, candidate)
+    end
   end
 end
+```
 
+```ruby
 science "widget-permissions" do |e|
-  e.raise_with(CustomError)
+  e.context :user => user
+
+  e.use { model.check_user(user).valid? }
+  e.try { user.can?(:read, model) }
+  e.raise_with CustomMismatchError
 end
 ```
 
