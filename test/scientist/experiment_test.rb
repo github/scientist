@@ -262,6 +262,19 @@ describe Scientist::Experiment do
     assert_equal "kaboom", exception.message
   end
 
+  describe "#raise_with" do
+    it "raises custom error if provided" do
+      class CustomError < Scientist::Experiment::MismatchError; end
+
+      @ex.use { 1}
+      @ex.try { 2 }
+      @ex.raise_with(CustomError)
+      @ex.raise_on_mismatches = true
+
+      assert_raises(CustomError) { @ex.run }
+    end
+  end
+
   describe "#run_if" do
     it "does not run the experiment if the given block returns false" do
       candidate_ran = false

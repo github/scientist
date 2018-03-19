@@ -176,6 +176,10 @@ module Scientist::Experiment
     false
   end
 
+  def raise_with(exception)
+    @_scientist_custom_mismatch_error = exception
+  end
+
   # Called when an exception is raised while running an internal operation,
   # like :publish. Override this method to track these exceptions. The
   # default implementation re-raises the exception.
@@ -223,7 +227,11 @@ module Scientist::Experiment
     end
 
     if raise_on_mismatches? && result.mismatched?
-      raise MismatchError.new(self.name, result)
+      if @_scientist_custom_mismatch_error
+        raise @_scientist_custom_mismatch_error.new(self.name, result)
+      else
+        raise MismatchError.new(self.name, result)
+      end
     end
 
     if control.raised?
