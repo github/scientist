@@ -362,7 +362,7 @@ class CustomMismatchError < Scientist::Experiment::MismatchError
     result.candidates.map do |candidate|
       puts "There was a mismatch! Here's the diff:"
       Diff.new(result.control, candidate)
-    end
+    end.join("\n")
   end
 end
 ```
