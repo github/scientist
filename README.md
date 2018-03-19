@@ -372,10 +372,9 @@ end
 
 ```ruby
 science "widget-permissions" do |e|
-  e.context :user => user
+  e.use { Report.find(id) }
+  e.try { ReportService.new.fetch(id) }
 
-  e.use { model.check_user(user).valid? }
-  e.try { user.can?(:read, model) }
   e.raise_with CustomMismatchError
 end
 ```
