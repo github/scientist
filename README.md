@@ -359,10 +359,13 @@ To instruct Scientist to raise a custom error instead of the default `Scientist:
 ```ruby
 class CustomMismatchError < Scientist::Experiment::MismatchError
   def to_s
-    result.candidates.map do |candidate|
-      puts "There was a mismatch! Here's the diff:"
+    message = "There was a mismatch! Here's the diff:"
+
+    diffs = result.candidates.map do |candidate|
       Diff.new(result.control, candidate)
     end.join("\n")
+
+    "#{message}\n#{diffs}"
   end
 end
 ```
