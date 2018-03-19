@@ -264,9 +264,9 @@ describe Scientist::Experiment do
 
   describe "#raise_with" do
     it "raises custom error if provided" do
-      class CustomError < Scientist::Experiment::MismatchError; end
+      CustomError = Class.new(Scientist::Experiment::MismatchError)
 
-      @ex.use { 1}
+      @ex.use { 1 }
       @ex.try { 2 }
       @ex.raise_with(CustomError)
       @ex.raise_on_mismatches = true
