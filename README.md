@@ -352,6 +352,35 @@ MyExperiment.raise_on_mismatches = true
 
 Scientist will raise a `Scientist::Experiment::MismatchError` exception if any observations don't match.
 
+#### Custom mismatch errors
+
+To instruct Scientist to raise a custom error instead of the default `Scientist::Experiment::MismatchError`:
+
+```ruby
+class CustomMismatchError < Scientist::Experiment::MismatchError
+  def to_s
+    message = "There was a mismatch! Here's the diff:"
+
+    diffs = result.candidates.map do |candidate|
+      Diff.new(result.control, candidate)
+    end.join("\n")
+
+    "#{message}\n#{diffs}"
+  end
+end
+```
+
+```ruby
+science "widget-permissions" do |e|
+  e.use { Report.find(id) }
+  e.try { ReportService.new.fetch(id) }
+
+  e.raise_with CustomMismatchError
+end
+```
+
+This allows for pre-processing on mismatch error exception messages.
+
 ### Handling errors
 
 #### In candidate code
