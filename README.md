@@ -52,7 +52,7 @@ If you don't declare any `try` blocks, none of the Scientist machinery is invoke
 
 ## Making science useful
 
-The examples above will run, but they're not really *doing* anything. The `try` blocks run every time and none of the results get published. Replace the default experiment implementation to control execution and reporting:
+The examples above will run, but they're not really *doing* anything. The `try` blocks don't run yet and none of the results get published. Replace the default experiment implementation to control execution and reporting:
 
 ```ruby
 require "scientist/experiment"
