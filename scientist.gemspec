@@ -10,6 +10,8 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/github/scientist"
   gem.license       = "MIT"
 
+  gem.required_ruby_version = '>= 2.1'
+
   gem.files         = `git ls-files`.split($/)
   gem.executables   = []
   gem.test_files    = gem.files.grep(/^test/)

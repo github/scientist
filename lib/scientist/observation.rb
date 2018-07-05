@@ -28,13 +28,14 @@ class Scientist::Observation
     @experiment = experiment
     @now        = Time.now
 
+    starting = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
     begin
       @value = block.call
     rescue *RESCUES => e
       @exception = e
     end
 
-    @duration = (Time.now - @now).to_f
+    @duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second) - starting
 
     freeze
   end
