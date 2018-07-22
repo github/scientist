@@ -523,6 +523,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [calavera/go-scientist](https://github.com/calavera/go-scientist) (Go)
 - [jelmersnoeck/experiment](https://github.com/jelmersnoeck/experiment) (Go)
 - [spoptchev/scientist](https://github.com/spoptchev/scientist) (Kotlin / Java)
+- [junkpiano/scientist](https://github.com/junkpiano/scientist) (Swift)
 
 
 ## Maintainers
