@@ -32,20 +32,21 @@ module Scientist::Experiment
     # The assumption here is that errors raised in a test environment are
     # printed out as strings, rather than using #inspect.
     def to_s
-      super + ":\n" +
-      format_observation(result.control) + "\n" +
-      result.candidates.map { |candidate| format_observation(candidate) }.join("\n") +
-      "\n"
+      <<~FORMAT
+        #{super}:
+        #{format_observation(result.control)}
+        #{result.candidates.map { |candidate| format_observation(candidate) }.join("\n")}
+      FORMAT
     end
 
     def format_observation(observation)
-      observation.name + ":\n" +
-      if observation.raised?
-        observation.exception.inspect.prepend("  ") + "\n" +
-          observation.exception.backtrace.map { |line| line.prepend("    ") }.join("\n")
-      else
-        observation.cleaned_value.inspect.prepend("  ")
-      end
+      "#{observation.name}:\n  " +
+        if observation.raised?
+          observation.exception.inspect + "\n" +
+            observation.exception.backtrace.map { |line| "    #{line}" }.join("\n")
+        else
+          observation.cleaned_value.inspect
+        end
     end
   end
 
