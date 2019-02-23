@@ -2,6 +2,33 @@
 
 A Ruby library for carefully refactoring critical paths. [![Build Status](https://travis-ci.org/github/scientist.svg?branch=master)](https://travis-ci.org/github/scientist) [![Coverage Status](https://coveralls.io/repos/github/github/scientist/badge.svg?branch=master)](https://coveralls.io/github/github/scientist?branch=master)
 
+* [How do I science?](#how-do-i-science)
+* [Making science useful](#making-science-useful)
+  + [Controlling comparison](#controlling-comparison)
+  + [Adding context](#adding-context)
+  + [Expensive setup](#expensive-setup)
+  + [Keeping it clean](#keeping-it-clean)
+  + [Ignoring mismatches](#ignoring-mismatches)
+  + [Enabling/disabling experiments](#enablingdisabling-experiments)
+  + [Ramping up experiments](#ramping-up-experiments)
+  + [Publishing results](#publishing-results)
+  + [Testing](#testing)
+    - [Custom mismatch errors](#custom-mismatch-errors)
+  + [Handling errors](#handling-errors)
+    - [In candidate code](#in-candidate-code)
+    - [In a Scientist callback](#in-a-scientist-callback)
+  + [Designing an experiment](#designing-an-experiment)
+    - [Noise and error rates](#noise-and-error-rates)
+  + [Finishing an experiment](#finishing-an-experiment)
+* [Breaking the rules](#breaking-the-rules)
+  + [Ignoring results entirely](#ignoring-results-entirely)
+  + [Trying more than one thing](#trying-more-than-one-thing)
+  + [No control, just candidates](#no-control-just-candidates)
+  + [Without including Scientist](#without-including-scientist)
+* [Hacking](#hacking)
+* [Alternatives](#alternatives)
+* [Maintainers](#maintainers)
+
 ## How do I science?
 
 Let's pretend you're changing the way you handle permissions in a large web app. Tests can help guide your refactoring, but you really want to compare the current and refactored behaviors under load.
