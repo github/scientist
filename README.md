@@ -509,7 +509,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 ## Alternatives
 
 - [daylerees/scientist](https://github.com/daylerees/scientist) (PHP)
-- [github/scientist.net](https://github.com/github/scientist.net) (.NET)
+- [scientistproject/scientist.net](https://github.com/scientistproject/Scientist.net) (.NET)
 - [joealcorn/laboratory](https://github.com/joealcorn/laboratory) (Python)
 - [rawls238/Scientist4J](https://github.com/rawls238/Scientist4J) (Java)
 - [tomiaijo/scientist](https://github.com/tomiaijo/scientist) (C++)
