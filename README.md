@@ -504,7 +504,7 @@ end
 
 ## Hacking
 
-Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs the unit tests. All development dependencies are installed automatically. Scientist requires Ruby 2.1 or newer.
+Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs the unit tests. All development dependencies are installed automatically. Scientist requires Ruby 2.3 or newer.
 
 ## Alternatives
 
