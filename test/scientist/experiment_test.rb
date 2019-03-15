@@ -239,6 +239,13 @@ describe Scientist::Experiment do
     assert_equal 10, @ex.clean_value(10)
   end
 
+  it "provides the clean block when asked for it, in case subclasses wish to override and provide defaults" do
+    assert_nil @ex.cleaner
+    cleaner = ->(value) { value.upcase }
+    @ex.clean(&cleaner)
+    assert_equal cleaner, @ex.cleaner
+  end
+
   it "calls the configured clean block with a value when configured" do
     @ex.clean do |value|
       value.upcase

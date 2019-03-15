@@ -96,6 +96,13 @@ module Scientist::Experiment
     @_scientist_cleaner = block
   end
 
+  # Accessor for the clean block, if one is available.
+  #
+  # Returns the configured block, or nil.
+  def cleaner
+    @_scientist_cleaner
+  end
+
   # Internal: Clean a value with the configured clean block, or return the value
   # if no clean block is configured.
   #

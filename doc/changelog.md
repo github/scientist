@@ -1,5 +1,9 @@
 # Changes
 
+## v1.2.1 (UNRELEASED)
+
+- New: Add an accessor for the configured clean block
+
 ## v1.2.0 (5 July 2018)
 
 - New: Use monotonic clock for duration calculations
