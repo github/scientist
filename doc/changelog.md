@@ -3,6 +3,7 @@
 ## v1.2.1 (UNRELEASED)
 
 - New: Add an accessor for the configured clean block
+- New: Add a hook to use fabricated durations instead of actual timing data.
 
 ## v1.2.0 (5 July 2018)
 

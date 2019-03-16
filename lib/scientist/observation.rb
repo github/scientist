@@ -23,19 +23,20 @@ class Scientist::Observation
   # The Float seconds elapsed.
   attr_reader :duration
 
-  def initialize(name, experiment, &block)
+  def initialize(name, experiment, fabricated_duration: nil, &block)
     @name       = name
     @experiment = experiment
     @now        = Time.now
 
-    starting = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
+    starting = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second) unless fabricated_duration
     begin
       @value = block.call
     rescue *RESCUES => e
       @exception = e
     end
 
-    @duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second) - starting
+    @duration = fabricated_duration ||
+      Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second) - starting
 
     freeze
   end
