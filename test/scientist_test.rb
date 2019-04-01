@@ -59,8 +59,6 @@ describe Scientist do
     behaviors_executed = []
 
     result = obj.science "test", run: "first-way" do |e|
-      experiment = e
-
       e.try("first-way") { behaviors_executed << "first-way" ; true }
       e.try("second-way") { behaviors_executed << "second-way" ; true }
     end
@@ -76,8 +74,6 @@ describe Scientist do
     behaviors_executed = []
 
     result = obj.science "test", nil do |e|
-      experiment = e
-
       e.use { behaviors_executed << "control" ; true }
       e.try("second-way") { behaviors_executed << "second-way" ; true }
     end
