@@ -56,23 +56,29 @@ describe Scientist do
     obj = Object.new
     obj.extend(Scientist)
 
+    behaviors_executed = []
+
     result = obj.science "test", run: "first-way" do |e|
-      e.try("first-way") { true }
-      e.try("second-way") { true }
+      e.try("first-way") { behaviors_executed << "first-way" ; true }
+      e.try("second-way") { behaviors_executed << "second-way" ; true }
     end
 
     assert_equal true, result
+    assert_equal [ "first-way" ], behaviors_executed
   end
 
   it "runs control when there is a nil named test" do
     obj = Object.new
     obj.extend(Scientist)
 
+    behaviors_executed = []
+
     result = obj.science "test", nil do |e|
-      e.use { true }
-      e.try("second-way") { true }
+      e.use { behaviors_executed << "control" ; true }
+      e.try("second-way") { behaviors_executed << "second-way" ; true }
     end
 
     assert_equal true, result
+    assert_equal [ "control" ], behaviors_executed
   end
 end
