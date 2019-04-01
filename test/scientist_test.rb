@@ -57,8 +57,6 @@ describe Scientist do
     obj.extend(Scientist)
 
     result = obj.science "test", run: "first-way" do |e|
-      experiment = e
-
       e.try("first-way") { true }
       e.try("second-way") { true }
     end
@@ -71,8 +69,6 @@ describe Scientist do
     obj.extend(Scientist)
 
     result = obj.science "test", nil do |e|
-      experiment = e
-
       e.use { true }
       e.try("second-way") { true }
     end
