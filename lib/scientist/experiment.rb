@@ -96,6 +96,13 @@ module Scientist::Experiment
     @_scientist_cleaner = block
   end
 
+  # Accessor for the clean block, if one is available.
+  #
+  # Returns the configured block, or nil.
+  def cleaner
+    @_scientist_cleaner
+  end
+
   # Internal: Clean a value with the configured clean block, or return the value
   # if no clean block is configured.
   #
@@ -213,7 +220,8 @@ module Scientist::Experiment
 
     behaviors.keys.shuffle.each do |key|
       block = behaviors[key]
-      observations << Scientist::Observation.new(key, self, &block)
+      fabricated_duration = @_scientist_fabricated_durations && @_scientist_fabricated_durations[key]
+      observations << Scientist::Observation.new(key, self, fabricated_duration: fabricated_duration, &block)
     end
 
     control = observations.detect { |o| o.name == name }
@@ -289,5 +297,11 @@ module Scientist::Experiment
     else
       !!raise_on_mismatches
     end
+  end
+
+  # Provide predefined durations to use instead of actual timing data.
+  # This is here solely as a convenience for developers of libraries that extend Scientist.
+  def fabricate_durations_for_testing_purposes(fabricated_durations = {})
+    @_scientist_fabricated_durations = fabricated_durations
   end
 end

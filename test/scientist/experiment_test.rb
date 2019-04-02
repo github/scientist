@@ -239,6 +239,13 @@ describe Scientist::Experiment do
     assert_equal 10, @ex.clean_value(10)
   end
 
+  it "provides the clean block when asked for it, in case subclasses wish to override and provide defaults" do
+    assert_nil @ex.cleaner
+    cleaner = ->(value) { value.upcase }
+    @ex.clean(&cleaner)
+    assert_equal cleaner, @ex.cleaner
+  end
+
   it "calls the configured clean block with a value when configured" do
     @ex.clean do |value|
       value.upcase
@@ -557,6 +564,34 @@ candidate:
       @ex.run
 
       refute before, "before_run should not have run"
+    end
+  end
+
+  describe "testing hooks for extending code" do
+    it "allows a user to provide fabricated durations for testing purposes" do
+      @ex.use { true }
+      @ex.try { true }
+      @ex.fabricate_durations_for_testing_purposes( "control" => 0.5, "candidate" => 1.0 )
+
+      @ex.run
+
+      cont = @ex.published_result.control
+      cand = @ex.published_result.candidates.first
+      assert_in_delta 0.5, cont.duration, 0.01
+      assert_in_delta 1.0, cand.duration, 0.01
+    end
+
+    it "returns actual durations if fabricated ones are omitted for some blocks" do
+      @ex.use { true }
+      @ex.try { sleep 0.1; true }
+      @ex.fabricate_durations_for_testing_purposes( "control" => 0.5 )
+
+      @ex.run
+
+      cont = @ex.published_result.control
+      cand = @ex.published_result.candidates.first
+      assert_in_delta 0.5, cont.duration, 0.01
+      assert_in_delta 0.1, cand.duration, 0.01
     end
   end
 end

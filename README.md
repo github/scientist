@@ -206,6 +206,8 @@ class MyExperiment
 end
 ```
 
+Note that the `#clean` method will discard the previous cleaner block if you call it again.  If for some reason you need to access the currently configured cleaner block, `Scientist::Experiment#cleaner` will return the block without further ado.  _(This probably won't come up in normal usage, but comes in handy if you're writing, say, a custom experiment runner that provides default cleaners.)_
+
 ### Ignoring mismatches
 
 During the early stages of an experiment, it's possible that some of your code will always generate a mismatch for reasons you know and understand but haven't yet fixed. Instead of these known cases always showing up as mismatches in your metrics or analysis, you can tell an experiment whether or not to ignore a mismatch using the `ignore` method. You may include more than one block if needed:
@@ -490,6 +492,22 @@ science "various-ways", run: "first-way" do |e|
   e.try("second-way") { ... }
 end
 ```
+
+#### Providing fake timing data
+
+If you're writing tests that depend on specific timing values, you can provide canned durations using the `fabricate_durations_for_testing_purposes` method, and Scientist will report these in `Scientist::Observation#duration` instead of the actual execution times.
+
+```ruby
+science "absolutely-nothing-suspicious-happening-here" do |e|
+  e.use { ... } # "control"
+  e.try { ... } # "candidate"
+  e.fabricate_durations_for_testing_purposes( "control" => 1.0, "candidate" => 0.5 )
+end
+```
+
+`fabricate_durations_for_testing_purposes` takes a Hash of duration values, keyed by behavior names.  (By default, Scientist uses `"control"` and `"candidate"`, but if you override these as shown in [Trying more than one thing](#trying-more-than-one-thing) or [No control, just candidates](#no-control-just-candidates), use matching names here.)  If a name is not provided, the actual execution time will be reported instead.
+
+_Like `Scientist::Experiment#cleaner`, this probably won't come up in normal usage.  It's here to make it easier to test code that extends Scientist._
 
 ### Without including Scientist
 
