@@ -62,7 +62,7 @@ class MyExperiment
 
   attr_accessor :name
 
-  def initialize(name:)
+  def initialize(name)
     @name = name
   end
 
@@ -77,12 +77,7 @@ class MyExperiment
   end
 end
 
-# replace `Scientist::Default` as the default implementation
-module Scientist::Experiment
-  def self.new(name)
-    MyExperiment.new(name: name)
-  end
-end
+Scientist::Experiment.register(MyExperiment)
 ```
 
 Now calls to the `science` helper will load instances of `MyExperiment`.
@@ -256,7 +251,7 @@ class MyExperiment
 
   attr_accessor :name, :percent_enabled
 
-  def initialize(name:)
+  def initialize(name)
     @name = name
     @percent_enabled = 100
   end
