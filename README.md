@@ -76,8 +76,6 @@ class MyExperiment
     p result
   end
 end
-
-Scientist::Experiment.register(MyExperiment)
 ```
 
 Now calls to the `science` helper will load instances of `MyExperiment`.
