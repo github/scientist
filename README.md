@@ -524,6 +524,10 @@ end
 
 Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs the unit tests. All development dependencies are installed automatically. Scientist requires Ruby 2.3 or newer.
 
+## Wrappers
+
+- [RealGeeks/lab_tech](https://github.com/RealGeeks/lab_tech) is a Rails engine for using this library by controlling, storing, and analyzing experiment results with ActiveRecord.
+
 ## Alternatives
 
 - [daylerees/scientist](https://github.com/daylerees/scientist) (PHP)
@@ -542,7 +546,6 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [jelmersnoeck/experiment](https://github.com/jelmersnoeck/experiment) (Go)
 - [spoptchev/scientist](https://github.com/spoptchev/scientist) (Kotlin / Java)
 - [junkpiano/scientist](https://github.com/junkpiano/scientist) (Swift)
-
 
 ## Maintainers
 
