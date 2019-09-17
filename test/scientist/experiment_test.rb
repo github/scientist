@@ -444,6 +444,18 @@ describe Scientist::Experiment do
       assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
     end
 
+    it "allows MismatchError to bubble up through bare rescues" do
+      Fake.raise_on_mismatches = true
+      @ex.use { "control" }
+      @ex.try { "candidate" }
+      runner = -> do
+        @ex.run
+      rescue
+        # StandardError handled
+      end
+      assert_raises(Scientist::Experiment::MismatchError) { runner.call }
+    end
+
     describe "#raise_on_mismatches?" do
       it "raises when there is a mismatch if the experiment instance's raise on mismatches is enabled" do
         Fake.raise_on_mismatches = false
