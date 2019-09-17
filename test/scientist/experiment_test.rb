@@ -448,11 +448,13 @@ describe Scientist::Experiment do
       Fake.raise_on_mismatches = true
       @ex.use { "control" }
       @ex.try { "candidate" }
-      runner = -> do
-        @ex.run
-      rescue
-        # StandardError handled
-      end
+      runner = -> {
+        begin
+          @ex.run
+        rescue
+          # StandardError handled
+        end
+      }
       assert_raises(Scientist::Experiment::MismatchError) { runner.call }
     end
 
