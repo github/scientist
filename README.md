@@ -26,7 +26,7 @@ Wrap a `use` block around the code's original behavior, and wrap `try` around th
 * Randomizes the order in which `use` and `try` blocks are run,
 * Measures the durations of all behaviors,
 * Compares the result of `try` to the result of `use`,
-* Swallows (but records) any exceptions raised in the `try` block, and
+* Swallow and record exceptions raised in the `try` block when overriding `raised`, and
 * Publishes all this information.
 
 The `use` block is called the **control**. The `try` block is called the **candidate**.
@@ -69,6 +69,12 @@ class MyExperiment
   def enabled?
     # see "Ramping up experiments" below
     true
+  end
+
+  def raised(operation, error)
+    # see "In a Scientist callback" below
+    p "Operation '#{operation}' failed with error '#{error.inspect}'"
+    super # will re-raise
   end
 
   def publish(result)
