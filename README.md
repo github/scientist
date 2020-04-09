@@ -554,6 +554,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [spoptchev/scientist](https://github.com/spoptchev/scientist) (Kotlin / Java)
 - [junkpiano/scientist](https://github.com/junkpiano/scientist) (Swift)
 - [serverless scientist](http://serverlessscientist.com/) (AWS Lambda)
+- [Mister Spex Scientist](https://github.com/MisterSpex/misterspex-scientist/) (Java, no dependencies)
 
 ## Maintainers
 
