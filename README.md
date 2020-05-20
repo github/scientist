@@ -544,6 +544,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [trello/scientist](https://github.com/trello/scientist) (node.js)
 - [ziyasal/scientist.js](https://github.com/ziyasal/scientist.js) (node.js, ES6)
 - [TrueWill/tzientist](https://github.com/TrueWill/tzientist) (node.js, TypeScript)
+- [TrueWill/paleontologist](https://github.com/TrueWill/paleontologist) (Deno, TypeScript)
 - [yeller/laboratory](https://github.com/yeller/laboratory) (Clojure)
 - [lancew/Scientist](https://github.com/lancew/Scientist) (Perl 5)
 - [lancew/ScientistP6](https://github.com/lancew/ScientistP6) (Perl 6)
