@@ -8,9 +8,6 @@ class Scientist::Observation
   # The experiment this observation is for
   attr_reader :experiment
 
-  # The instant observation began.
-  attr_reader :now
-
   # The String name of the behavior.
   attr_reader :name
 
@@ -26,7 +23,6 @@ class Scientist::Observation
   def initialize(name, experiment, fabricated_duration: nil, &block)
     @name       = name
     @experiment = experiment
-    @now        = Time.now
 
     starting = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second) unless fabricated_duration
     begin
