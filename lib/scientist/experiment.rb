@@ -216,17 +216,7 @@ module Scientist::Experiment
       @_scientist_before_run.call
     end
 
-    observations = []
-
-    behaviors.keys.shuffle.each do |key|
-      block = behaviors[key]
-      fabricated_duration = @_scientist_fabricated_durations && @_scientist_fabricated_durations[key]
-      observations << Scientist::Observation.new(key, self, fabricated_duration: fabricated_duration, &block)
-    end
-
-    control = observations.detect { |o| o.name == name }
-
-    result = Scientist::Result.new self, observations, control
+    result = generate_result(name)
 
     begin
       publish(result)
@@ -242,11 +232,9 @@ module Scientist::Experiment
       end
     end
 
-    if control.raised?
-      raise control.exception
-    else
-      control.value
-    end
+    control = result.control
+    raise control.exception if control.raised?
+    control.value
   end
 
   # Define a block that determines whether or not the experiment should run.
@@ -303,5 +291,19 @@ module Scientist::Experiment
   # This is here solely as a convenience for developers of libraries that extend Scientist.
   def fabricate_durations_for_testing_purposes(fabricated_durations = {})
     @_scientist_fabricated_durations = fabricated_durations
+  end
+
+  # Internal: Generate the observations and create the result from those and the control.
+  def generate_result(name)
+    observations = []
+
+    behaviors.keys.shuffle.each do |key|
+      block = behaviors[key]
+      fabricated_duration = @_scientist_fabricated_durations && @_scientist_fabricated_durations[key]
+      observations << Scientist::Observation.new(key, self, fabricated_duration: fabricated_duration, &block)
+    end
+
+    control = observations.detect { |o| o.name == name }
+    Scientist::Result.new(self, observations, control)
   end
 end
