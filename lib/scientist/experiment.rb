@@ -10,11 +10,11 @@ module Scientist::Experiment
   attr_accessor :raise_on_mismatches
 
   def self.included(base)
-    self.register(base)
+    self.set_default(base)
     base.extend RaiseOnMismatch
   end
 
-  # Instantiate a new experiment (using the class given to the .register method).
+  # Instantiate a new experiment (using the class given to the .set_default method).
   def self.new(name)
     (@experiment_klass || Scientist::Default).new(name)
   end
@@ -23,7 +23,7 @@ module Scientist::Experiment
   # (must implement the Scientist::Experiment interface).
   #
   # Called automatically when new experiments are defined.
-  def self.register(klass)
+  def self.set_default(klass)
     @experiment_klass = klass
   end
 

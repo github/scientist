@@ -3,7 +3,7 @@ describe Scientist::Experiment do
     include Scientist::Experiment
 
     # Undo auto-config magic / preserve default behavior of Scientist::Experiment.new
-    Scientist::Experiment.register(nil)
+    Scientist::Experiment.set_default(nil)
 
     def initialize(*args)
     end
