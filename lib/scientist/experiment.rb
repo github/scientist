@@ -9,12 +9,22 @@ module Scientist::Experiment
   # If this is nil, raise_on_mismatches class attribute is used instead.
   attr_accessor :raise_on_mismatches
 
-  # Create a new instance of a class that implements the Scientist::Experiment
-  # interface.
-  #
-  # Override this method directly to change the default implementation.
+  def self.included(base)
+    self.set_default(base)
+    base.extend RaiseOnMismatch
+  end
+
+  # Instantiate a new experiment (using the class given to the .set_default method).
   def self.new(name)
-    Scientist::Default.new(name)
+    (@experiment_klass || Scientist::Default).new(name)
+  end
+
+  # Configure Scientist to use the given class for all future experiments
+  # (must implement the Scientist::Experiment interface).
+  #
+  # Called automatically when new experiments are defined.
+  def self.set_default(klass)
+    @experiment_klass = klass
   end
 
   # A mismatch, raised when raise_on_mismatches is enabled.
@@ -65,10 +75,6 @@ module Scientist::Experiment
     def raise_on_mismatches?
       @raise_on_mismatches
     end
-  end
-
-  def self.included(base)
-    base.extend RaiseOnMismatch
   end
 
   # Define a block of code to run before an experiment begins, if the experiment

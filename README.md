@@ -62,7 +62,7 @@ class MyExperiment
 
   attr_accessor :name
 
-  def initialize(name:)
+  def initialize(name)
     @name = name
   end
 
@@ -80,13 +80,6 @@ class MyExperiment
   def publish(result)
     # see "Publishing results" below
     p result
-  end
-end
-
-# replace `Scientist::Default` as the default implementation
-module Scientist::Experiment
-  def self.new(name)
-    MyExperiment.new(name: name)
   end
 end
 ```
@@ -262,7 +255,7 @@ class MyExperiment
 
   attr_accessor :name, :percent_enabled
 
-  def initialize(name:)
+  def initialize(name)
     @name = name
     @percent_enabled = 100
   end

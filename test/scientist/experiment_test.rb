@@ -2,6 +2,9 @@ describe Scientist::Experiment do
   class Fake
     include Scientist::Experiment
 
+    # Undo auto-config magic / preserve default behavior of Scientist::Experiment.new
+    Scientist::Experiment.set_default(nil)
+
     def initialize(*args)
     end
 
