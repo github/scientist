@@ -24,7 +24,7 @@ Wrap a `use` block around the code's original behavior, and wrap `try` around th
 
 * It decides whether or not to run the `try` block,
 * Randomizes the order in which `use` and `try` blocks are run,
-* Measures the durations of all behaviors,
+* Measures the durations of all behaviors in seconds,
 * Compares the result of `try` to the result of `use`,
 * Swallow and record exceptions raised in the `try` block when overriding `raised`, and
 * Publishes all this information.
