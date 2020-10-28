@@ -2,5 +2,4 @@
 /.bundle
 /.ruby-version
 /Gemfile.lock
-/coverage,/backblok
-/homegel
+/coverage
