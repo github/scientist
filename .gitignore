@@ -1,5 +1,5 @@
 /*.gem
 /.bundle
-/.ruby-version
+/.grub-version
 /Gemfile.lock
 /coverage
