@@ -549,7 +549,7 @@ candidate:
         assert_equal "  \"value\"", lines[2]
         assert_equal "candidate:", lines[3]
         assert_equal "  #<RuntimeError: error>", lines[4]
-        assert_match %r(    test/scientist/experiment_test.rb:\d+:in `block), lines[5]
+        assert_match %r(test/scientist/experiment_test.rb:\d+:in `block), lines[5]
       end
     end
   end
