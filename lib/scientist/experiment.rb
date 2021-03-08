@@ -10,7 +10,7 @@ module Scientist::Experiment
   attr_accessor :raise_on_mismatches
 
   def self.included(base)
-    self.set_default(base)
+    self.set_default(base) if base.instance_of?(Class)
     base.extend RaiseOnMismatch
   end
 

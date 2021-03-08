@@ -31,6 +31,24 @@ describe Scientist::Experiment do
     @ex = Fake.new
   end
 
+  it "sets the default on inclusion" do
+    klass = Class.new do
+      include Scientist::Experiment
+
+      def initialize(name)
+      end
+    end
+
+    assert_kind_of klass, Scientist::Experiment.new("hello")
+
+    Scientist::Experiment.set_default(nil)
+  end
+
+  it "doesn't set the default on inclusion when it's a module" do
+    Module.new { include Scientist::Experiment }
+    assert_kind_of Scientist::Default, Scientist::Experiment.new("hello")
+  end
+
   it "has a default implementation" do
     ex = Scientist::Experiment.new("hello")
     assert_kind_of Scientist::Default, ex
