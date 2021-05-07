@@ -3,9 +3,6 @@ language: ruby
 cache: bundler
 script: script/test
 rvm:
-  - 2.3.8
-  - 2.4.10
-  - 2.5.9
   - 2.6.7
   - 2.7.3
   - 3.0.1
