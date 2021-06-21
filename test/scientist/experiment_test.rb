@@ -2,6 +2,9 @@ describe Scientist::Experiment do
   class Fake
     include Scientist::Experiment
 
+    # Undo auto-config magic / preserve default behavior of Scientist::Experiment.new
+    Scientist::Experiment.set_default(nil)
+
     def initialize(*args)
     end
 
@@ -26,6 +29,24 @@ describe Scientist::Experiment do
 
   before do
     @ex = Fake.new
+  end
+
+  it "sets the default on inclusion" do
+    klass = Class.new do
+      include Scientist::Experiment
+
+      def initialize(name)
+      end
+    end
+
+    assert_kind_of klass, Scientist::Experiment.new("hello")
+
+    Scientist::Experiment.set_default(nil)
+  end
+
+  it "doesn't set the default on inclusion when it's a module" do
+    Module.new { include Scientist::Experiment }
+    assert_kind_of Scientist::Default, Scientist::Experiment.new("hello")
   end
 
   it "has a default implementation" do
@@ -546,7 +567,7 @@ candidate:
         assert_equal "  \"value\"", lines[2]
         assert_equal "candidate:", lines[3]
         assert_equal "  #<RuntimeError: error>", lines[4]
-        assert_match %r(    test/scientist/experiment_test.rb:\d+:in `block), lines[5]
+        assert_match %r(test/scientist/experiment_test.rb:\d+:in `block), lines[5]
       end
     end
   end

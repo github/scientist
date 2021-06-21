@@ -3,10 +3,10 @@ language: ruby
 cache: bundler
 script: script/test
 rvm:
-  - 2.3.8
-  - 2.4.5
-  - 2.5.3
-  - 2.6.1
+  - 2.6.7
+  - 2.7.3
+  - 3.0.1
+  - truffleruby-head
 before_install: gem install bundler
 addons:
  apt:

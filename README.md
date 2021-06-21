@@ -24,7 +24,7 @@ Wrap a `use` block around the code's original behavior, and wrap `try` around th
 
 * It decides whether or not to run the `try` block,
 * Randomizes the order in which `use` and `try` blocks are run,
-* Measures the durations of all behaviors,
+* Measures the durations of all behaviors in seconds,
 * Compares the result of `try` to the result of `use`,
 * Swallow and record exceptions raised in the `try` block when overriding `raised`, and
 * Publishes all this information.
@@ -62,7 +62,7 @@ class MyExperiment
 
   attr_accessor :name
 
-  def initialize(name:)
+  def initialize(name)
     @name = name
   end
 
@@ -82,14 +82,9 @@ class MyExperiment
     p result
   end
 end
-
-# replace `Scientist::Default` as the default implementation
-module Scientist::Experiment
-  def self.new(name)
-    MyExperiment.new(name: name)
-  end
-end
 ```
+
+When `Scientist::Experiment` is included in a class, it automatically sets it as the default implementation via `Scientist::Experiment.set_default`. This `set_default` call is is skipped if you include `Scientist::Experiment` in a module.
 
 Now calls to the `science` helper will load instances of `MyExperiment`.
 
@@ -262,7 +257,7 @@ class MyExperiment
 
   attr_accessor :name, :percent_enabled
 
-  def initialize(name:)
+  def initialize(name)
     @name = name
     @percent_enabled = 100
   end
@@ -555,6 +550,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [spoptchev/scientist](https://github.com/spoptchev/scientist) (Kotlin / Java)
 - [junkpiano/scientist](https://github.com/junkpiano/scientist) (Swift)
 - [serverless scientist](http://serverlessscientist.com/) (AWS Lambda)
+- [fightmegg/scientist](https://github.com/fightmegg/scientist) (TypeScript, Browser / Node.js)
 
 ## Maintainers
 
