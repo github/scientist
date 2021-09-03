@@ -395,7 +395,7 @@ Scientist rescues and tracks _all_ exceptions raised in a `try` or `use` block, 
 Scientist::Observation::RESCUES.replace [StandardError]
 ```
 
-**Timeout ⏲️**: If you're introducing a candidate that could possibly timeout, use caution. ⚠️ While Scientist rescues all exceptions that occur in the candidate block, it *does not* protect you from timeouts, as doing so would be complicated. It would likely require running the candidate code in a background job and tracking the time of a request. We feel the cost of this complexity would outweigh the benefit, so make sure that your code doesn't cause timeouts. This risk can be reduced by running the experiment on a low percentage so that users can (most likely) bypass the experiment by refreshing the page if they hit a timeout. See Ramping up Experiments below for how details on how to set the percentage for your experiment.
+**Timeout ⏲️**: If you're introducing a candidate that could possibly timeout, use caution. ⚠️ While Scientist rescues all exceptions that occur in the candidate block, it *does not* protect you from timeouts, as doing so would be complicated. It would likely require running the candidate code in a background job and tracking the time of a request. We feel the cost of this complexity would outweigh the benefit, so make sure that your code doesn't cause timeouts. This risk can be reduced by running the experiment on a low percentage so that users can (most likely) bypass the experiment by refreshing the page if they hit a timeout. See [Ramping up experiments](#ramping-up-experiments) below for how details on how to set the percentage for your experiment.
 
 #### In a Scientist callback
 
