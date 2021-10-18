@@ -97,14 +97,19 @@ describe Scientist::Observation do
     b = Scientist::Observation.new("test", @experiment) { "1" }
 
     refute a.equivalent_to?(b)
-    assert a.equivalent_to?(b) { |x, y| x.to_s == y.to_s }
+
+    compare_on_string = -> (x, y) { x.to_s == y.to_s }
+
+    assert a.equivalent_to?(b, compare_on_string)
 
     yielded = []
-    a.equivalent_to?(b) do |x, y|
+    compare_appends = -> (x, y) do
       yielded << x
       yielded << y
       true
     end
+    a.equivalent_to?(b, compare_appends)
+
     assert_equal [a.value, b.value], yielded
   end
 

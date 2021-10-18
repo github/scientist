@@ -181,7 +181,7 @@ describe Scientist::Experiment do
   end
 
   it "compares errors with an error comparator block if provided" do
-    @ex.error_compare { |a, b| a.class == b.class }
+    @ex.compare_errors { |a, b| a.class == b.class }
     @ex.use { raise "foo" }
     @ex.try { raise "bar" }
 
