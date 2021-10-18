@@ -108,6 +108,38 @@ class MyWidget
 end
 ```
 
+If either the control block or candidate block raises an error, Scientist compares the two observations' classes and messages using `==`. To override this behavior, use `compare_error` to define how to compare observed errors instead:
+
+```ruby
+class MyWidget
+  include Scientist
+
+  def slug_from_login(login)
+    science "slug_from_login" do |e|
+      e.use { User.slug_from_login login }         # returns String instance or ArgumentError
+      e.try { UserService.slug_from_login login }  # returns String instance or ArgumentError
+
+      compare_error_message_and_class = -> (control, candidate) do
+        control.class == candidate.class && 
+        control.message == candidate.message
+      end
+
+      compare_argument_errors = -> (control, candidate) do
+        control.class == ArgumentError &&
+        candidate.class == ArgumentError &&
+        control.message.start_with?("Input has invalid characters") &&
+        candidate.message.star_with?("Invalid characters in input") 
+      end
+
+      e.compare_error do |control, candidate|
+        compare_error_message_and_class.call(control, candidate) ||
+        compare_argument_errors.call(control, candidate)
+      end
+    end
+  end
+end
+```
+
 ### Adding context
 
 Results aren't very useful without some way to identify them. Use the `context` method to add to or retrieve the context for an experiment:
@@ -225,7 +257,7 @@ def admin?(user)
 end
 ```
 
-The ignore blocks are only called if the *values* don't match. If one observation raises an exception and the other doesn't, it's always considered a mismatch. If both observations raise different exceptions, that is also considered a mismatch.
+The ignore blocks are only called if the *values* don't match. Unless a `compare_error` comparator is defined, two cases are considered mismatches: a) one observation raising an exception and the other not, b) observations raising exceptions with different classes or messages.
 
 ### Enabling/disabling experiments
 
