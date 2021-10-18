@@ -70,7 +70,7 @@ class Scientist::Observation
 
     if raised? || other.raised?
       if error_comparator
-        error_comparator.call(exception, other.exception)
+        return error_comparator.call(exception, other.exception)
       else
         return other.exception.class == exception.class &&
           other.exception.message == exception.message

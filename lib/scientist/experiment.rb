@@ -127,7 +127,7 @@ module Scientist::Experiment
   # and return true or false.
   #
   # Returns the block.
-  def error_compare(*args, &block)
+  def compare_errors(*args, &block)
     @_scientist_error_comparator = block
   end
 
@@ -174,7 +174,7 @@ module Scientist::Experiment
     "experiment"
   end
 
-  # Internal: compare two observations, using the configured compare and error_compare lambdas if present.
+  # Internal: compare two observations, using the configured compare and compare_errors lambdas if present.
   def observations_are_equivalent?(a, b)
     a.equivalent_to? b, @_scientist_comparator, @_scientist_error_comparator
   rescue StandardError => ex
