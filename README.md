@@ -585,6 +585,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [junkpiano/scientist](https://github.com/junkpiano/scientist) (Swift)
 - [serverless scientist](http://serverlessscientist.com/) (AWS Lambda)
 - [fightmegg/scientist](https://github.com/fightmegg/scientist) (TypeScript, Browser / Node.js)
+- [MisterSpex/misterspex-scientist](https://github.com/MisterSpex/misterspex-scientist) (Java, no dependencies)
 
 ## Maintainers
 
