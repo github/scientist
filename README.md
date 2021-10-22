@@ -24,7 +24,7 @@ Wrap a `use` block around the code's original behavior, and wrap `try` around th
 
 * It decides whether or not to run the `try` block,
 * Randomizes the order in which `use` and `try` blocks are run,
-* Measures the durations of all behaviors,
+* Measures the durations of all behaviors in seconds,
 * Compares the result of `try` to the result of `use`,
 * Swallow and record exceptions raised in the `try` block when overriding `raised`, and
 * Publishes all this information.
@@ -62,7 +62,7 @@ class MyExperiment
 
   attr_accessor :name
 
-  def initialize(name:)
+  def initialize(name)
     @name = name
   end
 
@@ -82,14 +82,9 @@ class MyExperiment
     p result
   end
 end
-
-# replace `Scientist::Default` as the default implementation
-module Scientist::Experiment
-  def self.new(name)
-    MyExperiment.new(name: name)
-  end
-end
 ```
+
+When `Scientist::Experiment` is included in a class, it automatically sets it as the default implementation via `Scientist::Experiment.set_default`. This `set_default` call is is skipped if you include `Scientist::Experiment` in a module.
 
 Now calls to the `science` helper will load instances of `MyExperiment`.
 
@@ -108,6 +103,38 @@ class MyWidget
 
       e.compare do |control, candidate|
         control.map(&:login) == candidate.map(&:login)
+      end
+    end
+  end
+end
+```
+
+If either the control block or candidate block raises an error, Scientist compares the two observations' classes and messages using `==`. To override this behavior, use `compare_error` to define how to compare observed errors instead:
+
+```ruby
+class MyWidget
+  include Scientist
+
+  def slug_from_login(login)
+    science "slug_from_login" do |e|
+      e.use { User.slug_from_login login }         # returns String instance or ArgumentError
+      e.try { UserService.slug_from_login login }  # returns String instance or ArgumentError
+
+      compare_error_message_and_class = -> (control, candidate) do
+        control.class == candidate.class && 
+        control.message == candidate.message
+      end
+
+      compare_argument_errors = -> (control, candidate) do
+        control.class == ArgumentError &&
+        candidate.class == ArgumentError &&
+        control.message.start_with?("Input has invalid characters") &&
+        candidate.message.star_with?("Invalid characters in input") 
+      end
+
+      e.compare_error do |control, candidate|
+        compare_error_message_and_class.call(control, candidate) ||
+        compare_argument_errors.call(control, candidate)
       end
     end
   end
@@ -233,7 +260,7 @@ def admin?(user)
 end
 ```
 
-The ignore blocks are only called if the *values* don't match. If one observation raises an exception and the other doesn't, it's always considered a mismatch. If both observations raise different exceptions, that is also considered a mismatch.
+The ignore blocks are only called if the *values* don't match. Unless a `compare_error` comparator is defined, two cases are considered mismatches: a) one observation raising an exception and the other not, b) observations raising exceptions with different classes or messages.
 
 ### Enabling/disabling experiments
 
@@ -262,7 +289,7 @@ class MyExperiment
 
   attr_accessor :name, :percent_enabled
 
-  def initialize(name:)
+  def initialize(name)
     @name = name
     @percent_enabled = 100
   end
@@ -399,6 +426,8 @@ Scientist rescues and tracks _all_ exceptions raised in a `try` or `use` block, 
 # default is [Exception]
 Scientist::Observation::RESCUES.replace [StandardError]
 ```
+
+**Timeout ⏲️**: If you're introducing a candidate that could possibly timeout, use caution. ⚠️ While Scientist rescues all exceptions that occur in the candidate block, it *does not* protect you from timeouts, as doing so would be complicated. It would likely require running the candidate code in a background job and tracking the time of a request. We feel the cost of this complexity would outweigh the benefit, so make sure that your code doesn't cause timeouts. This risk can be reduced by running the experiment on a low percentage so that users can (most likely) bypass the experiment by refreshing the page if they hit a timeout. See [Ramping up experiments](#ramping-up-experiments) below for how details on how to set the percentage for your experiment.
 
 #### In a Scientist callback
 
@@ -544,6 +573,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [trello/scientist](https://github.com/trello/scientist) (node.js)
 - [ziyasal/scientist.js](https://github.com/ziyasal/scientist.js) (node.js, ES6)
 - [TrueWill/tzientist](https://github.com/TrueWill/tzientist) (node.js, TypeScript)
+- [TrueWill/paleontologist](https://github.com/TrueWill/paleontologist) (Deno, TypeScript)
 - [yeller/laboratory](https://github.com/yeller/laboratory) (Clojure)
 - [lancew/Scientist](https://github.com/lancew/Scientist) (Perl 5)
 - [lancew/ScientistP6](https://github.com/lancew/ScientistP6) (Perl 6)
@@ -554,7 +584,8 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [spoptchev/scientist](https://github.com/spoptchev/scientist) (Kotlin / Java)
 - [junkpiano/scientist](https://github.com/junkpiano/scientist) (Swift)
 - [serverless scientist](http://serverlessscientist.com/) (AWS Lambda)
-- [Mister Spex Scientist](https://github.com/MisterSpex/misterspex-scientist/) (Java, no dependencies)
+- [fightmegg/scientist](https://github.com/fightmegg/scientist) (TypeScript, Browser / Node.js)
+- [MisterSpex/misterspex-scientist](https://github.com/MisterSpex/misterspex-scientist) (Java, no dependencies)
 
 ## Maintainers
 

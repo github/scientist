@@ -9,12 +9,22 @@ module Scientist::Experiment
   # If this is nil, raise_on_mismatches class attribute is used instead.
   attr_accessor :raise_on_mismatches
 
-  # Create a new instance of a class that implements the Scientist::Experiment
-  # interface.
-  #
-  # Override this method directly to change the default implementation.
+  def self.included(base)
+    self.set_default(base) if base.instance_of?(Class)
+    base.extend RaiseOnMismatch
+  end
+
+  # Instantiate a new experiment (using the class given to the .set_default method).
   def self.new(name)
-    Scientist::Default.new(name)
+    (@experiment_klass || Scientist::Default).new(name)
+  end
+
+  # Configure Scientist to use the given class for all future experiments
+  # (must implement the Scientist::Experiment interface).
+  #
+  # Called automatically when new experiments are defined.
+  def self.set_default(klass)
+    @experiment_klass = klass
   end
 
   # A mismatch, raised when raise_on_mismatches is enabled.
@@ -65,10 +75,6 @@ module Scientist::Experiment
     def raise_on_mismatches?
       @raise_on_mismatches
     end
-  end
-
-  def self.included(base)
-    base.extend RaiseOnMismatch
   end
 
   # Define a block of code to run before an experiment begins, if the experiment
@@ -128,6 +134,16 @@ module Scientist::Experiment
     @_scientist_comparator = block
   end
 
+  # A block which compares two experimental errors.
+  #
+  # The block must take two arguments, the control Error and a candidate Error,
+  # and return true or false.
+  #
+  # Returns the block.
+  def compare_errors(*args, &block)
+    @_scientist_error_comparator = block
+  end
+
   # A Symbol-keyed Hash of extra experiment data.
   def context(context = nil)
     @_scientist_context ||= {}
@@ -171,13 +187,9 @@ module Scientist::Experiment
     "experiment"
   end
 
-  # Internal: compare two observations, using the configured compare block if present.
+  # Internal: compare two observations, using the configured compare and compare_errors lambdas if present.
   def observations_are_equivalent?(a, b)
-    if @_scientist_comparator
-      a.equivalent_to?(b, &@_scientist_comparator)
-    else
-      a.equivalent_to? b
-    end
+    a.equivalent_to? b, @_scientist_comparator, @_scientist_error_comparator
   rescue StandardError => ex
     raised :compare, ex
     false
@@ -216,17 +228,7 @@ module Scientist::Experiment
       @_scientist_before_run.call
     end
 
-    observations = []
-
-    behaviors.keys.shuffle.each do |key|
-      block = behaviors[key]
-      fabricated_duration = @_scientist_fabricated_durations && @_scientist_fabricated_durations[key]
-      observations << Scientist::Observation.new(key, self, fabricated_duration: fabricated_duration, &block)
-    end
-
-    control = observations.detect { |o| o.name == name }
-
-    result = Scientist::Result.new self, observations, control
+    result = generate_result(name)
 
     begin
       publish(result)
@@ -242,11 +244,9 @@ module Scientist::Experiment
       end
     end
 
-    if control.raised?
-      raise control.exception
-    else
-      control.value
-    end
+    control = result.control
+    raise control.exception if control.raised?
+    control.value
   end
 
   # Define a block that determines whether or not the experiment should run.
@@ -303,5 +303,19 @@ module Scientist::Experiment
   # This is here solely as a convenience for developers of libraries that extend Scientist.
   def fabricate_durations_for_testing_purposes(fabricated_durations = {})
     @_scientist_fabricated_durations = fabricated_durations
+  end
+
+  # Internal: Generate the observations and create the result from those and the control.
+  def generate_result(name)
+    observations = []
+
+    behaviors.keys.shuffle.each do |key|
+      block = behaviors[key]
+      fabricated_duration = @_scientist_fabricated_durations && @_scientist_fabricated_durations[key]
+      observations << Scientist::Observation.new(key, self, fabricated_duration: fabricated_duration, &block)
+    end
+
+    control = observations.detect { |o| o.name == name }
+    Scientist::Result.new(self, observations, control)
   end
 end
