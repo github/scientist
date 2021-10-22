@@ -134,6 +134,16 @@ module Scientist::Experiment
     @_scientist_comparator = block
   end
 
+  # A block which compares two experimental errors.
+  #
+  # The block must take two arguments, the control Error and a candidate Error,
+  # and return true or false.
+  #
+  # Returns the block.
+  def compare_errors(*args, &block)
+    @_scientist_error_comparator = block
+  end
+
   # A Symbol-keyed Hash of extra experiment data.
   def context(context = nil)
     @_scientist_context ||= {}
@@ -177,13 +187,9 @@ module Scientist::Experiment
     "experiment"
   end
 
-  # Internal: compare two observations, using the configured compare block if present.
+  # Internal: compare two observations, using the configured compare and compare_errors lambdas if present.
   def observations_are_equivalent?(a, b)
-    if @_scientist_comparator
-      a.equivalent_to?(b, &@_scientist_comparator)
-    else
-      a.equivalent_to? b
-    end
+    a.equivalent_to? b, @_scientist_comparator, @_scientist_error_comparator
   rescue StandardError => ex
     raised :compare, ex
     false
