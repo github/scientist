@@ -59,7 +59,7 @@ class Scientist::Observation
   #
   # * The values of the observation are equal (using `==`)
   # * The values of the observations are equal according to a comparison
-  #   prod, if given
+  #   proc, if given
   # * The exceptions raised by the obeservations are equal according to the
   #   error comparison proc, if given.
   # * Both observations raised an exception with the same class and message.
