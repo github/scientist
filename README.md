@@ -84,7 +84,7 @@ class MyExperiment
 end
 ```
 
-When `Scientist::Experiment` is included in a class, it automatically sets it as the default implementation via `Scientist::Experiment.set_default`. This `set_default` call is is skipped if you include `Scientist::Experiment` in a module.
+When `Scientist::Experiment` is included in a class, it automatically sets it as the default implementation via `Scientist::Experiment.set_default`. This `set_default` call is skipped if you include `Scientist::Experiment` in a module.
 
 Now calls to the `science` helper will load instances of `MyExperiment`.
 
@@ -129,7 +129,7 @@ class MyWidget
         control.class == ArgumentError &&
         candidate.class == ArgumentError &&
         control.message.start_with?("Input has invalid characters") &&
-        candidate.message.star_with?("Invalid characters in input") 
+        candidate.message.start_with?("Invalid characters in input") 
       end
 
       e.compare_error do |control, candidate|
