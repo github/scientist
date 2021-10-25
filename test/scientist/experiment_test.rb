@@ -491,6 +491,27 @@ describe Scientist::Experiment do
       assert_raises(Scientist::Experiment::MismatchError) { runner.call }
     end
 
+    it "can be marshaled" do
+      Fake.raise_on_mismatches = true
+      @ex.before_run { "some block" }
+      @ex.clean { "some block" }
+      @ex.compare_errors { "some block" }
+      @ex.ignore { false }
+      @ex.run_if { "some block" }
+      @ex.try { "candidate" }
+      @ex.use { "control" }
+      @ex.compare { |control, candidate| control == candidate }
+
+      mismatch = nil
+      begin
+        @ex.run
+      rescue Scientist::Experiment::MismatchError => e
+        mismatch = e
+      end
+
+      assert_kind_of(String, Marshal.dump(mismatch))
+    end
+
     describe "#raise_on_mismatches?" do
       it "raises when there is a mismatch if the experiment instance's raise on mismatches is enabled" do
         Fake.raise_on_mismatches = false
