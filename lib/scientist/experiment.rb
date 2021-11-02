@@ -330,8 +330,10 @@ module Scientist::Experiment
   private
 
   def marshalize(block)
-    def block._dump(_)
-      to_s
+    unless block.respond_to?(:_dump) || block.respond_to?(:_dump_data)
+      def block._dump(_)
+        to_s
+      end
     end
   end
 end
