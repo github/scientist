@@ -12,10 +12,10 @@ cd $(dirname "$0")/..
 rm -rf scientist-*.gem
 gem build -q scientist.gemspec
 
-# Make sure we're on the master branch.
+# Make sure we're on the main branch.
 
-(git branch --no-color | grep -q '* master') || {
-  echo "Only release from the master branch."
+(git branch --no-color | grep -q '* main') || {
+  echo "Only release from the main branch."
   exit 1
 }
 
@@ -35,4 +35,4 @@ git fetch -t origin
 # Tag it and bag it.
 
 gem push scientist-*.gem && git tag "$tag" &&
-  git push origin master && git push origin "$tag"
+  git push origin main && git push origin "$tag"
