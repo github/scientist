@@ -329,6 +329,11 @@ module Scientist::Experiment
 
   private
 
+  # In order to support marshaling, we have to make the procs marshalable. Some
+  # CI providers attempt to marshal Scientist mismatch errors so that they can
+  # be sent out to different places (logs, etc.) The mismatch errors contain
+  # code from the experiment. This code contains Procs - which can't be
+  # marshaled until we run the following code.
   def marshalize(block)
     unless block.respond_to?(:_dump) || block.respond_to?(:_dump_data)
       def block._dump(_)
