@@ -84,7 +84,6 @@ module Scientist::Experiment
   #
   # Returns the configured block.
   def before_run(&block)
-    marshalize(block)
     @_scientist_before_run = block
   end
 
@@ -100,7 +99,6 @@ module Scientist::Experiment
   #
   # Returns the configured block.
   def clean(&block)
-    marshalize(block)
     @_scientist_cleaner = block
   end
 
@@ -133,7 +131,6 @@ module Scientist::Experiment
   #
   # Returns the block.
   def compare(*args, &block)
-    marshalize(block)
     @_scientist_comparator = block
   end
 
@@ -144,7 +141,6 @@ module Scientist::Experiment
   #
   # Returns the block.
   def compare_errors(*args, &block)
-    marshalize(block)
     @_scientist_error_comparator = block
   end
 
@@ -163,7 +159,6 @@ module Scientist::Experiment
   #
   # This can be called more than once with different blocks to use.
   def ignore(&block)
-    marshalize(block)
     @_scientist_ignores ||= []
     @_scientist_ignores << block
   end
@@ -256,7 +251,6 @@ module Scientist::Experiment
 
   # Define a block that determines whether or not the experiment should run.
   def run_if(&block)
-    marshalize(block)
     @_scientist_run_if_block = block
   end
 
@@ -282,7 +276,6 @@ module Scientist::Experiment
 
   # Register a named behavior for this experiment, default "candidate".
   def try(name = nil, &block)
-    marshalize(block)
     name = (name || "candidate").to_s
 
     if behaviors.include?(name)
@@ -294,7 +287,6 @@ module Scientist::Experiment
 
   # Register the control behavior for this experiment.
   def use(&block)
-    marshalize(block)
     try "control", &block
   end
 
@@ -332,13 +324,14 @@ module Scientist::Experiment
   # In order to support marshaling, we have to make the procs marshalable. Some
   # CI providers attempt to marshal Scientist mismatch errors so that they can
   # be sent out to different places (logs, etc.) The mismatch errors contain
-  # code from the experiment. This code contains Procs - which can't be
-  # marshaled until we run the following code.
-  def marshalize(block)
-    unless block.respond_to?(:_dump) || block.respond_to?(:_dump_data)
-      def block._dump(_)
-        to_s
-      end
-    end
+  # code from the experiment. This code contains procs. These procs prevent the
+  # error from being marshaled. To fix this, we simple exclude the procs from
+  # the data that we marshal.
+  def marshal_dump
+    [@name, @result, @raise_on_mismatches]
+  end
+
+  def marshal_load
+    @name, @result, @raise_on_mismatches = array
   end
 end
