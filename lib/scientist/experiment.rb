@@ -290,6 +290,13 @@ module Scientist::Experiment
     try "control", &block
   end
 
+  # Define a block which will determine the cohort of this experiment
+  # when called. The block will be passed a `Scientist::Result` as its
+  # only argument and the cohort will be set on the result.
+  def cohort(&block)
+    @_scientist_determine_cohort = block
+  end
+
   # Whether or not to raise a mismatch error when a mismatch occurs.
   def raise_on_mismatches?
     if raise_on_mismatches.nil?
@@ -316,7 +323,7 @@ module Scientist::Experiment
     end
 
     control = observations.detect { |o| o.name == name }
-    Scientist::Result.new(self, observations, control)
+    Scientist::Result.new(self, observations, control, @_scientist_determine_cohort)
   end
 
   private
