@@ -4,9 +4,4 @@
 set -e
 
 cd $(dirname "$0")/..
-  script/bootstrap && bundle exec ruby -I lib \
-    -e 'require "bundler/setup"' \
-    -e 'require "coveralls"; Coveralls.wear!{ add_filter ".bundle" }' \
-    -e 'require "minitest/autorun"' \
-    -e 'require "scientist"' \
-    -e '(ARGV.empty? ? Dir["test/**/*_test.rb"] : ARGV).each { |f| load f }' -- "$@"
+  script/bootstrap && bundle exec rake test
