@@ -139,6 +139,16 @@ module Scientist::Experiment
     @_scientist_comparator = block
   end
 
+  # A block which compares two experimental errors.
+  #
+  # The block must take two arguments, the control Error and a candidate Error,
+  # and return true or false.
+  #
+  # Returns the block.
+  def compare_errors(*args, &block)
+    @_scientist_error_comparator = block
+  end
+
   # A Symbol-keyed Hash of extra experiment data.
   def context(context = nil)
     @_scientist_context ||= {}
@@ -182,13 +192,9 @@ module Scientist::Experiment
     "experiment"
   end
 
-  # Internal: compare two observations, using the configured compare block if present.
+  # Internal: compare two observations, using the configured compare and compare_errors lambdas if present.
   def observations_are_equivalent?(a, b)
-    if @_scientist_comparator
-      a.equivalent_to?(b, &@_scientist_comparator)
-    else
-      a.equivalent_to? b
-    end
+    a.equivalent_to? b, @_scientist_comparator, @_scientist_error_comparator
   rescue StandardError => ex
     raised :compare, ex
     false
@@ -316,5 +322,21 @@ module Scientist::Experiment
 
     control = observations.detect { |o| o.name == name }
     Scientist::Result.new(self, observations, control)
+  end
+
+  private
+
+  # In order to support marshaling, we have to make the procs marshalable. Some
+  # CI providers attempt to marshal Scientist mismatch errors so that they can
+  # be sent out to different places (logs, etc.) The mismatch errors contain
+  # code from the experiment. This code contains procs. These procs prevent the
+  # error from being marshaled. To fix this, we simple exclude the procs from
+  # the data that we marshal.
+  def marshal_dump
+    [@name, @result, @raise_on_mismatches]
+  end
+
+  def marshal_load
+    @name, @result, @raise_on_mismatches = array
   end
 end

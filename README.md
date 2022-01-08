@@ -84,7 +84,7 @@ class MyExperiment
 end
 ```
 
-When `Scientist::Experiment` is included in a class, it automatically sets it as the default implementation via `Scientist::Experiment.set_default`. This `set_default` call is is skipped if you include `Scientist::Experiment` in a module.
+When `Scientist::Experiment` is included in a class, it automatically sets it as the default implementation via `Scientist::Experiment.set_default`. This `set_default` call is skipped if you include `Scientist::Experiment` in a module.
 
 Now calls to the `science` helper will load instances of `MyExperiment`.
 
@@ -103,6 +103,38 @@ class MyWidget
 
       e.compare do |control, candidate|
         control.map(&:login) == candidate.map(&:login)
+      end
+    end
+  end
+end
+```
+
+If either the control block or candidate block raises an error, Scientist compares the two observations' classes and messages using `==`. To override this behavior, use `compare_error` to define how to compare observed errors instead:
+
+```ruby
+class MyWidget
+  include Scientist
+
+  def slug_from_login(login)
+    science "slug_from_login" do |e|
+      e.use { User.slug_from_login login }         # returns String instance or ArgumentError
+      e.try { UserService.slug_from_login login }  # returns String instance or ArgumentError
+
+      compare_error_message_and_class = -> (control, candidate) do
+        control.class == candidate.class && 
+        control.message == candidate.message
+      end
+
+      compare_argument_errors = -> (control, candidate) do
+        control.class == ArgumentError &&
+        candidate.class == ArgumentError &&
+        control.message.start_with?("Input has invalid characters") &&
+        candidate.message.start_with?("Invalid characters in input") 
+      end
+
+      e.compare_error do |control, candidate|
+        compare_error_message_and_class.call(control, candidate) ||
+        compare_argument_errors.call(control, candidate)
       end
     end
   end
@@ -228,7 +260,7 @@ def admin?(user)
 end
 ```
 
-The ignore blocks are only called if the *values* don't match. If one observation raises an exception and the other doesn't, it's always considered a mismatch. If both observations raise different exceptions, that is also considered a mismatch.
+The ignore blocks are only called if the *values* don't match. Unless a `compare_error` comparator is defined, two cases are considered mismatches: a) one observation raising an exception and the other not, b) observations raising exceptions with different classes or messages.
 
 ### Enabling/disabling experiments
 
@@ -553,6 +585,7 @@ Be on a Unixy box. Make sure a modern Bundler is available. `script/test` runs t
 - [junkpiano/scientist](https://github.com/junkpiano/scientist) (Swift)
 - [serverless scientist](http://serverlessscientist.com/) (AWS Lambda)
 - [fightmegg/scientist](https://github.com/fightmegg/scientist) (TypeScript, Browser / Node.js)
+- [MisterSpex/misterspex-scientist](https://github.com/MisterSpex/misterspex-scientist) (Java, no dependencies)
 
 ## Maintainers
 

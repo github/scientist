@@ -214,6 +214,18 @@ describe Scientist::Experiment do
     assert @ex.published_result.matched?
   end
 
+  it "compares errors with an error comparator block if provided" do
+    @ex.compare_errors { |a, b| a.class == b.class }
+    @ex.use { raise "foo" }
+    @ex.try { raise "bar" }
+
+    resulting_error = assert_raises RuntimeError do
+      @ex.run
+    end
+    assert_equal "foo", resulting_error.message
+    assert @ex.published_result.matched?
+  end
+
   it "knows how to compare two experiments" do
     a = Scientist::Observation.new(@ex, "a") { 1 }
     b = Scientist::Observation.new(@ex, "b") { 2 }
@@ -490,6 +502,27 @@ describe Scientist::Experiment do
         end
       }
       assert_raises(Scientist::Experiment::MismatchError) { runner.call }
+    end
+
+    it "can be marshaled" do
+      Fake.raise_on_mismatches = true
+      @ex.before_run { "some block" }
+      @ex.clean { "some block" }
+      @ex.compare_errors { "some block" }
+      @ex.ignore { false }
+      @ex.run_if { "some block" }
+      @ex.try { "candidate" }
+      @ex.use { "control" }
+      @ex.compare { |control, candidate| control == candidate }
+
+      mismatch = nil
+      begin
+        @ex.run
+      rescue Scientist::Experiment::MismatchError => e
+        mismatch = e
+      end
+
+      assert_kind_of(String, Marshal.dump(mismatch))
     end
 
     describe "#raise_on_mismatches?" do
