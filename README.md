@@ -109,7 +109,7 @@ class MyWidget
 end
 ```
 
-If either the control block or candidate block raises an error, Scientist compares the two observations' classes and messages using `==`. To override this behavior, use `compare_error` to define how to compare observed errors instead:
+If either the control block or candidate block raises an error, Scientist compares the two observations' classes and messages using `==`. To override this behavior, use `compare_errors` to define how to compare observed errors instead:
 
 ```ruby
 class MyWidget
@@ -132,7 +132,7 @@ class MyWidget
         candidate.message.start_with?("Invalid characters in input") 
       end
 
-      e.compare_error do |control, candidate|
+      e.compare_errors do |control, candidate|
         compare_error_message_and_class.call(control, candidate) ||
         compare_argument_errors.call(control, candidate)
       end
@@ -260,7 +260,7 @@ def admin?(user)
 end
 ```
 
-The ignore blocks are only called if the *values* don't match. Unless a `compare_error` comparator is defined, two cases are considered mismatches: a) one observation raising an exception and the other not, b) observations raising exceptions with different classes or messages.
+The ignore blocks are only called if the *values* don't match. Unless a `compare_errors` comparator is defined, two cases are considered mismatches: a) one observation raising an exception and the other not, b) observations raising exceptions with different classes or messages.
 
 ### Enabling/disabling experiments
 
