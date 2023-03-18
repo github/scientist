@@ -87,6 +87,16 @@ module Scientist::Experiment
     @_scientist_before_run = block
   end
 
+  # Define a block of code to run after an experiment completes, if the experiment
+  # is enabled.
+  #
+  # The block takes no arguments.
+  #
+  # Returns the configured block.
+  def after_run(&block)
+    @_scientist_after_run = block
+  end
+
   # A Hash of behavior blocks, keyed by String name. Register behavior blocks
   # with the `try` and `use` methods.
   def behaviors
@@ -229,6 +239,10 @@ module Scientist::Experiment
     end
 
     result = generate_result(name)
+
+    if @_scientist_after_run
+      @_scientist_after_run.call(result)
+    end
 
     begin
       publish(result)
