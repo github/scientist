@@ -90,7 +90,7 @@ module Scientist::Experiment
   # Define a block of code to run after an experiment completes, if the experiment
   # is enabled.
   #
-  # The block takes no arguments.
+  # The block takes one argument, the Scientist::Result containing experiment results.
   #
   # Returns the configured block.
   def after_run(&block)
