@@ -635,6 +635,37 @@ candidate:
     end
   end
 
+  describe "after run block" do
+    it "runs when an experiment is enabled" do
+      control_ok = candidate_ok = false
+      after_result = nil
+      @ex.after_run { |result| after_result = result }
+      @ex.use { control_ok = after_result.nil? }
+      @ex.try { candidate_ok = after_result.nil? }
+
+      @ex.run
+
+      assert after_result, "after_run should have run"
+      assert after_result.matched?, "after_run should be called with the result"
+      assert control_ok, "control should have run before after_run"
+      assert candidate_ok, "candidate should have run before after_run"
+    end
+
+    it "does not run when an experiment is disabled" do
+      after_result = nil
+
+      def @ex.enabled?
+        false
+      end
+      @ex.after_run { |result| after_result = result }
+      @ex.use { "value" }
+      @ex.try { "value" }
+      @ex.run
+
+      refute after_result, "after_run should not have run"
+    end
+  end
+
   describe "testing hooks for extending code" do
     it "allows a user to provide fabricated durations for testing purposes" do
       @ex.use { true }
