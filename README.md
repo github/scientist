@@ -1,7 +1,7 @@
 # Scientist!
 
 A Ruby library for carefully refactoring critical paths. [![Build Status](https://github.com/github/scientist/actions/workflows/ci.yml/badge.svg)](https://github.com/github/scientist/actions/workflows/ci.yml)
-[![CI](https://github.com/Miguelzamora13/scientist/actions/workflows/ci.yml/badge.svg)](https://github.com/Miguelzamora13/scientist/actions/workflows/ci.yml)
+(https://github.com/Miguelzamora13/scientist/actions/workflows/ci.yml/badge.svg)](https://github.com/Miguelzamora13/scientist/actions/workflows/ci.yml)
 <p align="center">
   <a href="https://travis-ci.org/yarnpkg/yarn"><img alt="Travis Status" src="https://travis-ci.org/yarnpkg/yarn.svg"></a>
 
