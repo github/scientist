@@ -2,6 +2,9 @@
 
 A Ruby library for carefully refactoring critical paths. [![Build Status](https://github.com/github/scientist/actions/workflows/ci.yml/badge.svg)](https://github.com/github/scientist/actions/workflows/ci.yml)
 [![CI](https://github.com/Miguelzamora13/scientist/actions/workflows/ci.yml/badge.svg)](https://github.com/Miguelzamora13/scientist/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://travis-ci.org/yarnpkg/yarn"><img alt="Travis Status" src="https://travis-ci.org/yarnpkg/yarn.svg"></a>
+
 ## How do I science?
 
 Let's pretend you're changing the way you handle permissions in a large web app. Tests can help guide your refactoring, but you really want to compare the current and refactored behaviors under load.
