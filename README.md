@@ -9,6 +9,7 @@ Let's pretend you're changing the way you handle permissions in a large web app.
 ```ruby
 require "scientist"
 
+
 class MyWidget
   def allows?(user)
     experiment = Scientist::Default.new "widget-permissions"
