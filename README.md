@@ -241,6 +241,19 @@ end
 
 Note that the `#clean` method will discard the previous cleaner block if you call it again.  If for some reason you need to access the currently configured cleaner block, `Scientist::Experiment#cleaner` will return the block without further ado.  _(This probably won't come up in normal usage, but comes in handy if you're writing, say, a custom experiment runner that provides default cleaners.)_
 
+The `#clean` method will not be used for comparison of the results, so in the following example it is not possible to remove the `#compare` method without the experiment failing:
+
+```ruby
+def user_ids
+  science "user_ids" do
+    e.use { [1,2,3] }
+    e.try { [1,3,2] }
+    e.clean { |value| value.sort }
+    e.compare { |a, b| a.sort == b.sort }
+  end
+end
+```
+
 ### Ignoring mismatches
 
 During the early stages of an experiment, it's possible that some of your code will always generate a mismatch for reasons you know and understand but haven't yet fixed. Instead of these known cases always showing up as mismatches in your metrics or analysis, you can tell an experiment whether or not to ignore a mismatch using the `ignore` method. You may include more than one block if needed:
