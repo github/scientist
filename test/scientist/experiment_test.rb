@@ -512,6 +512,10 @@ describe Scientist::Experiment do
       assert_kind_of(String, Marshal.dump(mismatch))
     end
 
+    it "can be marshal loaded" do
+      assert_kind_of(Fake, Marshal.load(Marshal.dump(@ex))
+    end
+
     describe "#raise_on_mismatches?" do
       it "raises when there is a mismatch if the experiment instance's raise on mismatches is enabled" do
         Fake.raise_on_mismatches = false
