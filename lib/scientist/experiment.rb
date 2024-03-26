@@ -345,7 +345,7 @@ module Scientist::Experiment
     [@name, @result, @raise_on_mismatches]
   end
 
-  def marshal_load
+  def marshal_load(array)
     @name, @result, @raise_on_mismatches = array
   end
 end
