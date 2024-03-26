@@ -513,7 +513,7 @@ describe Scientist::Experiment do
     end
 
     it "can be marshal loaded" do
-      assert_kind_of(Fake, Marshal.load(Marshal.dump(@ex))
+      assert_kind_of(Fake, Marshal.load(Marshal.dump(@ex)))
     end
 
     describe "#raise_on_mismatches?" do
