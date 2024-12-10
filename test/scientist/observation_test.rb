@@ -6,13 +6,18 @@ describe Scientist::Observation do
 
   it "observes and records the execution of a block" do
     ob = Scientist::Observation.new("test", @experiment) do
-      sleep 0.1
+      start_time = Time.now
+      while Time.now - start_time < 0.1
+        # Perform some CPU-intensive work
+        (1..1000).each { |i| i * i }
+      end
       "ret"
     end
 
     assert_equal "ret", ob.value
     refute ob.raised?
     assert_in_delta 0.1, ob.duration, 0.01
+    assert_in_delta 0.1, ob.cpu_time, 0.01
   end
 
   it "stashes exceptions" do

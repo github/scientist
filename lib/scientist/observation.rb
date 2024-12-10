@@ -20,19 +20,29 @@ class Scientist::Observation
   # The Float seconds elapsed.
   attr_reader :duration
 
+  # The Float CPU time elapsed, in seconds
+  attr_reader :cpu_time
+
   def initialize(name, experiment, fabricated_duration: nil, &block)
     @name       = name
     @experiment = experiment
 
-    starting = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second) unless fabricated_duration
+    start_wall_time, start_cpu_time = capture_times unless fabricated_duration
+
     begin
       @value = block.call
     rescue *RESCUES => e
       @exception = e
     end
 
-    @duration = fabricated_duration ||
-      Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second) - starting
+    if fabricated_duration
+      @duration = fabricated_duration["duration"]
+      @cpu_time = fabricated_duration["cpu_time"]
+    else
+      end_wall_time, end_cpu_time = capture_times
+      @duration = end_wall_time - start_wall_time
+      @cpu_time = end_cpu_time - start_cpu_time
+    end
 
     freeze
   end
@@ -88,5 +98,14 @@ class Scientist::Observation
 
   def raised?
     !exception.nil?
+  end
+
+  private
+
+  def capture_times
+    [
+      Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second),
+      Process.clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :float_second)
+    ]
   end
 end
