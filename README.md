@@ -24,7 +24,7 @@ Wrap a `use` block around the code's original behavior, and wrap `try` around th
 
 * It decides whether or not to run the `try` block,
 * Randomizes the order in which `use` and `try` blocks are run,
-* Measures the durations of all behaviors in seconds,
+* Measures the wall time and cpu time of all behaviors in seconds,
 * Compares the result of `try` to the result of `use`,
 * Swallow and record exceptions raised in the `try` block when overriding `raised`, and
 * Publishes all this information.
@@ -334,10 +334,17 @@ class MyExperiment
 
   def publish(result)
 
+    # Wall time
     # Store the timing for the control value,
     $statsd.timing "science.#{name}.control", result.control.duration
     # for the candidate (only the first, see "Breaking the rules" below,
     $statsd.timing "science.#{name}.candidate", result.candidates.first.duration
+
+    # CPU time
+    # Store the timing for the control value,
+    $statsd.timing "science.cpu.#{name}.control", result.control.cpu_time
+    # for the candidate (only the first, see "Breaking the rules" below,
+    $statsd.timing "science.cpu.#{name}.candidate", result.candidates.first.cpu_time
 
     # and counts for match/ignore/mismatch:
     if result.matched?
@@ -543,17 +550,22 @@ end
 
 #### Providing fake timing data
 
-If you're writing tests that depend on specific timing values, you can provide canned durations using the `fabricate_durations_for_testing_purposes` method, and Scientist will report these in `Scientist::Observation#duration` instead of the actual execution times.
+If you're writing tests that depend on specific timing values, you can provide canned durations using the `fabricate_durations_for_testing_purposes` method, and Scientist will report these in `Scientist::Observation#duration` and `Scientist::Observation#cpu_time` instead of the actual execution times.
 
 ```ruby
 science "absolutely-nothing-suspicious-happening-here" do |e|
   e.use { ... } # "control"
   e.try { ... } # "candidate"
-  e.fabricate_durations_for_testing_purposes( "control" => 1.0, "candidate" => 0.5 )
+  e.fabricate_durations_for_testing_purposes({
+    "control" => { "duration" => 1.0, "cpu_time" => 0.9 },
+    "candidate" => { "duration" => 0.5, "cpu_time" => 0.4 }
+  })
 end
 ```
 
-`fabricate_durations_for_testing_purposes` takes a Hash of duration values, keyed by behavior names.  (By default, Scientist uses `"control"` and `"candidate"`, but if you override these as shown in [Trying more than one thing](#trying-more-than-one-thing) or [No control, just candidates](#no-control-just-candidates), use matching names here.)  If a name is not provided, the actual execution time will be reported instead.
+`fabricate_durations_for_testing_purposes` takes a Hash of duration & cpu_time values, keyed by behavior names.  (By default, Scientist uses `"control"` and `"candidate"`, but if you override these as shown in [Trying more than one thing](#trying-more-than-one-thing) or [No control, just candidates](#no-control-just-candidates), use matching names here.)  If a name is not provided, the actual execution time will be reported instead.
+
+We should mention these durations will be used both for the `duration` field and the `cpu_time` field.
 
 _Like `Scientist::Experiment#cleaner`, this probably won't come up in normal usage.  It's here to make it easier to test code that extends Scientist._
 
