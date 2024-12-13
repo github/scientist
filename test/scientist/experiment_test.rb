@@ -671,7 +671,20 @@ candidate:
   end
 
   describe "testing hooks for extending code" do
-    it "allows a user to provide fabricated durations for testing purposes" do
+    it "allows a user to provide fabricated durations for testing purposes (old version)" do
+      @ex.use { true }
+      @ex.try { true }
+      @ex.fabricate_durations_for_testing_purposes( "control" => 0.5, "candidate" => 1.0 )
+
+      @ex.run
+
+      cont = @ex.published_result.control
+      cand = @ex.published_result.candidates.first
+      assert_in_delta 0.5, cont.duration, 0.01
+      assert_in_delta 1.0, cand.duration, 0.01
+    end
+
+    it "allows a user to provide fabricated durations for testing purposes (new version)" do
       @ex.use { true }
       @ex.try { true }
       @ex.fabricate_durations_for_testing_purposes({
@@ -692,7 +705,20 @@ candidate:
       assert_equal 0.9, cand.cpu_time
     end
 
-    it "returns actual durations if fabricated ones are omitted for some blocks" do
+    it "returns actual durations if fabricated ones are omitted for some blocks (old version)" do
+      @ex.use { true }
+      @ex.try { sleep 0.1; true }
+      @ex.fabricate_durations_for_testing_purposes( "control" => 0.5 )
+
+      @ex.run
+
+      cont = @ex.published_result.control
+      cand = @ex.published_result.candidates.first
+      assert_in_delta 0.5, cont.duration, 0.01
+      assert_in_delta 0.1, cand.duration, 0.01
+    end
+
+    it "returns actual durations if fabricated ones are omitted for some blocks (new version)" do
       @ex.use { true }
       @ex.try do
         start_time = Time.now

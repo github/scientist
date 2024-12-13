@@ -35,9 +35,12 @@ class Scientist::Observation
       @exception = e
     end
 
-    if fabricated_duration
+    if fabricated_duration.is_a?(Hash)
       @duration = fabricated_duration["duration"]
       @cpu_time = fabricated_duration["cpu_time"]
+    elsif fabricated_duration
+      @duration = fabricated_duration
+      @cpu_time = 0.0 # setting a default value
     else
       end_wall_time, end_cpu_time = capture_times
       @duration = end_wall_time - start_wall_time
