@@ -550,25 +550,7 @@ end
 
 #### Providing fake timing data
 
-If you're writing tests that depend on specific timing values, you can provide canned durations using the `fabricate_durations_for_testing_purposes` method. This can be done using either the old version (single value) or the new version (hash-based) to include both duration and cpu_time.
-
-##### Old version (Single Value)
-
-In the old version, you can provide a single value for the duration:
-
-```ruby
-science "absolutely-nothing-suspicious-happening-here" do |e|
-  e.use { ... } # "control"
-  e.try { ... } # "candidate"
-  e.fabricate_durations_for_testing_purposes( "control" => 1.0, "candidate" => 0.5 )
-end
-```
-
-`fabricate_durations_for_testing_purposes` takes a Hash of duration values, keyed by behavior names.  (By default, Scientist uses `"control"` and `"candidate"`, but if you override these as shown in [Trying more than one thing](#trying-more-than-one-thing) or [No control, just candidates](#no-control-just-candidates), use matching names here.)  If a name is not provided, the actual execution time will be reported instead.
-
-##### New version (Hash-based)
-
-Scientist will report these in `Scientist::Observation#duration` and `Scientist::Observation#cpu_time` instead of the actual execution times.
+If you're writing tests that depend on specific timing values, you can provide canned durations using the `fabricate_durations_for_testing_purposes` method, and Scientist will report these in `Scientist::Observation#duration` and `Scientist::Observation#cpu_time` instead of the actual execution times.
 
 ```ruby
 science "absolutely-nothing-suspicious-happening-here" do |e|
