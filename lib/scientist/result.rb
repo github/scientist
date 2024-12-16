@@ -19,18 +19,32 @@ class Scientist::Result
   # An Array of Observations in execution order.
   attr_reader :observations
 
+  # If the experiment was defined with a cohort block, the cohort this
+  # result has been determined to belong to.
+  attr_reader :cohort
+
   # Internal: Create a new result.
   #
-  # experiment    - the Experiment this result is for
-  # observations: - an Array of Observations, in execution order
-  # control:      - the control Observation
+  # experiment       - the Experiment this result is for
+  # observations:    - an Array of Observations, in execution order
+  # control:         - the control Observation
+  # determine_cohort - An optional callable that is passed the Result to
+  #                    determine its cohort
   #
-  def initialize(experiment, observations = [], control = nil)
+  def initialize(experiment, observations = [], control = nil, determine_cohort = nil)
     @experiment   = experiment
     @observations = observations
     @control      = control
     @candidates   = observations - [control]
     evaluate_candidates
+
+    if determine_cohort
+      begin
+        @cohort = determine_cohort.call(self)
+      rescue StandardError => e
+        experiment.raised :cohort, e
+      end
+    end
 
     freeze
   end
