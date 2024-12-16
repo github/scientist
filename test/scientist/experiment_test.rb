@@ -671,7 +671,7 @@ candidate:
   end
 
   describe "testing hooks for extending code" do
-    it "allows a user to provide fabricated durations for testing purposes" do
+    it "allows a user to provide fabricated durations for testing purposes (old version)" do
       @ex.use { true }
       @ex.try { true }
       @ex.fabricate_durations_for_testing_purposes( "control" => 0.5, "candidate" => 1.0 )
@@ -684,7 +684,28 @@ candidate:
       assert_in_delta 1.0, cand.duration, 0.01
     end
 
-    it "returns actual durations if fabricated ones are omitted for some blocks" do
+    it "allows a user to provide fabricated durations for testing purposes (new version)" do
+      @ex.use { true }
+      @ex.try { true }
+      @ex.fabricate_durations_for_testing_purposes({
+        "control" => { "duration" => 0.5, "cpu_time" => 0.4 },
+        "candidate" => { "duration" => 1.0, "cpu_time" => 0.9 }
+      })
+      @ex.run
+
+      cont = @ex.published_result.control
+      cand = @ex.published_result.candidates.first
+
+      # Wall Time
+      assert_in_delta 0.5, cont.duration, 0.01
+      assert_in_delta 1.0, cand.duration, 0.01
+
+      # CPU Time
+      assert_equal 0.4, cont.cpu_time
+      assert_equal 0.9, cand.cpu_time
+    end
+
+    it "returns actual durations if fabricated ones are omitted for some blocks (old version)" do
       @ex.use { true }
       @ex.try { sleep 0.1; true }
       @ex.fabricate_durations_for_testing_purposes( "control" => 0.5 )
@@ -695,6 +716,31 @@ candidate:
       cand = @ex.published_result.candidates.first
       assert_in_delta 0.5, cont.duration, 0.01
       assert_in_delta 0.1, cand.duration, 0.01
+    end
+
+    it "returns actual durations if fabricated ones are omitted for some blocks (new version)" do
+      @ex.use { true }
+      @ex.try do
+        start_time = Time.now
+        while Time.now - start_time < 0.1
+          # Perform some CPU-intensive work
+          (1..1000).each { |i| i * i }
+        end
+        true
+      end
+      @ex.fabricate_durations_for_testing_purposes({ "control" => { "duration" => 0.5, "cpu_time" => 0.4 }})
+      @ex.run
+
+      cont = @ex.published_result.control
+      cand = @ex.published_result.candidates.first
+
+      # Fabricated durations
+      assert_in_delta 0.5, cont.duration, 0.01
+      assert_in_delta 0.4, cont.cpu_time, 0.01
+
+      # Measured durations
+      assert_in_delta 0.1, cand.duration, 0.01
+      assert_in_delta 0.1, cand.cpu_time, 0.01
     end
   end
 end
