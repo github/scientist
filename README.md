@@ -531,10 +531,9 @@ When the experiment runs, all candidate behaviors are tested and each candidate 
 Define the candidates with named `try` blocks, omit a `use`, and pass a candidate name to `run`:
 
 ```ruby
-experiment = MyExperiment.new("various-ways") do |e|
-  e.try("first-way")  { ... }
-  e.try("second-way") { ... }
-end
+experiment = MyExperiment.new("various-ways")
+experiment.try("first-way")  { ... }
+experiment.try("second-way") { ... }
 
 experiment.run("second-way")
 ```
