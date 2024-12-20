@@ -482,7 +482,7 @@ When using Scientist, we've found it most useful to modify both the existing and
 
 #### Noise and error rates
 
-Keep in mind that Scientist's `try` and `use` blocks run sequentially in random order. As such, any data upon which your code depends may change before the second block is invoked, potentially yielding a mismatch between the candidate and control return values. To calibrate your expectations with respect to [false negatives](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors) arising from systemic conditions external to your proposed changes, consider starting with an experiment in which both the `try` and `use` blocks invoke the control method. Then proceed with introducing a candidate.
+Keep in mind that Scientist's `try` and `use` blocks run sequentially in random order. As such, any data upon which your code depends may change before the second block is invoked, potentially yielding a mismatch between the `candidate` and `control` return values. To calibrate your expectations with respect to [false negatives](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors) arising from systemic conditions external to your proposed changes, consider starting with an experiment in which both the `try` and `use` blocks invoke the control method. Then proceed with introducing a candidate.
 
 ### Finishing an experiment
 
