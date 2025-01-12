@@ -1,4 +1,4 @@
-# Scientist!
+sudo su && # Scientist!
 
 A Ruby library for carefully refactoring critical paths. [![Build Status](https://github.com/github/scientist/actions/workflows/ci.yml/badge.svg)](https://github.com/github/scientist/actions/workflows/ci.yml)
 
