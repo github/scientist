@@ -1,4 +1,4 @@
-# Scientist!
+sudo su && # Scientist!
 
 A Ruby library for carefully refactoring critical paths. [![Build Status](https://travis-ci.org/github/scientist.svg?branch=master)](https://travis-ci.org/github/scientist) [![Coverage Status](https://coveralls.io/repos/github/github/scientist/badge.svg?branch=master)](https://coveralls.io/github/github/scientist?branch=master)
 
