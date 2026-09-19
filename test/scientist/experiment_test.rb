@@ -149,7 +149,7 @@ describe Scientist::Experiment do
       true
     end
 
-    def ex.publish(result)
+    def ex.publish(_result)
       raise "boomtown"
     end
 
@@ -164,7 +164,7 @@ describe Scientist::Experiment do
   end
 
   it "reports publishing errors" do
-    def @ex.publish(result)
+    def @ex.publish(_result)
       raise "boomtown"
     end
 
@@ -288,7 +288,7 @@ describe Scientist::Experiment do
   end
 
   it "reports an error and returns the original value when an error is raised in a clean block" do
-    @ex.clean { |value| raise "kaboom" }
+    @ex.clean { |_value| raise "kaboom" }
 
     @ex.use { "control" }
     @ex.try { "candidate" }
@@ -300,6 +300,46 @@ describe Scientist::Experiment do
 
     assert_equal :clean, op
     assert_equal "kaboom", exception.message
+  end
+
+  describe "cohorts" do
+    it "accepts a cohort config block" do
+      @ex.cohort { "1" }
+    end
+
+    it "assigns a cohort to the result using the provided block" do
+      @ex.context(foo: "bar")
+      @ex.cohort { |res| "foo-#{res.context[:foo]}-#{Math.log10(res.control.value).round}" }
+      @ex.use { 5670 }
+      @ex.try { 5670 }
+
+      @ex.run
+      assert_equal "foo-bar-4", @ex.published_result.cohort
+    end
+
+    it "assigns no cohort if no cohort block passed" do
+      @ex.use { 5670 }
+      @ex.try { 5670 }
+
+      @ex.run
+      assert_nil @ex.published_result.cohort
+    end
+
+    it "rescues errors raised in the cohort determination block" do
+      @ex.use { 5670 }
+      @ex.try { 5670 }
+      @ex.cohort { |_res| raise "intentional" }
+
+      @ex.run
+
+      refute_nil @ex.published_result
+      assert_nil @ex.published_result.cohort
+
+      assert_equal 1, @ex.exceptions.size
+      code, exception = @ex.exceptions[0]
+      assert_equal :cohort, code
+      assert_equal "intentional", exception.message
+    end
   end
 
   describe "#raise_with" do
@@ -372,9 +412,9 @@ describe Scientist::Experiment do
 
     it "calls multiple ignore blocks to see if any match" do
       called_one = called_two = called_three = false
-      @ex.ignore { |a, b| called_one   = true; false }
-      @ex.ignore { |a, b| called_two   = true; false }
-      @ex.ignore { |a, b| called_three = true; false }
+      @ex.ignore { |_a, _b| called_one   = true; false }
+      @ex.ignore { |_a, _b| called_two   = true; false }
+      @ex.ignore { |_a, _b| called_three = true; false }
       refute @ex.ignore_mismatched_observation?(@a, @b)
       assert called_one
       assert called_two
@@ -383,9 +423,9 @@ describe Scientist::Experiment do
 
     it "only calls ignore blocks until one matches" do
       called_one = called_two = called_three = false
-      @ex.ignore { |a, b| called_one   = true; false }
-      @ex.ignore { |a, b| called_two   = true; true  }
-      @ex.ignore { |a, b| called_three = true; false }
+      @ex.ignore { |_a, _b| called_one   = true; false }
+      @ex.ignore { |_a, _b| called_two   = true; true  }
+      @ex.ignore { |_a, _b| called_three = true; false }
       assert @ex.ignore_mismatched_observation?(@a, @b)
       assert called_one
       assert called_two
@@ -452,7 +492,7 @@ describe Scientist::Experiment do
       @ex.clean { "So Clean" }
 
       err = assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
-      assert_match /So Clean/, err.message
+      assert_match(/So Clean/, err.message)
     end
 
     it "doesn't raise when there is a mismatch if raise on mismatches is disabled" do

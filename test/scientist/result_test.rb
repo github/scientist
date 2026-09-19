@@ -80,7 +80,7 @@ describe Scientist::Result do
     y = Scientist::Observation.new("y", @experiment) { :y }
     z = Scientist::Observation.new("z", @experiment) { :z }
 
-    @experiment.ignore { |control, candidate| candidate == :y }
+    @experiment.ignore { |_control, candidate| candidate == :y }
 
     result = Scientist::Result.new @experiment, [x, y, z], x
 
@@ -96,6 +96,17 @@ describe Scientist::Result do
     result = Scientist::Result.new @experiment, [a, b], a
 
     assert_equal @experiment.name, result.experiment_name
+  end
+
+  it "takes an optional callable to determine cohort" do
+    a = Scientist::Observation.new("a", @experiment) { 1 }
+    b = Scientist::Observation.new("b", @experiment) { 1 }
+
+    result = Scientist::Result.new @experiment, [a, b], a
+    assert_nil result.cohort
+
+    result = Scientist::Result.new @experiment, [a, b], a, ->(_res) { "cohort-1" }
+    assert_equal "cohort-1", result.cohort
   end
 
   it "has the context from an experiment" do

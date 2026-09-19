@@ -28,7 +28,7 @@ describe Scientist do
     obj = Object.new
     obj.extend(Scientist)
 
-    assert_equal Hash.new, obj.default_scientist_context
+    assert_equal({}, obj.default_scientist_context)
   end
 
   it "respects default_scientist_context" do
