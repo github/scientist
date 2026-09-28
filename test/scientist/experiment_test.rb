@@ -302,6 +302,46 @@ describe Scientist::Experiment do
     assert_equal "kaboom", exception.message
   end
 
+  describe "cohorts" do
+    it "accepts a cohort config block" do
+      @ex.cohort { "1" }
+    end
+
+    it "assigns a cohort to the result using the provided block" do
+      @ex.context(foo: "bar")
+      @ex.cohort { |res| "foo-#{res.context[:foo]}-#{Math.log10(res.control.value).round}" }
+      @ex.use { 5670 }
+      @ex.try { 5670 }
+
+      @ex.run
+      assert_equal "foo-bar-4", @ex.published_result.cohort
+    end
+
+    it "assigns no cohort if no cohort block passed" do
+      @ex.use { 5670 }
+      @ex.try { 5670 }
+
+      @ex.run
+      assert_nil @ex.published_result.cohort
+    end
+
+    it "rescues errors raised in the cohort determination block" do
+      @ex.use { 5670 }
+      @ex.try { 5670 }
+      @ex.cohort { |res| raise "intentional" }
+
+      @ex.run
+
+      refute_nil @ex.published_result
+      assert_nil @ex.published_result.cohort
+
+      assert_equal 1, @ex.exceptions.size
+      code, exception = @ex.exceptions[0]
+      assert_equal :cohort, code
+      assert_equal "intentional", exception.message
+    end
+  end
+
   describe "#raise_with" do
     it "raises custom error if provided" do
       CustomError = Class.new(Scientist::Experiment::MismatchError)
