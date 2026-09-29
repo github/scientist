@@ -31,6 +31,19 @@ describe Scientist::Experiment do
     @ex = Fake.new
   end
 
+  it "does not set as default when default_scientist_experiment is passed as false" do
+    klass = Class.new do
+      include Scientist::Experiment
+
+      Scientist::Experiment.set_as_default_scientist_experiment(false)
+
+      def initialize(name)
+      end
+    end
+
+    assert_kind_of Scientist::Default, Scientist::Experiment.new("hello")
+  end
+
   it "sets the default on inclusion" do
     klass = Class.new do
       include Scientist::Experiment

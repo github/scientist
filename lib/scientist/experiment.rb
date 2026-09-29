@@ -10,8 +10,13 @@ module Scientist::Experiment
   attr_accessor :raise_on_mismatches
 
   def self.included(base)
-    self.set_default(base) if base.instance_of?(Class)
+    set_default(base) if base.instance_of?(Class)
     base.extend RaiseOnMismatch
+  end
+
+  # Set this class as default scientist experiment when included.
+  def self.set_as_default_scientist_experiment(set_default_class)
+    set_default(Scientist::Default) unless set_default_class
   end
 
   # Instantiate a new experiment (using the class given to the .set_default method).
