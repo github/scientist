@@ -150,7 +150,7 @@ describe Scientist::Observation do
     end
 
     it "doesn't clean nil values" do
-      @experiment.clean { |value| "foo" }
+      @experiment.clean { |_value| "foo" }
       a = Scientist::Observation.new("test", @experiment) { nil }
       assert_nil a.cleaned_value
     end
