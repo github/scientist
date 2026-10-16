@@ -405,6 +405,8 @@ end
 MyExperiment.raise_on_mismatches = true
 ```
 
+Subclasses of `MyExperiment` inherit this setting unless they set their own.
+
 Scientist will raise a `Scientist::Experiment::MismatchError` exception if any observations don't match.
 
 #### Custom mismatch errors
