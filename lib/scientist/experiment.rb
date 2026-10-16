@@ -72,8 +72,15 @@ module Scientist::Experiment
     end
 
     # Whether or not to raise a mismatch error when a mismatch occurs.
+    #
+    # Subclasses inherit the setting from their superclass unless they set
+    # their own.
     def raise_on_mismatches?
-      @raise_on_mismatches
+      if !@raise_on_mismatches.nil?
+        @raise_on_mismatches
+      elsif respond_to?(:superclass) && superclass.respond_to?(:raise_on_mismatches?)
+        superclass.raise_on_mismatches?
+      end
     end
   end
 

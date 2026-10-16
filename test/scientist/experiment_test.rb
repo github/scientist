@@ -546,6 +546,29 @@ describe Scientist::Experiment do
 
         assert_raises(Scientist::Experiment::MismatchError) { @ex.run }
       end
+
+      it "inherits the raise_on_mismatches class attribute from a superclass" do
+        subclass = Class.new(Fake)
+        Fake.raise_on_mismatches = true
+
+        ex = subclass.new
+        ex.use { "fine" }
+        ex.try { "not fine" }
+
+        assert_raises(Scientist::Experiment::MismatchError) { ex.run }
+      end
+
+      it "lets a subclass override the raise_on_mismatches class attribute" do
+        subclass = Class.new(Fake)
+        Fake.raise_on_mismatches = true
+        subclass.raise_on_mismatches = false
+
+        ex = subclass.new
+        ex.use { "fine" }
+        ex.try { "not fine" }
+
+        assert_equal "fine", ex.run
+      end
     end
 
     describe "MismatchError" do
